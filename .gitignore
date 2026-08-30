@@ -1,5 +1,5 @@
 .DS_Store
 .venv
 singleSignImages
-output
+# output
 weights
