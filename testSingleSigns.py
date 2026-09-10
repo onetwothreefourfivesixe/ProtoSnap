@@ -6,7 +6,7 @@ import re
 import unicodedata
 
 fontDir = 'Assurbanipal'  # Neo-Assyrian/Babylonian. Use 'Santakku' for Old Babylonian.
-scriptsForFont = {'Assurbanipal': {'NA', 'NB'}, 'Santakku': {'OB'}}[fontDir]
+scriptsForFont = {'Assurbanipal': {'NA'}, 'Santakku': {'OB'}, 'Esagil': {'NB'}}[fontDir]
 
 with open('signs_snippets_metadata.json') as f:
     metaData = json.load(f)

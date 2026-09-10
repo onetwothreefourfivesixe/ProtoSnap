@@ -1,0 +1,3268 @@
+hex,sign_name,period,code,total_wedges
+0x12282,PI TIMES BI,Neo Assyrian,a1b3c2w2,8
+0x12009,A2,Neo Assyrian,a1b4c4,9
+0x1200a,AB,Neo Assyrian,a1b4,5
+0x1201c,AD,Neo Assyrian,a1b5,6
+0x1207a,DU,Neo Assyrian,a1b3w1,5
+0x1207d,DU SHESHIG,Neo Assyrian,a1b3c4w1,9
+0x120f2,GAL,Neo Assyrian,a1b4,5
+0x120fe,GESHTIN,Neo Assyrian,a1b3w2,6
+0x120ff,GESHTIN TIMES KUR,Neo Assyrian,a1b3c3w2,9
+0x1214a,IGI GUNU,Neo Assyrian,a1b5w1,7
+0x12034,ARAD,Neo Assyrian,a1b4,5
+0x12033,APIN,Neo Assyrian,a1b5,6
+0x12035,ARAD TIMES KUR,Neo Assyrian,a1b4c3,8
+0x12110,GISAL,Neo Assyrian,a1b4w2,7
+0x121b7,LA,Neo Assyrian,a1b4,5
+0x12122,GUL,Neo Assyrian,a1b4w2,7
+0x1228c,PIRIG TIMES UD,Neo Assyrian,a1b4c4,9
+0x12453,FOUR BAN2 VARIANT FORM,Neo Assyrian,a1b3w1,5
+0x12455,FIVE BAN2 VARIANT FORM,Neo Assyrian,a1b3w2,6
+0x12113,GISH TIMES BAD,Neo Assyrian,a1b3w1,5
+0x12248,NE,Neo Assyrian,a1b4c4,9
+0x122d7,SHU,Neo Assyrian,a1b4,5
+0x12309,TUR,Neo Assyrian,a1b5,6
+,ASZ2,Old Assyrian,a1b5,6
+,BANESZ,Old Assyrian,a1b4,5
+0x122d7,SHU,Old Assyrian,a1b5,6
+0x121a6,KISAL,Akkadian,a1b4,5
+,SIG7,Akkadian,a1b5w1,7
+0x1203e,ASH2,Akkadian,a1b4,5
+0x12248,NE,Akkadian,a1b4c4,9
+0x122d7,SHU,Akkadian,a1b5,6
+0x120f2,GAL,Akkadian,a1b5,6
+0x12455,five BAN2 variant form,Akkadian,a1b5,6
+0x12452,four BAN2,Akkadian,a1b3w1,5
+0x121b7,LA,Neo-Babylonian,a1b5,6
+,GAL Variant Form,Neo-Babylonian,a1b5,6
+0x120f2,GAL,Neo-Babylonian,a1b5,6
+,GURUN Variant Form,Neo-Babylonian,a1b4w2,7
+0x120f2,GAL,Old Babylonian,a1b5,6
+0x121b7,LA,Old Babylonian,a1b5,6
+0x1212c,HAL,Old Babylonian,a1b4,5
+0x121ef,LAGAR GUNU,Old Babylonian,a1b4,5
+0x122ad,SHA,Old Babylonian,a1b4w2,7
+0x122d7,SHU,Old Babylonian,a1b4,5
+0x122da,SHUBUR,Old Babylonian,a1b4w2,7
+0x1201c,AD,Old Babylonian,a1b5,6
+0x1206e,DAM,Old Babylonian,a1b4w2,7
+0x1207a,DU,Old Babylonian,a1b3w1,5
+0x1207e,DUB,Old Babylonian,a1b4,5
+0x1231d,UM,Old Babylonian,a1b4,5
+0x12033,APIN,Old Babylonian,a1b4,5
+0x12055,DA,Old Babylonian,a1b5w1,7
+0x122d7,SHU,Neo-Babylonian,a1b4,5
+0x12122,GUL,Old Babylonian,a1b5w1,7
+0x1200a,AB,Neo-Babylonian,a1b4,5
+0x1207a,DU,Neo-Babylonian,a1b3w1,5
+0x12342,URU TIMES IGI,Old Babylonian,a1b5w1,7
+0x120a0,ESH2,Old Babylonian,a1b5,6
+0x120f2,GAL,Old Babylonian,a1b5,6
+0x121a6,KISAL,Old Babylonian,a1b4,5
+,SHU variant,Old Babylonian,a1b5,6
+0x1203e,ASH2,Old Babylonian,a1b4,5
+0x1212f,HI TIMES ASH2,Old Babylonian,a1b4c4,9
+0x12076,DIM2,Old Babylonian,a1b3w2,6
+0x120f2,GAL,Middle Hittite,a1b5,6
+0x12034,ARAD,Neo-Babylonian,a1b3w1,5
+0x12076,DIM2,Neo-Babylonian,a1b3w2,6
+0x120fe,GESHTIN,Middle Hittite,a1b3w2,6
+0x121a0,KI,Middle Hittite,a1b4w2,7
+0x121c0,LAGAB TIMES BAD,Middle Hittite,a1b3w1,5
+0x121c9,LAGAB TIMES HAL,Middle Hittite,a1b4,5
+0x121ef,LAGAR GUNU,Middle Hittite,a1b4,5
+0x122d7,SHU,Middle Hittite,a1b4,5
+0x1200a,AB,Middle Hittite,a1b4,5
+0x12248,NE,Neo-Babylonian,a1b4c4,9
+0x1203e,ASH2,Middle Hittite,a1b4,5
+0x1206e,DAM,Middle Hittite,a1b4w2,7
+0x1207a,DU,Middle Hittite,a1b3w1,5
+0x1207e,DUB,Middle Hittite,a1b4,5
+0x12452,FOUR BAN2,Neo-Babylonian,a1b3w1,5
+0x1231d,UM,Middle Hittite,a1b4,5
+0x12033,APIN,Middle Hittite,a1b4,5
+0x120f2,GAL,Neo-Assyrian,a1b4,5
+0x120fe,GESHTIN,Neo-Assyrian,a1b3w2,6
+0x121b7,LA,Neo-Assyrian,a1b4,5
+0x12306,TUG2,Middle Hittite,a1b4,5
+,form GAL,Middle Hittite,a1b4,5
+,form KI,Middle Hittite,a1b4w2,7
+,form KISAL,Middle Hittite,a1b4,5
+,form LAGAB TIMES BAD,Middle Hittite,a1b3w1,5
+,form AB,Middle Hittite,a1b4,5
+0x1206e,DAM,Middle Hittite,a1b4w2,7
+0x1207a,DU,Middle Hittite,a1b4,5
+0x12033,APIN,Middle Hittite,a1b4,5
+0x12306,TUG2,Middle Hittite,a1b4,5
+0x122fc,TE,Middle Hittite,a1b4,5
+0x1207e,DUB,Middle Hittite,a1b4,5
+0x12055,DA,Middle Hittite,a1b3w1,5
+0x12132,HI TIMES GAD,Neo Assyrian,a1b1c3d2,7
+0x12146,IGI,Neo Assyrian,a1b1c1,3
+0x12146,IGI,Neo Assyrian,a1b1w1,3
+0x12190,KAD2,Neo Assyrian,a1b1c2,4
+0x1227c,PAN,Neo Assyrian,a1b2c2w1,6
+0x1227f,PI,Neo Assyrian,a1b1c2,4
+0x12040,BA,Neo Assyrian,a1b3,4
+0x12044,BAL,Neo Assyrian,a1b2c3,6
+0x12075,DIM TIMES SHE,Neo Assyrian,a1b1c6d1,9
+0x12074,DIM,Neo Assyrian,a1b1c3d1,6
+0x12077,DIN,Neo Assyrian,a1b1w2,4
+0x1202a,ALEPH,Neo Assyrian,a1b2c4,7
+0x120f0,GAD,Neo Assyrian,a1b1c1,3
+0x121af,KU7,Neo Assyrian,a1b2w1,4
+0x12116,GU,Neo Assyrian,a1b1c4,6
+0x1211e,GUD,Neo Assyrian,a1b2c2,5
+0x12283,PI TIMES BU,Neo Assyrian,a1b2c6,9
+0x12287,PI TIMES U,Neo Assyrian,a1b1c2w1,5
+0x122e1,SILA3,Neo Assyrian,a1b1c1,3
+0x122ed,TA TIMES HI,Neo Assyrian,a1b2c4,7
+0x122fe,TI,Neo Assyrian,a1b1w2,4
+0x12220,MA,Neo Assyrian,a1b3,4
+0x12227,MASH2,Neo Assyrian,a1b1c4,6
+0x1222e,MUG,Neo Assyrian,a1b3,4
+0x122a9,SAL,Neo Assyrian,a1b1c2,4
+0x1223e,NA,Neo Assyrian,a1b1c2,4
+0x12244,NAGAR,Neo Assyrian,a1b1c2w1,5
+0x1230c,U GUD,Neo Assyrian,a1b2c2w1,6
+0x122fe,TI,Old Assyrian,a1b1w2,4
+0x12220,MA,Old Assyrian,a1b3,4
+0x1227f,PI,Old Assyrian,a1b1w2,4
+0x12146,IGI,Old Assyrian,a1b1w1,3
+,MUNUS,Old Assyrian,a1b1w2,4
+0x12146,IGI,Akkadian,a1b1w1,3
+0x12451,three BAN2,Akkadian,a1b3,4
+0x1227f,PI,Akkadian,a1b1w2,4
+0x12190,KAD2,Neo-Babylonian,a1b2w1,4
+0x12146,IGI,Neo-Babylonian,a1b1w1,3
+0x12195,KAK,Neo-Babylonian,a1b1c1,3
+0x122e1,SILA3,Neo-Babylonian,a1b1w1,3
+0x1227f,PI,Neo-Babylonian,a1b1w2,4
+0x1223e,NA,Neo-Babylonian,a1b1w2,4
+0x121af,KU7,Old Babylonian,a1b2w1,4
+0x121b2,KUN,Old Babylonian,a1b2c2w1,6
+0x122a9,SAL,Old Babylonian,a1b1w2,4
+0x122e1,SILA3,Old Babylonian,a1b1w1,3
+0x1200a,AB,Old Babylonian,a1b2c2,5
+0x122fe,TI,Old Babylonian,a1b1w2,4
+0x1203e,ASH2,Old Babylonian,a1b3,4
+0x1223e,NA,Old Babylonian,a1b1c2,4
+0x1227f,PI,Old Babylonian,a1b1w2,4
+0x122a9,SAL,Neo-Babylonian,a1b1w2,4
+0x122fb,TAR,Neo-Babylonian,a1b1w1,3
+0x12146,IGI,Old Babylonian,a1b1w1,3
+0x12220,MA,Old Babylonian,a1b3,4
+0x1203e,ASH2,Neo-Babylonian,a1b3,4
+0x1203e,ASH2,Neo-Babylonian,a1b3,4
+0x12337,URU,Old Babylonian,a1b3,4
+0x12351,USH,Old Babylonian,a1b2w1,4
+0x121aa,KU,Old Babylonian,a1b3,4
+0x121ec,LAGAR,Old Babylonian,a1b1c2,4
+0x122fe,TI,Old Babylonian,a1b1w2,4
+0x1200a,AB,Old Babylonian,a1b2c2,5
+0x1202d,AN,Old Babylonian,a1b1c2,4
+0x1207a,DU,Old Babylonian,a1b2c2,5
+0x1211e,GUD,Old Babylonian,a1b2c2,5
+0x1227f,PI,Old Babylonian,a1b1w2,4
+0x1230c,U GUD,Old Babylonian,a1b2c2w1,6
+0x12040,BA,Old Babylonian,a1b1c2,4
+0x12108,GIR2,Old Babylonian,a1b1c4,6
+0x12109,GIR2 GUNU,Old Babylonian,a1b1c4,6
+0x12146,IGI,Old Babylonian,a1b1w1,3
+0x12227,MASH2,Old Babylonian,a1b1c2w1,5
+0x12040,BA,Neo-Babylonian,a1b3,4
+0x12040,BA,Neo-Babylonian,a1b3,4
+0x121a6,KISAL,Middle Hittite,a1b3,4
+0x121aa,KU,Middle Hittite,a1b3,4
+0x121e5,LAGAB TIMES U,Middle Hittite,a1b2w1,4
+0x12120,GUD TIMES KUR,Neo-Babylonian,a1b2c4,7
+0x12146,IGI,Neo-Babylonian,a1b1w1,3
+,KAD2N,Neo-Babylonian,a1b1c2,4
+0x12220,MA,Neo-Babylonian,a1b3,4
+0x122fe,TI,Middle Hittite,a1b1w2,4
+0x1222e,MUG,Middle Hittite,a1b1c2,4
+0x1223e,NA,Middle Hittite,a1b1w2,4
+0x1227f,PI,Middle Hittite,a1b1w2,4
+0x120f0,GAD,Neo-Assyrian,a1b1w1,3
+0x12089,DUR2,Middle Hittite,a1b3,4
+0x121af,KU7,Neo-Assyrian,a1b2w1,4
+0x12146,IGI,Middle Hittite,a1b1w1,3
+0x12220,MA,Middle Hittite,a1b3,4
+0x12228,ME,Middle Hittite,a1b1,2
+0x12351,USH,Middle Hittite,a1b2w1,4
+,form GAD,Middle Hittite,a1b1c1,3
+,form SILA3,Middle Hittite,a1b1c1,3
+,form ASH2,Middle Hittite,a1b3,4
+0x12220,MA,Middle Hittite,a1b3,4
+0x12228,ME,Middle Hittite,a1b1,2
+0x12306,TUG2,Middle Hittite,a1b3,4
+0x1213f,I,Neo Assyrian,b5,5
+0x121e3,LAGAB TIMES TAK4,Neo Assyrian,a10b3c1,14
+0x12403,FIVE ASH,Neo Assyrian,b5,5
+0x12406,EIGHT ASH,Neo Assyrian,b8,8
+0x1240b,SIX DISH,Neo Assyrian,a6,6
+0x12366,ZIB,Neo Assyrian,c3,3
+0x12367,ZIB KABA TENU,Neo Assyrian,c3,3
+0x1236d,ZUBUR,Neo Assyrian,c3,3
+0x1208c,E OVER E NUN OVER NUN,Neo Assyrian,a14b6,20
+0x121f2,LAL,Neo Assyrian,a1b1,2
+0x12237,MUSH OVER MUSH TIMES A PLUS NA,Neo Assyrian,a10b3c10w2,25
+0x12445,EIGHT VARIANT FORM USSU3,Neo Assyrian,b8,8
+0x1244a,TWO ASH TENU,Neo Assyrian,c2,2
+0x1244b,THREE ASH TENU,Neo Assyrian,c3,3
+0x12001,A TIMES A,Neo Assyrian,a6,6
+0x1206c,DAG KISIM5 TIMES U2 PLUS GIR2,Neo Assyrian,a11b10c1w2,24
+0x1206b,DAG KISIM5 TIMES TAK4,Neo Assyrian,a13b5c1w2,21
+0x120d1,GA2 TIMES HA PLUS LU PLUS ESH2,Neo Assyrian,a12b10w1,23
+0x120e1,GA2 TIMES NUN OVER NUN,Neo Assyrian,a11b4,15
+0x120f1,GAD OVER GAD GAR OVER GAR,Neo Assyrian,a10b2c2,14
+0x1219a,KAM2,Neo Assyrian,c6,6
+0x1214f,IM TIMES TAK4,Neo Assyrian,a10b2c5,17
+0x121b3,KUR,Neo Assyrian,c3,3
+0x12030,AN PLUS NAGA OPPOSING AN PLUS NAGA,Neo Assyrian,a12b18,30
+0x121ba,LAGAB TIMES A PLUS DA PLUS HA,Neo Assyrian,a11b6w2,19
+0x12322,UMBIN,Neo Assyrian,a11b6c2w3,22
+0x122b7,SHA6,Neo Assyrian,a10b6c2,18
+0x12228,ME,Neo Assyrian,a1b1,2
+,CUNEIFORM PUNCTUATION SIGN VERTICAL COLON,Neo Assyrian,c2,2
+,MASZ,Old Assyrian,a1b1,2
+0x12047,BAR,Old Assyrian,a1b1,2
+,IA7,Old Assyrian,b5,5
+,USSU2,Old Assyrian,b8,8
+0x1213f,I,Old Assyrian,b5,5
+0x12228,ME,Old Assyrian,a1b1,2
+,ASZ3,Old Assyrian,a6,6
+0x12001,A TIMES A,Akkadian,a6,6
+,KAM variant form,Akkadian,c6,6
+0x121f2,LAL,Akkadian,a1b1,2
+0x12047,BAR,Akkadian,a1b1,2
+0x1241a,six GESH2,Akkadian,a6,6
+,ESH23,Akkadian,c3,3
+0x1244d,five ASH TENU,Akkadian,c5,5
+0x1244e,six ASH TENU,Akkadian,c6,6
+0x1244a,two ASH TENU,Akkadian,c2,2
+0x12406,eight ASH,Akkadian,b8,8
+0x12403,five ASH,Akkadian,b5,5
+0x120f5,GAM,Old Babylonian,c2,2
+0x120f6,GAN,Old Babylonian,b5,5
+0x120e1,GA2 TIMES NUN OVER NUN,Neo-Babylonian,a11b4,15
+0x121f2,LAL,Old Babylonian,a1b1,2
+0x1201d,AK,Old Babylonian,b5,5
+0x1213f,I,Old Babylonian,b5,5
+0x120f5,GAM,Neo-Babylonian,c2,2
+0x120f6,GAN,Neo-Babylonian,b5,5
+0x1227d,PAP,Old Babylonian,c2,2
+0x1235a,UZ3,Old Babylonian,b5,5
+0x121f2,LAL,Neo-Babylonian,a1b1,2
+0x121fa,LISH,Neo-Babylonian,c2,2
+0x12047,BAR,Old Babylonian,a1b1,2
+0x12130,HI TIMES BAD,Old Babylonian,c6,6
+0x12226,MASH,Old Babylonian,a1b1,2
+0x12228,ME,Old Babylonian,a1b1,2
+0x12403,FIVE ASH,Old Babylonian,b5,5
+0x1213f,I,Neo-Babylonian,b5,5
+0x1219a,KAM2,Neo-Babylonian,b5,5
+0x1213f,I,Old Babylonian,b5,5
+0x1219c,KASKAL,Old Babylonian,c4,4
+0x12047,BAR,Old Babylonian,a1b1,2
+0x12226,MASH,Old Babylonian,a1b1,2
+0x12228,ME,Old Babylonian,a1b1,2
+0x1235e,ZA TENU,Neo-Babylonian,c4,4
+0x1240b,SIX DISH,Neo-Babylonian,a6,6
+,BAN2,Neo-Babylonian,a1b1,2
+0x120e1,GA2 TIMES NUN OVER NUN,Middle Hittite,a11b4,15
+0x12001,A TIMES A,Neo-Babylonian,a6,6
+0x12041,BAD,Neo-Babylonian,c2,2
+0x12077,DIN,Neo-Babylonian,c3,3
+0x12077,DIN,Neo-Babylonian,c3,3
+0x120f6,GAN,Middle Hittite,b5,5
+0x121f2,LAL,Middle Hittite,a1b1,2
+0x122e1,SILA3,Middle Hittite,a1b1,2
+0x12226,MASH,Neo-Babylonian,a1b1,2
+0x12228,ME,Neo-Babylonian,a1b1,2
+0x1213f,I,Middle Hittite,b5,5
+0x12366,ZIB,Neo-Babylonian,c4,4
+0x12403,FIVE ASH,Neo-Babylonian,b5,5
+0x12406,EIGHT ASH,Neo-Babylonian,b8,8
+,USSU3,Neo-Babylonian,b8,8
+,ILIMMU4,Neo-Babylonian,c3,3
+0x1219c,KASKAL,Middle Hittite,c4,4
+0x1227d,PAP,Middle Hittite,c2,2
+0x12047,BAR,Middle Hittite,a1b1,2
+,GA2 TIMES HA PLUS LU PLUS,Neo-Assyrian,a12b10w1,23
+0x120e1,GA2 TIMES NUN OVER NUN,Neo-Assyrian,a11b4,15
+0x120f5,GAM,Neo-Assyrian,c2,2
+0x120fd,GASHAN,Neo-Assyrian,c7,7
+0x121ba,LAGAB TIMES A PLUS DA PLUS HA,Neo-Assyrian,a11b6w2,19
+0x12226,MASH,Middle Hittite,a1b1,2
+0x1230d,U U U,Middle Hittite,c3,3
+0x12408,THREE DISH,Neo Assyrian,a3,3
+0x12410,FIVE U,Neo Assyrian,w5,5
+0x12414,NINE U,Neo Assyrian,w9,9
+0x12413,EIGHT U,Neo Assyrian,w8,8
+0x12401,THREE ASH,Neo Assyrian,b3,3
+0x12038,ASH,Neo Assyrian,b1,1
+0x1243b,THREE VARIANT FORM ESH21,Neo Assyrian,b3,3
+0x12000,A,Neo Assyrian,a3,3
+0x12457,NIGIDAESH,Neo Assyrian,a3,3
+,ASZ,Old Assyrian,b1,1
+0x12310,U OVER U U REVERSED OVER U REVERSED,Neo Assyrian,w4,4
+,ESZ21,Old Assyrian,b3,3
+,SZE,Old Assyrian,w4,4
+0x12397,TI2,Old Assyrian,w4,4
+,MAN,Old Assyrian,w2,2
+,NIMIN,Old Assyrian,w4,4
+,NINNU,Old Assyrian,w5,5
+,8,U,w8,8
+,9,U,w9,9
+,ESZ5,Old Assyrian,a3,3
+0x1235d,ZA,Old Assyrian,a4,4
+,LIMMU,Old Assyrian,a4,4
+0x12153,IMIN,Old Assyrian,a7,7
+0x12457,NIGIDAESH,Akkadian,a3,3
+0x12153,IMIN,Akkadian,a7,7
+0x12310,U OVER U U REVERSED OVER U REVERSED,Akkadian,w4,4
+,ESH16,Akkadian,b3,3
+,U+1243F,Akkadian,a4,4
+,U+1243E,Akkadian,a4,4
+0x1240c,seven DISH,Akkadian,a7,7
+0x12418,four GESH2,Akkadian,a4,4
+0x12417,three GESH2,Akkadian,a3,3
+,IMIN variant form,Akkadian,a7,7
+0x12410,five U,Akkadian,w5,5
+0x12413,eight U,Akkadian,w8,8
+0x12414,nine U,Akkadian,w9,9
+0x1241b,seven GESH2,Akkadian,a7,7
+,vertical colon,Akkadian,w2,2
+0x1240f,four U,Akkadian,w4,4
+0x120fb,GAR,Old Babylonian,w4,4
+0x122b9,SHAR2,Old Babylonian,w4,4
+0x122ba,SHE,Old Babylonian,w4,4
+0x120fb,GAR,Neo-Babylonian,a3,3
+0x1212d,HI,Old Babylonian,w4,4
+0x1235d,ZA,Old Babylonian,a4,4
+0x122ba,SHE,Neo-Babylonian,w4,4
+0x1240c,SEVEN DISH,Old Babylonian,a7,7
+0x1240f,FOUR U,Old Babylonian,w4,4
+0x12000,A,Old Babylonian,a3,3
+0x12038,ASH,Old Babylonian,b1,1
+0x12077,DIN,Old Babylonian,w4,4
+0x12079,DISH,Old Babylonian,a1,1
+0x12134,HI TIMES NUN,Old Babylonian,w5,5
+0x12408,THREE DISH,Old Babylonian,a3,3
+0x12409,FOUR DISH,Old Babylonian,a4,4
+0x12410,FIVE U,Old Babylonian,w5,5
+0x12457,NIGIDAESH,Old Babylonian,a3,3
+0x1222c,MU,Neo-Babylonian,w5,5
+0x122ba,SHE,Old Babylonian,w8,8
+0x1235d,ZA,Old Babylonian,a4,4
+0x12000,A,Old Babylonian,a3,3
+0x12038,ASH,Old Babylonian,b1,1
+0x12079,DISH,Old Babylonian,a1,1
+0x12401,THREE ASH,Old Babylonian,b3,3
+0x1235d,ZA,Neo-Babylonian,a4,4
+0x1240c,SEVEN DISH,Neo-Babylonian,a7,7
+0x1240f,FOUR U,Neo-Babylonian,w4,4
+,THREE,Neo-Babylonian,b3,3
+,ESH21,Neo-Babylonian,b3,3
+,ESH21,Neo-Babylonian,b3,3
+,LIMMU,Neo-Babylonian,a4,4
+0x12000,A,Neo-Babylonian,a3,3
+0x120f5,GAM,Middle Hittite,w2,2
+0x12038,ASH,Neo-Babylonian,b1,1
+0x12079,DISH,Neo-Babylonian,a1,1
+0x12408,THREE DISH,Neo-Babylonian,a3,3
+0x12409,FOUR DISH,Neo-Babylonian,a4,4
+0x12410,FIVE U,Neo-Babylonian,w5,5
+,ILIMMU,Neo-Babylonian,a3,3
+0x12457,NIGIDAESH,Neo-Babylonian,a3,3
+,PUNCTUATION SIGN VERTICAL COLON,Neo-Babylonian,w2,2
+0x1227b,PAD,Middle Hittite,w5,5
+0x1235d,ZA,Middle Hittite,a4,4
+0x1240a,FIVE DISH,Middle Hittite,w5,5
+0x1240b,SIX DISH,Middle Hittite,w5,5
+0x1243c,FOUR VARIANT FORM LIMMU,Middle Hittite,a4,4
+0x12000,A,Middle Hittite,a3,3
+0x12038,ASH,Middle Hittite,b1,1
+0x120f1,GAD OVER GAD GAR OVER GAR,Neo-Assyrian,w14,14
+0x120fb,GAR,Neo-Assyrian,a4,4
+0x12079,DISH,Middle Hittite,a1,1
+0x12408,THREE DISH,Middle Hittite,a3,3
+0x12410,FIVE U,Middle Hittite,w5,5
+0x12446,NINE VARIANT FORM ILIMMU,Middle Hittite,w9,9
+,VERTICAL COLON,Middle Hittite,w2,2
+0x1240e,nine DISH,Middle Hittite,w9,9
+0x1227d,PAP,Middle Hittite,w2,2
+0x12407,NINE ASH,Neo Assyrian,b9,9
+0x1240d,EIGHT DISH,Neo Assyrian,a8,8
+0x12412,SEVEN U,Neo Assyrian,w7,7
+0x12411,SIX U,Neo Assyrian,w6,6
+0x12039,ASH ZIDA TENU,Neo Assyrian,c1,1
+0x12444,EIGHT VARIANT FORM USSU,Neo Assyrian,a8,8
+0x12447,NINE VARIANT FORM ILIMMU3,Neo Assyrian,b9,9
+0x1202d,AN,Neo Assyrian,a1b2,3
+0x12195,KAK,Neo Assyrian,a1b2,3
+0x12111,GISH,Neo Assyrian,a1b2,3
+0x1235e,ZA TENU,Neo Assyrian,c4,4
+0x1222b,MIN,Neo Assyrian,a2,2
+0x122ba,SHE,Neo Assyrian,c4,4
+0x12108,GIR2,Old Assyrian,a4b1c2d2,9
+0x1230d,U U U,Neo Assyrian,w3,3
+,ILIMMU2,Old Assyrian,b9,9
+0x1227a,PA,Old Assyrian,a1b2,3
+0x121b3,KUR,Old Assyrian,w3,3
+,ESZ,Old Assyrian,w3,3
+,LX,Old Assyrian,w6,6
+,7,U,w7,7
+0x1222b,MIN,Old Assyrian,a2,2
+,USSU,Old Assyrian,a8,8
+0x122e4,SUD,Akkadian,a4b1c2d2,9
+0x12109,GIR2 GUNU,Akkadian,a4b1c2d2,9
+0x121b4,KUR opposing KUR,Akkadian,w6,6
+0x1235e,ZA TENU,Akkadian,c4,4
+0x1230d,U U U,Akkadian,w3,3
+0x12111,GISH,Akkadian,a1b2,3
+0x12397,TI2,Akkadian,c4,4
+0x1240d,eight DISH,Akkadian,a8,8
+0x12416,two GESH2,Akkadian,a2,2
+,USSU,Akkadian,a8,8
+0x12411,six U,Akkadian,w6,6
+0x12412,seven U,Akkadian,w7,7
+0x1241c,eight GESH2,Akkadian,a8,8
+0x1244c,four ASH TENU,Akkadian,c4,4
+0x12366,ZIB,Akkadian,c4,4
+0x12367,ZIB KABA TENU,Akkadian,c4,4
+,ILIMMU3,Akkadian,b9,9
+0x12407,nine ASH,Akkadian,b9,9
+0x1227a,PA,Akkadian,a1b2,3
+0x120f0,GAD,Old Babylonian,a1b2,3
+0x121b3,KUR,Old Babylonian,w3,3
+0x1202d,AN,Old Babylonian,a1b2,3
+0x120f0,GAD,Neo-Babylonian,a1b2,3
+0x1219c,KASKAL,Old Babylonian,c4,4
+0x1222b,MIN,Old Babylonian,a2,2
+0x1227a,PA,Old Babylonian,a1b2,3
+0x1230d,U U U,Old Babylonian,w3,3
+0x121b3,KUR,Neo-Babylonian,w3,3
+0x122b9,SHAR2,Neo-Babylonian,c4,4
+0x1240d,EIGHT DISH,Old Babylonian,a8,8
+0x12039,ASH ZIDA TENU,Old Babylonian,c1,1
+0x12111,GISH,Old Babylonian,a1b2,3
+0x1202d,AN,Neo-Babylonian,a1b2,3
+0x12407,NINE ASH,Old Babylonian,b9,9
+0x12450,TWO BAN2,Old Babylonian,a1b2,3
+0x12456,NIGIDAMIN,Old Babylonian,a2,2
+0x1212d,HI,Neo-Babylonian,w3,3
+0x121b3,KUR,Old Babylonian,w3,3
+0x121b8,LAGAB,Old Babylonian,a1b2,3
+0x1222b,MIN,Neo-Babylonian,a2,2
+0x122e7,SUM,Old Babylonian,w13,13
+0x1212d,HI,Old Babylonian,c4,4
+0x1227a,PA,Neo-Babylonian,a1b2,3
+0x1230d,U U U,Neo-Babylonian,w3,3
+0x1226d,NUNUZ,Old Babylonian,w6,6
+0x1227a,PA,Old Babylonian,a1b2,3
+0x1230d,U U U,Old Babylonian,w3,3
+0x12111,GISH,Old Babylonian,a1b2,3
+0x12450,TWO BAN2,Old Babylonian,a1b2,3
+0x1240d,EIGHT DISH,Neo-Babylonian,a8,8
+0x120f0,GAD,Middle Hittite,a1b2,3
+0x12039,ASH ZIDA TENU,Neo-Babylonian,c1,1
+0x121b3,KUR,Middle Hittite,w3,3
+0x121b8,LAGAB,Middle Hittite,a1b2,3
+0x122ba,SHE,Middle Hittite,w4,4
+0x12111,GISH,Neo-Babylonian,a1b2,3
+0x12135,HI TIMES SHE,Neo-Babylonian,w6,6
+0x122fb,TAR,Middle Hittite,a1b2,3
+0x1202d,AN,Middle Hittite,a1b2,3
+0x1212d,HI,Middle Hittite,w4,4
+0x12407,NINE ASH,Neo-Babylonian,b9,9
+0x12411,SIX U,Neo-Babylonian,w6,6
+,ILIMMU3,Neo-Babylonian,b9,9
+0x12450,TWO BAN2,Neo-Babylonian,a1b2,3
+0x12456,NIGIDAMIN,Neo-Babylonian,a2,2
+0x1227a,PA,Middle Hittite,a1b2,3
+0x1230d,U U U,Middle Hittite,w3,3
+0x1240c,SEVEN DISH,Middle Hittite,w7,7
+0x1240d,EIGHT DISH,Middle Hittite,a8,8
+0x12077,DIN,Middle Hittite,w3,3
+0x121b3,KUR,Neo-Assyrian,w3,3
+0x12111,GISH,Middle Hittite,a1b2,3
+0x12130,HI TIMES BAD,Middle Hittite,w7,7
+0x12135,HI TIMES SHE,Middle Hittite,w7,7
+0x12409,FOUR DISH,Middle Hittite,w4,4
+0x12135,HI TIMES SHE,Old Babylonian,w7,7
+,VERTICAL COLON,Middle Hittite,c1,1
+0x12066,DAG KISIM5 TIMES LU PLUS MASH2,Neo Assyrian,a9b9c4w2,24
+0x120c2,GA2 TIMES BUR PLUS RA,Neo Assyrian,a9b10,19
+0x120c6,GA2 TIMES DUB,Neo Assyrian,a7b6,13
+0x120c8,GA2 TIMES EL PLUS LA,Neo Assyrian,a8b8c2,18
+0x120ca,GA2 TIMES EN TIMES GAN2 TENU,Neo Assyrian,a9b5c2,16
+0x121dd,LAGAB TIMES SHITA PLUS GISH PLUS ERIN2,Neo Assyrian,a8b6c2,16
+0x121e4,LAGAB TIMES TE PLUS A PLUS SU PLUS NA,Neo Assyrian,a9b7c6,22
+0x12261,NU,Neo Assyrian,b1d1,2
+0x1226a,NUN OVER NUN,Neo Assyrian,a8b2,10
+0x1227d,PAP,Neo Assyrian,b1c1,2
+0x1236c,ZU5 TIMES A,Neo Assyrian,a7b5w1,13
+0x1204d,BU,Neo Assyrian,b1c4,5
+0x120a4,EZEN TIMES A PLUS LAL TIMES LAL,Neo Assyrian,a7b9,16
+0x1223a,MUSH3 TIMES A,Neo Assyrian,a8b1,9
+0x12446,NINE VARIANT FORM ILIMMU,Neo Assyrian,a9,9
+0x12004,A TIMES HA,Neo Assyrian,a7w1,8
+0x12011,AB TIMES IMIN,Neo Assyrian,a8b4w1,13
+0x12016,AB2,Neo Assyrian,b2w1,3
+0x1201b,AB2 TIMES TAK4,Neo Assyrian,a8b3c1w1,13
+0x1206d,DAG KISIM5 TIMES USH,Neo Assyrian,a8b6w2,16
+0x1202c,AMAR TIMES SHE,Neo Assyrian,b2c4w3,9
+0x120d0,GA2 TIMES GIR2 PLUS SU,Neo Assyrian,a8b8c1,17
+0x120d7,GA2 TIMES ISH PLUS HU PLUS ASH,Neo Assyrian,a7b6w2,15
+0x120dc,GA2 TIMES KU3 PLUS AN,Neo Assyrian,a8b4w1,13
+0x120f4,GALAM,Neo Assyrian,b2c1d1w2,6
+0x12199,KAL CROSSING KAL,Neo Assyrian,a8b4,12
+0x1219c,KASKAL,Neo Assyrian,b2c2,4
+0x1214d,IL2,Neo Assyrian,a7b6c2,15
+0x121a9,KISIM5 OVER KISIM5,Neo Assyrian,b2d2w4,8
+0x121a8,KISIM5,Neo Assyrian,b2w2,4
+0x121b0,KUL,Neo Assyrian,b1c2w1,4
+0x121bb,LAGAB TIMES A PLUS GAR,Neo Assyrian,a9b2,11
+0x12120,GUD TIMES KUR,Neo Assyrian,b2c4,6
+0x1232c,UR2 TIMES A PLUS HA,Neo Assyrian,a9b4w2,15
+0x12335,URI,Neo Assyrian,a8b4,12
+0x122f0,TAB,Neo Assyrian,b2,2
+0x1212e,HI TIMES ASH,Neo Assyrian,b1c4,5
+0x12061,DAG KISIM5 TIMES IR,Neo Assyrian,a8b6w2,16
+0x1222c,MU,Neo Assyrian,b1c4,5
+0x12462,OLD ASSYRIAN ONE QUARTER,Neo Assyrian,b2c2,4
+0x12251,NIM TIMES GAR PLUS GAN2 TENU,Neo Assyrian,a9b4w2,15
+0x12057,DAG KISIM5 TIMES A PLUS MASH,Neo Assyrian,a9b4w2,15
+0x12202,LU2 TIMES GAN2 TENU,Neo Assyrian,a7b9,16
+0x122f0,TAB,Old Assyrian,b2,2
+,Number 1/4,Old Assyrian,b2c2,4
+0x1212d,HI,Old Assyrian,b2w2,4
+0x12122,GUL,Old Assyrian,a8b4w1,13
+,ILIMMU,Old Assyrian,a9,9
+0x120a2,EZEN TIMES A,Akkadian,a7b6,13
+0x120a9,EZEN TIMES HA,Akkadian,a8b6w2,16
+0x120b2,EZEN TIMES LU,Akkadian,a7b9,16
+,NUMERIC SIGN TWO ESHE3,Akkadian,b2w2,4
+0x12229,MES,Akkadian,a8b4,12
+0x1209e,EREN,Akkadian,a8b8c1,17
+0x12142,IDIM,Akkadian,b2,2
+0x12300,TIL,Akkadian,b1c1,2
+0x1240e,nine DISH,Akkadian,a9,9
+0x1241d,nine GESH2,Akkadian,a9,9
+0x120f4,GALAM,Neo-Babylonian,b2c1d1w2,6
+0x1222c,MU,Neo-Babylonian,b1c4,5
+0x12312,UB,Neo-Babylonian,b2w2,4
+0x12108,GIR2,Neo-Babylonian,b2w2,4
+0x122f0,TAB,Old Babylonian,b2,2
+0x122f3,TAG,Old Babylonian,b2c4,6
+0x1212c,HAL,Old Babylonian,b2,2
+0x1226a,NUN OVER NUN,Old Babylonian,a8b2,10
+0x1227c,PAN,Old Babylonian,b2w1,3
+0x12049,BI,Old Babylonian,b2w2,4
+0x122f0,TAB,Neo-Babylonian,b2,2
+0x12261,NU,Old Babylonian,b1c1,2
+0x12312,UB,Old Babylonian,b2w2,4
+0x1212c,HAL,Neo-Babylonian,b2,2
+0x1219c,KASKAL,Neo-Babylonian,b2c2,4
+0x1226a,NUN OVER NUN,Neo-Babylonian,a8b2,10
+0x1202b,AMAR,Old Babylonian,b2c4,6
+0x1204d,BU,Old Babylonian,b1c4,5
+0x1227d,PAP,Neo-Babylonian,b1c1,2
+,nine DIŠ,Old Babylonian,a9,9
+0x12049,BI,Neo-Babylonian,b2w2,4
+0x12261,NU,Neo-Babylonian,b1d1,2
+0x1212c,HAL,Middle Hittite,b2,2
+,SIGN TWO ASH,Neo-Babylonian,b2,2
+,ILIMMU,Neo-Babylonian,a9,9
+0x1222b,MIN,Middle Hittite,b2,2
+0x1224c,NI,Middle Hittite,b1c1,2
+0x1226a,NUN OVER NUN,Middle Hittite,a8b2,10
+0x1227c,PAN,Middle Hittite,b2w1,3
+0x120c6,GA2 TIMES DUB,Neo-Assyrian,a7b6,13
+0x12049,BI,Middle Hittite,b2w2,4
+0x120d7,GA2 TIMES ISH PLUS HU PLUS ASH,Neo-Assyrian,a7b6w2,15
+0x120dc,GA2 TIMES KU3 PLUS AN,Neo-Assyrian,a8b4w1,13
+0x120f4,GALAM,Neo-Assyrian,b2c1d1w2,6
+0x121a8,KISIM5,Neo-Assyrian,b2w2,4
+0x12312,UB,Middle Hittite,b2w2,4
+0x121bb,LAGAB TIMES A PLUS GAR,Neo-Assyrian,a9b2,11
+0x1227c,PAN,Middle Hittite,b2w2,4
+0x1227d,PAP,Middle Hittite,b2w1,3
+0x120f5,GAM,Middle Hittite,b2w1,3
+0x12135,HI TIMES SHE,Neo Assyrian,b6c4,10
+0x12136,HI TIMES U,Neo Assyrian,b2w3,5
+0x121f8,LIL,Neo Assyrian,b3c5d1w2,11
+0x12255,NINDA2 TIMES ASH PLUS ASH,Neo Assyrian,b6w1,7
+0x1225c,NINDA2 TIMES SHE PLUS ASH,Neo Assyrian,b5w5,10
+0x12404,SIX ASH,Neo Assyrian,b6,6
+0x12405,SEVEN ASH,Neo Assyrian,b7,7
+0x12082,DUGUD,Neo Assyrian,b8w1,9
+0x1243d,FOUR VARIANT FORM LIMMU4,Neo Assyrian,b4,4
+0x12440,SIX VARIANT FORM ASH9,Neo Assyrian,b6,6
+0x12441,SEVEN VARIANT FORM IMIN3,Neo Assyrian,b7,7
+0x1202b,AMAR,Neo Assyrian,b2w3,5
+0x120fc,GAR3,Neo Assyrian,b3c4,7
+0x120fd,GASHAN,Neo Assyrian,b4w1,5
+0x1219b,KAM4,Neo Assyrian,b6c5w2,13
+0x121a7,KISH,Neo Assyrian,b2w4,6
+0x12115,GISH TENU,Neo Assyrian,c2d1,3
+0x12124,GUM TIMES SHE,Neo Assyrian,b4c4w3,11
+0x12123,GUM,Neo Assyrian,b4w3,7
+0x1228e,PIRIG OPPOSING PIRIG,Neo Assyrian,b8w2,10
+0x122f3,TAG,Neo Assyrian,b4c1,5
+0x1222a,MI,Neo Assyrian,b4w1,5
+0x121f9,LIMMU2,Old Assyrian,b4,4
+,ASZ4,Old Assyrian,b6,6
+,IMIN2,Old Assyrian,b7,7
+0x1222a,MI,Old Assyrian,b8w1,9
+0x1202b,AMAR,Old Assyrian,b2w4,6
+0x121f9,LIMMU2,Akkadian,b4,4
+0x1213f,I,Akkadian,b6,6
+,NUMUN,Akkadian,b2w3,5
+0x1202b,AMAR,Akkadian,b2w4,6
+0x1222a,MI,Akkadian,b8w1,9
+,LIMMU4,Akkadian,b4,4
+0x12115,GISH TENU,Akkadian,c2d1,3
+,IMIN3,Akkadian,b7,7
+,ASH9,Akkadian,b6,6
+0x12404,six ASH,Akkadian,b6,6
+0x12405,seven ASH,Akkadian,b7,7
+0x12402,four ASH,Akkadian,b4,4
+0x120fd,GASHAN,Neo-Babylonian,b4w1,5
+0x1222a,MI,Neo-Babylonian,b4w1,5
+0x122f3,TAG,Neo-Babylonian,b4c1,5
+0x122d3,SHIR,Neo-Babylonian,b3c4,7
+,AK Variant Form,Neo-Babylonian,b6,6
+0x1202b,AMAR,Neo-Babylonian,b2w3,5
+0x120ee,GABA,Old Babylonian,b2w4,6
+0x120fc,GAR3,Old Babylonian,b4w3,7
+0x1202b,AMAR,Old Babylonian,b2w3,5
+0x1222a,MI,Old Babylonian,b4w1,5
+0x120fd,GASHAN,Neo-Babylonian,b4w1,5
+0x12108,GIR2,Old Babylonian,b2w4,6
+0x12109,GIR2 GUNU,Old Babylonian,b2w4,6
+0x12120,GUD TIMES KUR,Old Babylonian,b2w4,6
+0x1202a,ALEPH,Neo-Babylonian,b2w4,6
+0x12309,TUR,Old Babylonian,b6,6
+0x12405,SEVEN ASH,Old Babylonian,b7,7
+0x1222a,MI,Old Babylonian,b8w1,9
+0x12261,NU,Old Babylonian,c2d1,3
+0x1237d,HUSH,Neo-Babylonian,b6c4,10
+,LIMMU4,Neo-Babylonian,b4,4
+0x120ee,GABA,Middle Hittite,b2w4,6
+0x121a7,KISH,Middle Hittite,b2w4,6
+0x12083,DUH,Neo-Babylonian,b2w4,6
+0x12115,GISH TENU,Neo-Babylonian,c2d1,3
+0x12123,GUM,Neo-Babylonian,b4w3,7
+0x12252,NINDA2,Neo-Babylonian,b4w1,5
+0x12308,TUM,Neo-Babylonian,b6w1,7
+0x1202b,AMAR,Middle Hittite,b2w3,5
+0x12402,FOUR ASH,Neo-Babylonian,b4,4
+0x12404,SIX ASH,Neo-Babylonian,b6,6
+0x12405,SEVEN ASH,Neo-Babylonian,b7,7
+,ASH9,Neo-Babylonian,b6,6
+,IMIN3,Neo-Babylonian,b7,7
+0x1222a,MI,Middle Hittite,b4w1,5
+0x1228c,PIRIG TIMES UD,Middle Hittite,b4c1,5
+0x1228d,PIRIG TIMES ZA,Middle Hittite,b4w1,5
+0x12032,ANSHE,Middle Hittite,b3c4,7
+0x120ee,GABA,Neo-Assyrian,b2w4,6
+0x120ee,GABA,Neo-Assyrian,b2w4,6
+0x120f6,GAN,Neo-Assyrian,b6,6
+0x120fc,GAR3,Neo-Assyrian,b3c4,7
+0x120fd,GASHAN,Neo-Assyrian,b4w1,5
+0x12083,DUH,Middle Hittite,b2w4,6
+0x12094,EDIN,Middle Hittite,b2w4,6
+0x121a7,KISH,Neo-Assyrian,b2w4,6
+0x121a9,KISIM5 OVER KISIM5,Neo-Assyrian,b4w3,7
+0x12120,GUD TIMES KUR,Middle Hittite,b2w4,6
+0x12123,GUM,Middle Hittite,b4w3,7
+0x12252,NINDA2,Middle Hittite,b4w1,5
+0x12308,TUM,Middle Hittite,b6w1,7
+0x12309,TUR,Middle Hittite,b6,6
+0x12360,ZAG,Middle Hittite,b8w1,9
+,form GAN,Middle Hittite,b6,6
+0x12252,NINDA2,Middle Hittite,b4,4
+0x122d7,SHU,Middle Hittite,b4,4
+0x12118,GU2,Middle Hittite,b2w2,4
+0x12131,HI TIMES DISH,Neo Assyrian,a1c2d2,5
+0x12137,HU,Neo Assyrian,a2b1w1,4
+0x12145,IG,Neo Assyrian,a2b1c2w1,6
+0x121fa,LISH,Neo Assyrian,a1c1,2
+0x12253,NINDA2 TIMES AN,Neo Assyrian,a1b6w1,8
+0x12256,NINDA2 TIMES GUD,Neo Assyrian,a1b6c2w1,10
+0x12258,NINDA2 TIMES NE,Neo Assyrian,a1b8c4w1,14
+0x12363,ZI,Neo Assyrian,a2b1c4,7
+0x1204c,BI TIMES IGI GUNU,Neo Assyrian,a1b7w3,11
+0x1204e,BU OVER BU AB,Neo Assyrian,a1b6c8,15
+0x12051,BULUG,Neo Assyrian,a2b2c2w1,7
+0x121ed,LAGAR TIMES SHE,Neo Assyrian,a2b1c5,8
+0x121ec,LAGAR,Neo Assyrian,a2b1w1,4
+0x12017,AB2 TIMES BALAG,Neo Assyrian,a2b10w3,15
+0x1207c,DU GUNU,Neo Assyrian,a1b6w1,8
+0x12100,GI,Neo Assyrian,a2b1c4,7
+0x121b5,KUSHU2,Neo Assyrian,a2b1c2w1,6
+0x12097,EN,Neo Assyrian,a2b1c2,5
+0x121b8,LAGAB,Neo Assyrian,a2b2,4
+0x121bf,LAGAB TIMES ASH ZIDA TENU,Neo Assyrian,a2b2c1,5
+0x12125,GUR,Neo Assyrian,a2b2,4
+0x12285,PI TIMES I,Neo Assyrian,a1b6c2,9
+0x12290,RAB,Neo Assyrian,a1b9,10
+0x1245f,ONE EIGHTH ASH,Neo Assyrian,a1c1,2
+0x122db,SI,Neo Assyrian,a2b2,4
+0x122e5,SUD2,Neo Assyrian,a2b2,4
+0x1224c,NI,Neo Assyrian,a2b2,4
+0x122d9,SHU2,Neo Assyrian,a1c1,2
+0x12307,TUK,Neo Assyrian,a2b2,4
+0x12308,TUM,Neo Assyrian,a1b6w1,8
+0x12137,HU,Old Assyrian,a2b1w1,4
+0x12125,GUR,Old Assyrian,a2b2,4
+0x122db,SI,Old Assyrian,a2b2,4
+,GISZ,Old Assyrian,a2b2,4
+0x12312,UB,Old Assyrian,a1c2d2,5
+,LAL2,Old Assyrian,a2b2,4
+0x121b8,LAGAB,Old Assyrian,a2b2,4
+0x121b8,LAGAB,Akkadian,a2b2,4
+0x121bf,LAGAB TIMES ASH ZIDA TENU,Akkadian,a2b2c1,5
+0x122db,SI,Akkadian,a2b2,4
+0x12312,UB,Akkadian,a1c2d2,5
+0x12290,RAB,Akkadian,a1b9,10
+0x122e5,SUD2,Akkadian,a2b2,4
+0x12131,HI TIMES DISH,Akkadian,a1c2d2,5
+0x121f3,LAL TIMES LAL,Akkadian,a2b2,4
+0x12137,HU,Akkadian,a2b1w1,4
+0x12125,GUR,Akkadian,a2b2,4
+,one eighth,Akkadian,a1c1,2
+0x12100,GI,Neo-Babylonian,a2b1c4,7
+0x122db,SI,Neo-Babylonian,a2b2,4
+,SUD2 Variant Form,Neo-Babylonian,a2b2,4
+0x122e5,SUD2,Neo-Babylonian,a2b2,4
+0x12258,NINDA2 TIMES NE,Neo-Babylonian,a1b8c4w1,14
+0x12071,DARA4,Neo-Babylonian,a2b2c1,5
+0x121b5,KUSHU2,Old Babylonian,a2b1c2w1,6
+0x121b8,LAGAB,Old Babylonian,a2b2,4
+0x121ec,LAGAR,Old Babylonian,a2b2,4
+,LAL TIMES,Old Babylonian,a2b2,4
+0x122db,SI,Old Babylonian,a2b2,4
+0x122fa,TAK4,Old Babylonian,a2b1c2,5
+0x1207c,DU GUNU,Old Babylonian,a1b6w1,8
+0x121b8,LAGAB,Neo-Babylonian,a2b2,4
+0x121ec,LAGAR,Neo-Babylonian,a2b2,4
+0x121f3,LAL TIMES LAL,Neo-Babylonian,a2b2,4
+0x12020,AL,Old Babylonian,a2b2c1,5
+0x122d9,SHU2,Neo-Babylonian,a1c1,2
+0x122db,SI,Neo-Babylonian,a2b2,4
+0x12125,GUR,Old Babylonian,a2b2,4
+0x12137,HU,Old Babylonian,a2b1w1,4
+,GUNU,Neo-Babylonian,a1b6w1,8
+0x1209f,ERIN2,Neo-Babylonian,a2b2,4
+0x1214a,IGI GUNU,Neo-Babylonian,a1b5w1,7
+0x122db,SI,Old Babylonian,a2b2,4
+0x1227f,PI,Neo-Babylonian,a2b2,4
+0x12125,GUR,Old Babylonian,a2b2,4
+0x12137,HU,Old Babylonian,a2b1w1,4
+0x121ec,LAGAR,Middle Hittite,a2b2,4
+0x121f3,LAL TIMES LAL,Middle Hittite,a2b2,4
+0x12125,GUR,Neo-Babylonian,a2b2,4
+0x12125,GUR,Neo-Babylonian,a2b2,4
+0x12137,HU,Neo-Babylonian,a2b1w1,4
+0x12137,HU,Neo-Babylonian,a2b1w1,4
+0x122d9,SHU2,Middle Hittite,a1c1,2
+0x122db,SI,Middle Hittite,a2b2,4
+0x122e5,SUD2,Middle Hittite,a2b2,4
+0x12258,NINDA2 TIMES NE,Neo-Babylonian,a1b8c4w1,14
+0x1206f,DAR,Middle Hittite,a1b5w1,7
+0x1214a,IGI GUNU,Middle Hittite,a1b5w1,7
+0x12363,ZI,Neo-Babylonian,a2b1c4,7
+0x121b8,LAGAB,Neo-Assyrian,a2b2,4
+0x12125,GUR,Middle Hittite,a2b2,4
+0x12137,HU,Middle Hittite,a2b1w1,4
+0x12307,TUK,Middle Hittite,a2b1w1,4
+0x121bf,LAGAB TIMES ASH ZIDA TENU,Neo-Assyrian,a2b2c1,5
+,form LAGAR,Middle Hittite,a2b2,4
+,form SI,Middle Hittite,a2b2,4
+0x12125,GUR,Middle Hittite,a2b2,4
+0x121ec,LAGAR,Middle Hittite,a2b2,4
+0x122db,SI,Middle Hittite,a2b2,4
+0x12226,MASH,Middle Hittite,a1c1,2
+0x1245c,FIVE SIXTHS DISH,Neo Assyrian,a4b1,5
+0x12217,LUGAL,Neo Assyrian,a3b9,12
+0x12060,DAG KISIM5 TIMES HA,Neo Assyrian,a9b4w3,16
+0x12063,DAG KISIM5 TIMES KAK,Neo Assyrian,a6b6w2,14
+0x12065,DAG KISIM5 TIMES LU,Neo Assyrian,a8b8w2,18
+0x120e4,GA2 TIMES SAR,Neo Assyrian,a5b10,15
+0x120e7,GA2 TIMES SHID,Neo Assyrian,a6b5,11
+0x1210e,GIR3 TIMES LU PLUS IGI,Neo Assyrian,a4b9w2,15
+0x12165,KA TIMES GAR,Neo Assyrian,a6b5,11
+0x12170,KA TIMES KI,Neo Assyrian,a4b9w1,14
+0x12172,KA TIMES LI,Neo Assyrian,a4b13w1,18
+0x12180,KA TIMES SHA,Neo Assyrian,a4b9w1,14
+0x12182,KA TIMES SHID,Neo Assyrian,a5b8,13
+0x122df,SIG4 OVER SIG4 SHU2,Neo Assyrian,a3b8c5w4,20
+0x122e6,SUHUR,Neo Assyrian,b2c9d1w1,13
+0x122e9,SUR,Neo Assyrian,a4b1,5
+0x122ea,SUR9,Neo Assyrian,a4b9c2w1,16
+0x122fb,TAR,Neo Assyrian,b2c1,3
+0x12301,TIR,Neo Assyrian,a8b2c4,14
+0x1235c,UZU,Neo Assyrian,b3c4w1,8
+0x1235f,ZA SQUARED TIMES KUR,Neo Assyrian,a8b8c3,19
+0x12360,ZAG,Neo Assyrian,b7w1,8
+0x12341,URU TIMES HA,Neo Assyrian,a6b3w1,10
+0x12368,ZIG,Neo Assyrian,b4w4,8
+0x1222d,MU OVER MU,Neo Assyrian,b2c8,10
+0x122bf,SHEN,Neo Assyrian,a5b4,9
+0x122be,SHEG9,Neo Assyrian,a5b6c5,16
+0x122c1,SHESH2,Neo Assyrian,a5b9c2w2,18
+0x1233e,URU TIMES GAN2 TENU,Neo Assyrian,a6b5,11
+0x1233c,URU TIMES GA,Neo Assyrian,a5b5c2,12
+0x1212c,HAL,Old Assyrian,b2c1,3
+0x1236a,ZU,Old Assyrian,a4b2c1,7
+0x122e2,SU,Old Assyrian,a4b3c1,8
+,ITI,Old Assyrian,c2d2w3,7
+,SZUBUR,Old Assyrian,a5b3c2d1,11
+,USZ11,Old Assyrian,a5b7c3d1,16
+,SZUDU3,Old Assyrian,a4b9c1d1w5,20
+0x12224,MAH,Old Assyrian,a3b8w4,15
+0x1222c,MU,Old Assyrian,b1w6,7
+0x12261,NU,Old Assyrian,b1w2,3
+0x12094,EDIN,Neo Assyrian,a2b2c6,10
+0x1224b,NE SHESHIG,Neo Assyrian,a1b4c4w2,11
+0x1224d,NI TIMES E,Neo Assyrian,a5b4,9
+0x1224f,NIM,Neo Assyrian,a1b2w2,5
+0x1236e,ZUM,Neo Assyrian,a2b4c2,8
+0x12183,KA TIMES SHU,Neo Assyrian,a3b9,12
+0x120b4,EZEN TIMES UD,Neo Assyrian,a3b7c2,12
+0x122e9,SUR,Old Assyrian,a4b1,5
+0x1208d,E2,Old Assyrian,a5b4,9
+,SZESZ,Old Assyrian,b1w6,7
+,KINGUSILA,Old Assyrian,a4b1,5
+0x121e8,LAGAB TIMES U2 PLUS ASH,Akkadian,a6b5,11
+0x122fe,TI,Akkadian,a1b2w2,5
+0x122c4,SHID TIMES A,Akkadian,a6b5,11
+0x12368,ZIG,Akkadian,b4w4,8
+0x12317,UD TIMES U PLUS U PLUS U,Akkadian,c2d2w3,7
+0x1208d,E2,Akkadian,a5b4,9
+0x1222c,MU,Akkadian,b1w6,7
+0x121b3,KUR,Neo-Babylonian,b2c1,3
+0x1211e,GUD,Neo-Babylonian,a1b2w2,5
+0x12360,ZAG,Neo-Babylonian,b7w1,8
+0x12263,NUN,Neo-Babylonian,a4b1,5
+0x122bf,SHEN,Neo-Babylonian,a5b4,9
+0x12368,ZIG,Neo-Babylonian,b4w4,8
+0x122c0,SHESH,Old Babylonian,b1w6,7
+0x122de,SIG4,Old Babylonian,b4w4,8
+0x1211e,GUD,Old Babylonian,a1b2w2,5
+0x1236a,ZU,Old Babylonian,a4b2c1,7
+0x122c0,SHESH,Neo-Babylonian,b1w6,7
+0x1245c,FIVE SIXTHS DISH,Old Babylonian,a4b1,5
+0x122fe,TI,Neo-Babylonian,a1b2w2,5
+,TI TIMES AN,Neo-Babylonian,a1b2w2,5
+0x12123,GUM,Old Babylonian,b4w4,8
+0x12239,MUSH3,Old Babylonian,a4b1,5
+0x12263,NUN,Old Babylonian,a4b1,5
+0x12360,ZAG,Old Babylonian,b7w1,8
+0x1211e,GUD,Neo-Babylonian,a1b2w2,5
+0x121a4,KID,Old Babylonian,a5b4,9
+0x1207e,DUB,Old Babylonian,a5b4,9
+0x1208d,E2,Old Babylonian,a5b4,9
+0x1245c,FIVE SIXTHS DISH,Neo-Babylonian,a4b1,5
+0x120fc,GAR3,Middle Hittite,b4w4,8
+0x122a9,SAL,Middle Hittite,b1w2,3
+0x122bf,SHEN,Middle Hittite,a5b4,9
+0x122c3,SHID,Middle Hittite,a5b4,9
+0x122de,SIG4,Middle Hittite,b4w4,8
+0x122e9,SUR,Middle Hittite,a4b1,5
+0x12239,MUSH3,Neo-Babylonian,a4b1,5
+0x1211e,GUD,Middle Hittite,a1b2w2,5
+0x12360,ZAG,Neo-Babylonian,b7w1,8
+0x120a5,EZEN TIMES AN,Neo-Assyrian,a3b9,12
+0x12053,BUR,Middle Hittite,b4w4,8
+0x120e7,GA2 TIMES SHID,Neo-Assyrian,a6b5,11
+0x12239,MUSH3,Middle Hittite,a4b1,5
+,form KU3,Middle Hittite,a4b1,5
+0x12072,DI,Middle Hittite,a1b2w2,5
+0x122a9,SAL,Middle Hittite,b1w2,3
+0x122fb,TAR,Middle Hittite,b2c1,3
+0x1227c,PAN,Middle Hittite,a1b2w2,5
+0x1242c,ONE SHARU,Neo Assyrian,c2d2w1,5
+0x1242d,TWO SHARU,Neo Assyrian,c2d2w2,6
+0x1203d,ASH OVER ASH OVER ASH CROSSING ASH OVER ASH OVER ASH,Neo Assyrian,c3d3,6
+0x12050,BU CROSSING BU,Neo Assyrian,c7d1,8
+0x12431,FIVE SHARU,Neo Assyrian,c2d2w5,9
+0x12430,FOUR SHARU,Neo Assyrian,c2d2w4,8
+0x1212a,HA TENU,Neo Assyrian,c4w1,5
+0x12454,FIVE BAN2,Neo Assyrian,a1b3c2,6
+0x12452,FOUR BAN2,Neo Assyrian,a1b3c1,5
+0x1245b,TWO THIRDS DISH,Neo Assyrian,a3b1,4
+0x1245a,ONE THIRD DISH,Neo Assyrian,a2b1,3
+0x1234d,URU TIMES UD,Neo Assyrian,a3b3c2,8
+0x1212f,HI TIMES ASH2,Neo Assyrian,a1b3c4,8
+0x12062,DAG KISIM5 TIMES IR PLUS LU,Neo Assyrian,a11b10w2,23
+0x120e9,GA2 TIMES TAK4,Neo Assyrian,a11b3c1,15
+0x122dd,SIG,Neo Assyrian,a2c2,4
+0x122e0,SIK2,Neo Assyrian,a3b7c2,12
+0x122e8,SUMASH,Neo Assyrian,a3b5w2,10
+0x122fc,TE,Neo Assyrian,a1c4,5
+0x12303,TIR OVER TIR,Neo Assyrian,a16b4c8,28
+0x12355,USH TIMES TAK4,Neo Assyrian,a11b3c1w1,16
+0x1234c,URU TIMES U PLUS GUD,Neo Assyrian,a3b5c2w1,11
+0x1234b,URU TIMES TU,Neo Assyrian,a3b10,13
+0x1221f,LUM OVER LUM GAR OVER GAR,Neo Assyrian,a10b8c4,22
+0x1221e,LUM OVER LUM,Neo Assyrian,a2b8c4,14
+0x120bf,GA2 TIMES BAD,Neo Assyrian,a3b3w1,7
+0x12166,KA TIMES GAR PLUS SHA3 PLUS A,Neo Assyrian,a11b5c2,18
+0x12040,BA,Old Assyrian,a1b2c1,4
+0x12034,ARAD,Old Assyrian,a3b1w3,7
+0x12157,KA,Old Assyrian,a3b6c1d1,11
+0x121f7,LI,Old Assyrian,a2b4w8,14
+0x12305,TU,Old Assyrian,a1b4w4,9
+0x122e1,SILA3,Old Assyrian,a1c1d1,3
+0x1223e,NA,Old Assyrian,a1b5c1w1,8
+0x12319,UD GUNU,Neo Assyrian,a1b3c2,6
+0x12145,IG,Old Assyrian,a3b5w2,10
+,GAG,Old Assyrian,a1c1d1,3
+,HAR,Old Assyrian,a1b4w4,9
+,SZUSZANA,Old Assyrian,a2b1,3
+,SZANABI,Old Assyrian,a3b1,4
+0x1236e,ZUM,Old Assyrian,c2d2w4,8
+,KUSZU2,Old Assyrian,a3b1w3,7
+0x12313,UD,Middle Elamite,a2c2,4
+0x120f0,GAD,Akkadian,a1c1d1,3
+0x122e1,SILA3,Akkadian,a1c1d1,3
+,SHUSHUR2,Akkadian,c3d3,6
+0x12136,HI TIMES U,Akkadian,c2d2w1,5
+0x122ae,SHA3,Akkadian,c3d3,6
+0x12195,KAK,Akkadian,a1c1d1,3
+,NUMERIC SIGN ONE BURU,Akkadian,c2d2w1,5
+0x121a9,KISIM5 OVER KISIM5,Akkadian,c2d2w4,8
+0x12097,EN,Akkadian,a3b5w2,10
+0x12395,PIR2,Akkadian,a2c2,4
+0x1231a,UD SHESHIG,Akkadian,c2d2w4,8
+,KIN Variant Form,Neo-Babylonian,a3b3w1,7
+0x122dd,SIG,Neo-Babylonian,a2c2,4
+0x121ad,KU4,Neo-Babylonian,a1b4w4,9
+0x122e9,SUR,Neo-Babylonian,a3b1,4
+,MASH2 Variant Form,Neo-Babylonian,a3b1w3,7
+0x12076,DIM2,Neo-Babylonian,a1b3c2,6
+0x122d6,SHITA,Old Babylonian,a2c2,4
+0x122dd,SIG,Old Babylonian,a2c2,4
+0x1224c,NI,Old Babylonian,a2c2,4
+0x1245a,ONE THIRD DISH,Old Babylonian,a2b1,3
+0x1245b,TWO THIRDS DISH,Old Babylonian,a3b1,4
+0x12040,BA,Old Babylonian,a1b2c1,4
+0x12076,DIM2,Old Babylonian,a1b3c1,5
+0x122e1,SILA3,Neo-Babylonian,a1c1d1,3
+0x122fa,TAK4,Neo-Babylonian,a3b1w3,7
+0x12248,NE,Old Babylonian,a1b4w4,9
+0x12307,TUK,Old Babylonian,a2c2,4
+0x1212f,HI TIMES ASH2,Neo-Babylonian,a1b4w4,9
+0x121a5,KIN,Old Babylonian,a1b5c1w1,8
+0x121c9,LAGAB TIMES HAL,Old Babylonian,a1b3c2,6
+0x122ae,SHA3,Old Babylonian,c3d3,6
+0x1224c,NI,Old Babylonian,a2c2,4
+0x12096,EL,Old Babylonian,a3b3c2,8
+0x12312,UB,Old Babylonian,a1c4,5
+0x12313,UD,Old Babylonian,a2c2,4
+0x1245a,ONE THIRD DISH,Neo-Babylonian,a2b1,3
+0x1245b,TWO THIRDS DISH,Neo-Babylonian,a3b1,4
+0x121f7,LI,Middle Hittite,a1b4w4,9
+0x122dd,SIG,Middle Hittite,a2c2,4
+0x122fc,TE,Middle Hittite,a1c4,5
+0x12305,TU,Neo-Babylonian,a1b4w4,9
+0x12305,TU,Neo-Babylonian,a1b4w4,9
+0x1216f,KA TIMES KAK,Middle Hittite,a3b5w2,10
+0x1245a,ONE THIRD DISH,Middle Hittite,a2b1,3
+0x12009,A2,Middle Hittite,a1b4w4,9
+0x12040,BA,Middle Hittite,a1b2c1,4
+0x12080,DUB2,Middle Hittite,a3b5w2,10
+0x12248,NE,Middle Hittite,a1b4w4,9
+0x12305,TU,Middle Hittite,a1b4w4,9
+0x12335,URI,Middle Hittite,a2b4w8,14
+0x12009,A2,Middle Hittite,a1b4w4,9
+0x12040,BA,Middle Hittite,a1b2c1,4
+0x12263,NUN,Middle Hittite,a3b1,4
+0x121d2,LAGAB TIMES KUL,Neo Assyrian,a2b3c2w1,8
+0x121e5,LAGAB TIMES U,Neo Assyrian,a2b2w1,5
+0x121e7,LAGAB TIMES U PLUS U PLUS U,Neo Assyrian,a2b2w3,7
+0x1236a,ZU,Neo Assyrian,a2b3,5
+0x121f5,LAM TIMES KUR,Neo Assyrian,a2b2c3w2,9
+0x121f4,LAM,Neo Assyrian,a2b2w2,6
+0x1206f,DAR,Neo Assyrian,a2b2c4,8
+0x12072,DI,Neo Assyrian,a2b2w1,5
+0x12076,DIM2,Neo Assyrian,a2b2c2w1,7
+0x12020,AL,Neo Assyrian,a2b3w1,6
+0x12027,AL TIMES SHE,Neo Assyrian,a2b3c5,10
+0x12118,GU2,Neo Assyrian,a2b2c4,8
+0x1214b,IL,Neo Assyrian,a2b3c2w1,8
+0x12156,ISH,Neo Assyrian,a2b2w1,5
+0x1202e,AN OVER AN,Neo Assyrian,a2b4,6
+0x12117,GU CROSSING GU,Neo Assyrian,a2b2c7,11
+0x121c0,LAGAB TIMES BAD,Neo Assyrian,a2b3w1,6
+0x12127,GURUN,Neo Assyrian,a2b2c4,8
+0x122e2,SU,Neo Assyrian,a2b4,6
+0x12225,MAR,Neo Assyrian,a2b3,5
+0x12337,URU,Neo Assyrian,a2b3,5
+0x12118,GU2,Old Assyrian,a2b2w3,7
+0x1207a,DU,Old Assyrian,a2b3w1,6
+0x12225,MAR,Old Assyrian,a2b3,5
+0x12072,DI,Old Assyrian,a2b2w2,6
+0x12306,TUG2,Old Assyrian,a2b4,6
+0x121e5,LAGAB TIMES U,Akkadian,a2b2w1,5
+0x121e7,LAGAB TIMES U PLUS U PLUS U,Akkadian,a2b2w3,7
+0x12247,NAM2,Akkadian,a2b4,6
+0x12220,MA,Akkadian,a2b3,5
+0x12225,MAR,Akkadian,a2b3,5
+0x12089,DUR2,Akkadian,a2b3,5
+0x121e7,LAGAB TIMES U PLUS U PLUS U,Neo-Babylonian,a2b2w3,7
+0x121ef,LAGAR GUNU,Neo-Babylonian,a2b4,6
+0x121f4,LAM,Neo-Babylonian,a2b2w2,6
+0x121c0,LAGAB TIMES BAD,Neo-Babylonian,a2b3w1,6
+0x12156,ISH,Neo-Babylonian,a2b2w1,5
+,MAR Variant Form,Neo-Babylonian,a2b3,5
+0x12118,GU2,Neo-Babylonian,a2b2w3,7
+0x1236a,ZU,Neo-Babylonian,a2b3,5
+,URU Variant Form,Neo-Babylonian,a2b3,5
+0x12127,GURUN,Neo-Babylonian,a2b2w3,7
+0x12072,DI,Neo-Babylonian,a2b2w2,6
+0x12051,BULUG,Neo-Babylonian,a2b2w3,7
+0x120b5,GA,Neo-Babylonian,a2b2w2,6
+0x12225,MAR,Neo-Babylonian,a2b3,5
+,LAM Variant Form,Neo-Babylonian,a2b2w2,6
+0x121f5,LAM TIMES KUR,Neo-Babylonian,a2b2c3w2,9
+0x121a0,KI,Old Babylonian,a2b3w1,6
+0x120b5,GA,Neo-Babylonian,a2b2w2,6
+0x121aa,KU,Old Babylonian,a2b3,5
+0x121c0,LAGAB TIMES BAD,Old Babylonian,a2b3w1,6
+0x121e5,LAGAB TIMES U,Old Babylonian,a2b2w1,5
+0x121f4,LAM,Old Babylonian,a2b2w2,6
+0x122e0,SIK2,Old Babylonian,a2b3w1,6
+0x1206f,DAR,Old Babylonian,a2b3w1,6
+0x1218d,KA2,Old Babylonian,a2b2w2,6
+0x1230c,U GUD,Old Babylonian,a2b2w3,7
+0x121e5,LAGAB TIMES U,Neo-Babylonian,a2b2w1,5
+0x12072,DI,Old Babylonian,a2b2w1,5
+0x12081,DUG,Old Babylonian,a2b2w2,6
+0x12089,DUR2,Old Babylonian,a2b3,5
+0x12156,ISH,Old Babylonian,a2b2w1,5
+0x12225,MAR,Old Babylonian,a2b3,5
+0x12306,TUG2,Old Babylonian,a2b3,5
+0x1214b,IL,Neo-Babylonian,a2b3c2w1,8
+0x121fb,LU,Old Babylonian,a2b3,5
+0x1201c,AD,Old Babylonian,a2b2c4,8
+0x12089,DUR2,Old Babylonian,a2b3,5
+0x12118,GU2,Old Babylonian,a2b2c2w1,7
+0x12220,MA,Old Babylonian,a2b3,5
+0x12225,MAR,Old Babylonian,a2b3,5
+0x12309,TUR,Old Babylonian,a2b2c4,8
+0x12337,URU,Old Babylonian,a2b3,5
+0x1236a,ZU,Neo-Babylonian,a2b3,5
+0x120b5,GA,Middle Hittite,a2b2w2,6
+0x12055,DA,Neo-Babylonian,a2b3w1,6
+0x12072,DI,Neo-Babylonian,a2b3w1,6
+0x121af,KU7,Middle Hittite,a2b3,5
+0x121f4,LAM,Middle Hittite,a2b2w2,6
+0x122ad,SHA,Middle Hittite,a2b2w2,6
+0x12317,UD TIMES U PLUS U PLUS U,Neo-Babylonian,a2b2w3,7
+0x12317,UD TIMES U PLUS U PLUS U,Neo-Babylonian,a2b2w3,7
+0x1218d,KA2,Middle Hittite,a2b2w2,6
+0x1236a,ZU,Middle Hittite,a2b3,5
+0x12020,AL,Middle Hittite,a2b3,5
+0x12072,DI,Middle Hittite,a2b2w2,6
+0x12118,GU2,Middle Hittite,a2b2w3,7
+0x12156,ISH,Middle Hittite,a2b2w1,5
+0x12225,MAR,Middle Hittite,a2b3,5
+0x12317,UD TIMES U PLUS U PLUS U,Middle Hittite,a2b2w3,7
+0x12337,URU,Middle Hittite,a2b3,5
+0x121c0,LAGAB TIMES BAD,Neo-Assyrian,a2b3w1,6
+,form KU7,Middle Hittite,a2b2w1,5
+,form LAM,Middle Hittite,a2b2w2,6
+0x1236a,ZU,Middle Hittite,a2b3,5
+0x12020,AL,Middle Hittite,a2b3w1,6
+0x12056,DAG,Middle Hittite,a2b3,5
+0x12337,URU,Middle Hittite,a2b3,5
+0x12095,EGIR,Neo Assyrian,a3b6c2w1,12
+0x12461,OLD ASSYRIAN ONE SIXTH,Neo Assyrian,c3b3,6
+0x12254,NINDA2 TIMES ASH,Neo Assyrian,b5w1,6
+0x1225d,NINDA2 TIMES SHE PLUS ASH PLUS ASH,Neo Assyrian,b6c4w1,11
+0x12107,GIDIM,Neo Assyrian,a4b5c1w1,11
+0x12106,GI4 CROSSING GI4,Neo Assyrian,a4b4c12,20
+0x1223b,MUSH3 TIMES A PLUS DI,Neo Assyrian,a10b3w1,14
+0x12239,MUSH3,Neo Assyrian,a5b1,6
+0x1223f,NA2,Neo Assyrian,b5c4w2,11
+0x12242,NAGA TIMES SHU TENU,Neo Assyrian,a5b7c4d1,17
+0x12246,NAM,Neo Assyrian,a2b1c4w1,8
+0x1224a,NE TIMES UD,Neo Assyrian,a2b4c6,12
+0x122c2,SHESHLAM,Neo Assyrian,a4b1c1,6
+0x122c7,SHIM TIMES A,Neo Assyrian,a5b4w3,12
+0x122c6,SHIM,Neo Assyrian,a2b4w3,9
+0x122ca,SHIM TIMES DIN,Neo Assyrian,a3b5w5,13
+0x122c8,SHIM TIMES BAL,Neo Assyrian,a3b6c3w3,15
+0x122c9,SHIM TIMES BULUG,Neo Assyrian,a4b6c2w4,16
+0x122cc,SHIM TIMES IGI,Neo Assyrian,a3b5w4,12
+0x122cb,SHIM TIMES GAR,Neo Assyrian,a6b4w3,13
+0x122ce,SHIM TIMES KUSHU2,Neo Assyrian,a4b5c3w4,16
+0x122cf,SHIM TIMES LUL,Neo Assyrian,a3b10w3,16
+0x122cd,SHIM TIMES IGI GUNU,Neo Assyrian,a3b9w4,16
+0x122d1,SHIM TIMES SAL,Neo Assyrian,a3b5c2w3,13
+0x122d0,SHIM TIMES MUG,Neo Assyrian,a3b7w3,13
+0x122d2,SHINIG,Neo Assyrian,a6b7c1,14
+0x12058,DAG KISIM5 TIMES AMAR,Neo Assyrian,a5b6w5,16
+0x12059,DAG KISIM5 TIMES BALAG,Neo Assyrian,a7b12w4,23
+0x1205b,DAG KISIM5 TIMES GA,Neo Assyrian,a8b6c2w2,18
+0x1205a,DAG KISIM5 TIMES BI,Neo Assyrian,a5b6w4,15
+0x1205d,DAG KISIM5 TIMES GI,Neo Assyrian,a7b5c4w2,18
+0x1205e,DAG KISIM5 TIMES GIR2,Neo Assyrian,a8b6c1w2,17
+0x1205f,DAG KISIM5 TIMES GUD,Neo Assyrian,a6b6c2w2,16
+0x12168,KA TIMES GIR2,Neo Assyrian,a5b7c1,13
+0x12178,KA TIMES MI,Neo Assyrian,a2b9w1,12
+0x1217a,KA TIMES NE,Neo Assyrian,a3b9c4,16
+0x1217c,KA TIMES PI,Neo Assyrian,a3b6c2,11
+0x1217f,KA TIMES SAR,Neo Assyrian,a4b13,17
+0x121fe,LU2 TIMES AL,Neo Assyrian,a5b10w1,16
+0x12204,LU2 TIMES IM,Neo Assyrian,a5b8c4,17
+0x12203,LU2 TIMES HI TIMES BAD,Neo Assyrian,a3b7c6,16
+0x12206,LU2 TIMES KAD3,Neo Assyrian,a6b8c4,18
+0x12208,LU2 TIMES KI,Neo Assyrian,a5b11w1,17
+0x1220c,LU2 TIMES NE,Neo Assyrian,a4b11c4,19
+0x1220f,LU2 TIMES SIK2 PLUS BU,Neo Assyrian,a6b15c6,27
+0x12212,LU2 CROSSING LU2,Neo Assyrian,a6b14,20
+0x12219,LUGAL OPPOSING LUGAL,Neo Assyrian,a6b18,24
+0x1221c,LUL,Neo Assyrian,a1b6,7
+0x1230a,TUR OVER TUR ZA OVER ZA,Neo Assyrian,a10b10,20
+0x12312,UB,Neo Assyrian,a1b4c2,7
+0x12097,EN,Old Assyrian,a3b5w4,12
+0x12309,TUR,Old Assyrian,a1b6,7
+0x120f2,GAL,Old Assyrian,a1b6,7
+0x120ab,EZEN TIMES IGI GUNU,Akkadian,a5b11w1,17
+0x120c3,GA2 TIMES DA,Akkadian,a5b10w1,16
+0x12263,NUN,Akkadian,a5b1,6
+0x122c2,SHESHLAM,Akkadian,a4b1c1,6
+0x121d2,LAGAB TIMES KUL,Akkadian,a2b4w3,9
+0x1232b,UR2,Akkadian,a2b4c2,8
+,AD Variant Form,Neo-Babylonian,a1b6,7
+0x122c7,SHIM TIMES A,Neo-Babylonian,a5b4w3,12
+0x1201c,AD,Neo-Babylonian,a1b6,7
+0x122c6,SHIM,Neo-Babylonian,a2b4w3,9
+0x122cb,SHIM TIMES GAR,Neo-Babylonian,a5b4w3,12
+0x12014,AB TIMES U PLUS U PLUS U,Old Babylonian,a1b4c2,7
+0x12048,BARA2,Old Babylonian,a1b6,7
+0x12087,DUN3 GUNU GUNU,Old Babylonian,a1b6,7
+0x1203f,ASHGAB,Neo-Babylonian,a4b1c1,6
+0x12318,UD TIMES U PLUS U PLUS U GUNU,Old Babylonian,a2b4c2,8
+0x12324,UMUM TIMES KASKAL,Old Babylonian,a3b6c2,11
+0x1211b,GU2 TIMES NUN,Neo-Babylonian,a5b4w3,12
+0x1211b,GU2 TIMES NUN,Neo-Babylonian,a6b4w3,13
+0x12014,AB TIMES U PLUS U PLUS U,Old Babylonian,a3b6c2,11
+0x12015,AB GUNU,Old Babylonian,a3b6c2,11
+0x12032,ANSHE,Old Babylonian,a3b7c6,16
+0x12248,NE,Old Babylonian,a3b6c2w1,12
+0x12263,NUN,Old Babylonian,a5b1,6
+0x12014,AB TIMES U PLUS U PLUS U,Neo-Babylonian,a2b4w3,9
+0x121b7,LA,Middle Hittite,a1b6,7
+0x12082,DUGUD,Neo-Babylonian,b5w1,6
+0x122c6,SHIM,Middle Hittite,a2b4w3,9
+0x122cb,SHIM TIMES GAR,Middle Hittite,a6b4w3,13
+0x12222,MA GUNU,Neo-Babylonian,a1b6,7
+0x12309,TUR,Neo-Babylonian,a1b6,7
+0x1201c,AD,Middle Hittite,a1b6,7
+0x120a6,EZEN TIMES BAD,Neo-Assyrian,a2b9w1,12
+0x12014,AB TIMES U PLUS U PLUS U,Middle Hittite,a2b4w3,9
+0x12082,DUGUD,Middle Hittite,b5w1,6
+0x12222,MA GUNU,Middle Hittite,a1b6,7
+0x12253,NINDA2 TIMES AN,Middle Hittite,a1b6,7
+0x12263,NUN,Middle Hittite,a5b1,6
+0x12318,UD TIMES U PLUS U PLUS U GUNU,Middle Hittite,a2b4w3,9
+,form LA,Middle Hittite,a1b6,7
+,form LAGAR GUNU,Middle Hittite,a1b6,7
+,form AD,Middle Hittite,a1b6,7
+0x12263,NUN,Middle Hittite,a5b1,6
+0x12309,TUR,Middle Hittite,a1b6,7
+0x1213e,HUL2,Middle Hittite,a4b1c1,6
+0x12134,HI TIMES NUN,Neo-Babylonian,a4b1w4,9
+0x12135,HI TIMES SHE,Neo-Babylonian,c3w5,8
+0x121b2,KUN,Neo-Babylonian,a5b2w4,11
+,KUL Variant Form,Neo-Babylonian,b1w3,4
+,TAG Variant Form,Neo-Babylonian,b3c1d1,5
+,SUD Variant Form,Neo-Babylonian,a4b1w4,9
+0x121a7,KISH,Neo-Babylonian,a3b2c1w2,8
+0x122b7,SHA6,Neo-Babylonian,a5b3c1,9
+0x12096,EL,Neo-Babylonian,a3b3w2,8
+0x1212e,HI TIMES ASH,Neo-Babylonian,b1c3w1,5
+0x1235a,UZ3,Neo-Babylonian,a4b3c1w1,9
+0x120fe,GESHTIN,Neo-Babylonian,a1b2d1w2,6
+0x120fc,GAR3,Neo-Babylonian,a2b4c1w3,10
+0x122e4,SUD,Neo-Babylonian,a4b1w4,9
+0x12103,GI CROSSING GI,Neo-Babylonian,a4b1c4d1w1,11
+0x1209e,EREN,Neo-Babylonian,a6b2c1,9
+,SHUBUR Variant Form,Neo-Babylonian,a4b3c1w3,11
+0x1202c,AMAR TIMES SHE,Neo-Babylonian,b2w7,9
+0x1210b,GIR3 TIMES A PLUS IGI,Neo-Babylonian,a4b6c1w1,12
+0x12117,GU CROSSING GU,Neo-Babylonian,b1c9,10
+0x12126,GUR7,Neo-Babylonian,a6b3c1w1,11
+0x12084,DUN,Neo-Babylonian,a5b2w2,9
+0x12081,DUG,Neo-Babylonian,a5b2w2,9
+0x12104,GI4,Neo-Babylonian,a2b5c4d1,12
+0x12098,EN TIMES GAN2,Neo-Babylonian,a5b2w5,12
+0x12314,UD KUSHU2,Neo-Babylonian,a4b1w5,10
+0x12215,LU2 SHESHIG,Neo-Babylonian,b1c5,6
+0x12364,ZI OVER ZI,Neo-Babylonian,a4b2w6,12
+0x12290,RAB,Neo-Babylonian,b4d1w3,8
+0x12107,GIDIM,Neo-Babylonian,a5b2c3w1,11
+0x12334,UR4,Neo-Babylonian,a3b1c1,5
+0x1207d,DU SHESHIG,Neo-Babylonian,a1b3w5,9
+0x1205b,DAG KISIM5 TIMES GA,Neo-Babylonian,a7b4c1d1w4,17
+0x120ab,EZEN TIMES IGI GUNU,Neo-Babylonian,a4b11w1,16
+0x120ae,EZEN TIMES KU3,Neo-Babylonian,a7b6w1,14
+0x120cc,GA2 TIMES GAR,Neo-Babylonian,a7b2,9
+0x120de,GA2 TIMES ME PLUS EN,Neo-Babylonian,a6b2w4,12
+0x121a7,KISH,Old Babylonian,b2c1w2,5
+0x121ad,KU4,Old Babylonian,a1b3w4,8
+0x121b0,KUL,Old Babylonian,b1w3,4
+0x121d2,LAGAB TIMES KUL,Old Babylonian,a2b3w4,9
+0x121f7,LI,Old Babylonian,a1b3w6,10
+0x121fd,LU2,Old Babylonian,c3d1,4
+0x122ac,SAR,Old Babylonian,a1b2w6,9
+0x122b7,SHA6,Old Babylonian,a8b6w1,15
+0x122cb,SHIM TIMES GAR,Old Babylonian,a9b4c2,15
+0x122d2,SHINIG,Old Babylonian,a1c4w6,11
+0x122d3,SHIR,Old Babylonian,b3c2w1,6
+0x122e4,SUD,Old Babylonian,a3c4w1,8
+0x122e7,SUM,Old Babylonian,a2w3,5
+0x1200f,AB TIMES HA,Old Babylonian,a5b2c2w2,11
+0x1202c,AMAR TIMES SHE,Old Babylonian,b2w7,9
+0x1203f,ASHGAB,Old Babylonian,a4c2,6
+0x1207d,DU SHESHIG,Old Babylonian,a1b3w5,9
+0x120f8,GAN2 TENU,Neo-Babylonian,a4c2,6
+0x120fc,GAR3,Neo-Babylonian,a2b4c1w3,10
+0x1228c,PIRIG TIMES UD,Old Babylonian,b2c1w2,5
+0x12009,A2,Old Babylonian,a1b3w4,8
+0x12084,DUN,Old Babylonian,a5b2w5,12
+0x12165,KA TIMES GAR,Old Babylonian,a6b3c1w1,11
+0x12305,TU,Old Babylonian,a1b3w4,8
+0x12334,UR4,Old Babylonian,a3b1c1,5
+0x12364,ZI OVER ZI,Old Babylonian,a4b2w6,12
+0x1210a,GIR3,Neo-Babylonian,b2c1w2,5
+0x1212f,HI TIMES ASH2,Neo-Babylonian,a1b3w4,8
+0x121b0,KUL,Old Babylonian,b1w3,4
+0x12155,IR,Old Babylonian,a4c2,6
+0x1234d,URU TIMES UD,Neo-Babylonian,a3b3w2,8
+0x1234d,URU TIMES UD,Neo-Babylonian,a3b3w2,8
+0x120cc,GA2 TIMES GAR,Middle Hittite,a7b2,9
+0x12081,DUG,Neo-Babylonian,a5b2w2,9
+0x12096,EL,Neo-Babylonian,a3b3w2,8
+0x12104,GI4,Neo-Babylonian,a2b5c4d1,12
+0x12145,IG,Neo-Babylonian,a2b1w3,6
+0x1202c,AMAR TIMES SHE,Middle Hittite,b2w7,9
+0x12334,UR4,Neo-Babylonian,a3b1c1,5
+0x12342,URU TIMES IGI,Neo-Babylonian,a3b3w2,8
+0x1224d,NI TIMES E,Middle Hittite,a5b3c1,9
+0x120cc,GA2 TIMES GAR,Neo-Assyrian,a7b2,9
+0x120f8,GAN2 TENU,Neo-Assyrian,a4c2,6
+0x120ff,GESHTIN TIMES KUR,Neo-Assyrian,a1b3w5,9
+0x121b5,KUSHU2,Neo-Assyrian,a2b1w3,6
+0x12134,HI TIMES NUN,Middle Hittite,b1w3,4
+0x12250,NIM TIMES GAN2 TENU,Middle Hittite,a5b2c2w2,11
+0x12282,PI TIMES BI,Middle Hittite,a1b3w4,8
+0x12283,PI TIMES BU,Middle Hittite,a1b2w6,9
+,form KUL,Middle Hittite,b1w3,4
+0x1210a,GIR3,Middle Hittite,b2c1w2,5
+0x12134,HI TIMES NUN,Middle Hittite,b1w3,4
+0x12145,IG,Middle Hittite,a2b1w3,6
+0x12009,A2,Middle Hittite,a1b3w4,8
+0x12359,UTUKI,Akkadian,a4b2c2d1w1,10
+0x12358,USHUMX,Akkadian,a6b2c1d1w1,11
+0x122a7,SAG OVER SAG,Akkadian,a4b4c2d2,12
+0x12335,URI,Akkadian,a6b8d2,16
+0x1230f,U OVER U SUR OVER SUR,Akkadian,a6b2d2w2,12
+0x122bc,SHE OVER SHE GAD OVER GAD GAR OVER GAR,Akkadian,a8c2d4w20,34
+0x12200,LU2 TIMES ESH2,Akkadian,a6b7c3,16
+0x120f3,GAL GAD OVER GAD GAR OVER GAR,Akkadian,a9b5c2d4,20
+0x121ab,KU OVER HI TIMES ASH2 KU OVER HI TIMES ASH2,Akkadian,a6b14c4d4,28
+0x12215,LU2 SHESHIG,Akkadian,a4c3d1w4,12
+0x12269,NUN TENU,Akkadian,c1d5,6
+0x12098,EN TIMES GAN2,Akkadian,a9b7w2,18
+0x12190,KAD2,Akkadian,a1b1c1w1,4
+0x12420,three GESHU,Akkadian,a3w3,6
+0x12421,four GESHU,Akkadian,a4w4,8
+0x12422,five GESHU,Akkadian,a5w5,10
+0x12436,three BURU,Akkadian,c6d6w3,15
+0x12437,three BURU variant form,Akkadian,c6d6w3,15
+0x12438,four BURU,Akkadian,c8d8w4,20
+0x12439,five BURU,Akkadian,c10d10w5,25
+0x1242f,three SHARU variant form,Akkadian,c6d6w3,15
+0x1242a,eight SHAR2,Akkadian,c16d16,32
+0x1242b,nine SHAR2,Akkadian,c18d18,36
+0x1227d,PAP,Akkadian,c1d1,2
+0x12427,five SHAR2,Akkadian,c10d10,20
+0x12428,six SHAR2,Akkadian,c12d12,24
+0x12429,seven SHAR2,Akkadian,c14d14,28
+0x1241f,two GESHU,Akkadian,a2w2,4
+0x1241e,one GESHU,Akkadian,a1w1,2
+0x12361,ZAMX,Akkadian,b1c1d2w2,6
+0x12426,four SHAR2,Akkadian,c8d8,16
+0x12430,four SHARU,Akkadian,c8d8w4,20
+0x12431,five SHARU,Akkadian,c10d10w5,25
+0x1227c,PAN,Neo-Babylonian,b3w2,5
+0x1227b,PAD,Neo-Babylonian,a3w1,4
+0x121e1,LAGAB TIMES SUM,Neo-Babylonian,a4b2w5,11
+0x122c1,SHESH2,Neo-Babylonian,a4b3c1w2,10
+0x121fd,LU2,Neo-Babylonian,b1c3,4
+,LUL Variant Form,Neo-Babylonian,a1b1c5w1,8
+0x12097,EN,Neo-Babylonian,a2b1w2,5
+0x121b0,KUL,Neo-Babylonian,b1d1w2,4
+0x121a6,KISAL,Neo-Babylonian,a1b4w1,6
+0x12217,LUGAL,Neo-Babylonian,b2c3d1,6
+0x12224,MAH,Neo-Babylonian,a2b3w3,8
+0x12145,IG,Neo-Babylonian,a2c4,6
+0x12307,TUK,Neo-Babylonian,a2b1c1,4
+0x122bb,SHE HU,Neo-Babylonian,a2b1w5,8
+0x122af,SHA3 TIMES A,Neo-Babylonian,a6w3,9
+0x122ae,SHA3,Neo-Babylonian,a3w3,6
+0x1210a,GIR3,Neo-Babylonian,b4c1w2,7
+0x1228d,PIRIG TIMES ZA,Neo-Babylonian,a4b3c1w2,10
+0x12244,NAGAR,Neo-Babylonian,a2b1w3,6
+0x12232,MUSH,Neo-Babylonian,a1b1w5,7
+0x122e0,SIK2,Neo-Babylonian,a2b1c1,4
+0x121d2,LAGAB TIMES KUL,Neo-Babylonian,a2b3w3,8
+0x121fa,LISH,Old Babylonian,a1w1,2
+0x122ae,SHA3,Old Babylonian,a3w3,6
+0x122bb,SHE HU,Old Babylonian,a2b1w5,8
+0x122d9,SHU2,Old Babylonian,a1w1,2
+0x1209f,ERIN2,Old Babylonian,a2w2,4
+0x121a6,KISAL,Neo-Babylonian,a1b4w1,6
+0x1232b,UR2,Old Babylonian,a1b4w1,6
+0x1234f,URUDA,Old Babylonian,a1b4w1,6
+0x121fa,LISH,Neo-Babylonian,a1w1,2
+0x12097,EN,Old Babylonian,a2b1w2,5
+0x122d9,SHU2,Neo-Babylonian,a1w1,2
+0x12314,UD KUSHU2,Old Babylonian,a2b1w5,8
+0x1224c,NI,Neo-Babylonian,a2b1c1,4
+0x1224c,NI,Neo-Babylonian,a2b1c1,4
+0x122fc,TE,Old Babylonian,a2c4,6
+0x1227d,PAP,Neo-Babylonian,c1d1,2
+0x1228d,PIRIG TIMES ZA,Neo-Babylonian,a4b3c1w2,10
+,DUL,Neo-Babylonian,a1b4w1,6
+0x12292,RU,Old Babylonian,a2b1w3,6
+0x1241e,ONE GESHU,Neo-Babylonian,a1w1,2
+0x12074,DIM,Neo-Babylonian,b3w2,5
+0x120fb,GAR,Middle Hittite,a3w1,4
+0x121fa,LISH,Middle Hittite,a1w1,2
+0x122ae,SHA3,Middle Hittite,a3w3,6
+0x122bb,SHE HU,Middle Hittite,a2b1w5,8
+0x12097,EN,Neo-Babylonian,a2b1w2,5
+0x1207d,DU SHESHIG,Middle Hittite,a2b3w3,8
+0x1209f,ERIN2,Middle Hittite,a2w2,4
+0x1234f,URUDA,Middle Hittite,a1b4w1,6
+0x12055,DA,Middle Hittite,a1b4w1,6
+0x121b8,LAGAB,Neo-Assyrian,a2w2,4
+0x12119,GU2 TIMES KAK,Middle Hittite,a2b3w3,8
+0x12227,MASH2,Middle Hittite,a1b1w5,7
+,form SHA3,Middle Hittite,a3w3,6
+0x121d2,LAGAB TIMES KUL,Neo-Assyrian,a2b3w3,8
+0x1224c,NI,Middle Hittite,a2b1c1,4
+0x122bb,SHE HU,Middle Hittite,a2b1w5,8
+0x12097,EN,Middle Hittite,a2b1w2,5
+0x12187,KA TIMES U,Neo Assyrian,a2b5c1,8
+0x12279,NUNUZ KISIM5 TIMES BI U,Neo Assyrian,a2b4c6w4,16
+0x12281,PI TIMES AB,Neo Assyrian,a2b5c2,9
+0x12052,BULUG OVER BULUG,Neo Assyrian,a2b4c4w2,12
+0x121ef,LAGAR GUNU,Neo Assyrian,a2b4w1,7
+0x12432,SHAR2 TIMES GAL PLUS DISH,Neo Assyrian,a2b4c2d2,10
+0x1200b,AB TIMES ASH2,Neo Assyrian,a2b5c1d1,9
+0x1206e,DAM,Neo Assyrian,a2b5c2,9
+0x1201d,AK,Neo Assyrian,a2b5,7
+0x12104,GI4,Neo Assyrian,a2b4c4,10
+0x121a0,KI,Neo Assyrian,a2b4w1,7
+0x12157,KA,Neo Assyrian,a2b5,7
+0x121a2,KI TIMES U,Neo Assyrian,a2b4w2,8
+0x121a1,KI TIMES BAD,Neo Assyrian,a2b5w2,9
+0x1211d,GU2 GUNU,Neo Assyrian,a2b5c4,11
+0x121c1,LAGAB TIMES BI,Neo Assyrian,a2b4w2,8
+0x12323,UMUM,Neo Assyrian,a2b5w7,14
+0x1232b,UR2,Neo Assyrian,a2b4w1,7
+0x1228f,RA,Neo Assyrian,a2b5,7
+0x122ad,SHA,Neo Assyrian,a2b4w1,7
+0x12362,ZE2,Neo Assyrian,a2b5,7
+0x12224,MAH,Neo Assyrian,a2b5c2,9
+0x12055,DA,Neo Assyrian,a2b4w1,7
+0x12181,KA TIMES SHE,Neo Assyrian,a2b5c4,11
+,ISZ,Old Assyrian,a2b4w1,7
+0x122ad,SHA,Old Assyrian,a2b4w2,8
+,SZE3,Old Assyrian,a2b5,7
+0x1201e,AK TIMES ERIN2,Akkadian,a2b4c2d2,10
+,GUR8,Akkadian,a2b4c2d2,10
+0x1200b,AB TIMES ASH2,Akkadian,a2b5c1d1,9
+0x12281,PI TIMES AB,Akkadian,a2b5w2,9
+0x12156,ISH,Akkadian,a2b4w1,7
+0x12122,GUL,Akkadian,a2b4w2,8
+0x12375,DISH PLUS SHU,Akkadian,a2b5,7
+0x1228f,RA,Neo-Babylonian,a2b5,7
+0x121c9,LAGAB TIMES HAL,Neo-Babylonian,a2b4,6
+0x122ad,SHA,Neo-Babylonian,a2b4w2,8
+0x1231d,UM,Neo-Babylonian,a2b4,6
+0x12122,GUL,Neo-Babylonian,a2b4w2,8
+0x122e2,SU,Neo-Babylonian,a2b4,6
+,SU Variant Form,Neo-Babylonian,a2b4,6
+0x1215c,KA TIMES BAD,Neo-Babylonian,a2b5w2,9
+0x1234f,URUDA,Neo-Babylonian,a2b4w1,7
+0x120a0,ESH2,Neo-Babylonian,a2b4,6
+0x121ac,KU3,Old Babylonian,a2b4,6
+0x121c6,LAGAB TIMES GUD,Old Babylonian,a2b5,7
+0x122dc,SI GUNU,Old Babylonian,a2b5,7
+0x122e2,SU,Old Babylonian,a2b4,6
+0x1213e,HUL2,Old Babylonian,a2b4w2,8
+0x121a0,KI,Neo-Babylonian,a2b4w1,7
+0x1227e,PESH2,Old Babylonian,a2b4c4,10
+0x1228f,RA,Old Babylonian,a2b5,7
+0x121aa,KU,Neo-Babylonian,a2b4,6
+0x121ef,LAGAR GUNU,Neo-Babylonian,a2b4,6
+0x12086,DUN3 GUNU,Old Babylonian,a2b4,6
+0x12104,GI4,Old Babylonian,a2b5c4,11
+0x1201d,AK,Neo-Babylonian,a2b5,7
+0x12157,KA,Old Babylonian,a2b4w1,7
+0x1202e,AN OVER AN,Neo-Babylonian,a2b4,6
+0x1206f,DAR,Neo-Babylonian,a2b4w1,7
+0x12224,MAH,Old Babylonian,a2b4w2,8
+0x1228f,RA,Neo-Babylonian,a2b4w1,7
+,UDAR,Neo-Babylonian,a2b5w2,9
+0x1232b,UR2,Neo-Babylonian,a2b4w1,7
+0x12156,ISH,Old Babylonian,a2b4w1,7
+0x12306,TUG2,Old Babylonian,a2b4,6
+0x12033,APIN,Neo-Babylonian,a2b4,6
+0x121a5,KIN,Middle Hittite,a2b4w1,7
+0x12089,DUR2,Neo-Babylonian,a2b4,6
+0x12157,KA,Neo-Babylonian,a2b4w1,7
+0x12157,KA,Neo-Babylonian,a2b4w1,7
+0x122e2,SU,Middle Hittite,a2b4,6
+0x12247,NAM2,Neo-Babylonian,a2b4,6
+0x1202e,AN OVER AN,Middle Hittite,a2b4,6
+0x12365,ZI3,Neo-Babylonian,a2b4,6
+0x1226d,NUNUZ,Middle Hittite,a2b4w2,8
+0x1228f,RA,Middle Hittite,a2b5,7
+0x120a0,ESH2,Neo-Assyrian,a2b4,6
+0x1232b,UR2,Middle Hittite,a2b4w1,7
+0x121a0,KI,Neo-Assyrian,a2b4w1,7
+0x121a1,KI TIMES BAD,Neo-Assyrian,a2b5w2,9
+0x12056,DAG,Middle Hittite,a2b4,6
+0x121aa,KU,Neo-Assyrian,a2b4,6
+0x12157,KA,Middle Hittite,a2b4w1,7
+0x12187,KA TIMES U,Middle Hittite,a2b4w2,8
+0x12224,MAH,Middle Hittite,a2b4w2,8
+0x12281,PI TIMES AB,Middle Hittite,a2b5w2,9
+0x12324,UMUM TIMES KASKAL,Middle Hittite,a2b4w2,8
+0x121c1,LAGAB TIMES BI,Neo-Assyrian,a2b4w2,8
+0x121c9,LAGAB TIMES HAL,Neo-Assyrian,a2b4,6
+,form SU,Middle Hittite,a2b4,6
+,form AK,Middle Hittite,a2b4,6
+0x1232b,UR2,Middle Hittite,a2b4w1,7
+0x12157,KA,Middle Hittite,a2b4w1,7
+0x12240,NAGA,Middle Hittite,a2b4c4,10
+0x12224,MAH,Middle Hittite,a2b4w2,8
+0x12240,NAGA,Middle Hittite,a2b4c4,10
+0x12304,TIR OVER TIR GAD OVER GAD GAR OVER GAR,Neo Assyrian,a26b6c10,42
+0x1230b,U,Neo Assyrian,w1,1
+0x12313,UD,Neo Assyrian,a1c2,3
+0x12314,UD KUSHU2,Neo Assyrian,a3b1c4w1,9
+0x12316,UD TIMES MI,Neo Assyrian,a1b4c2w1,8
+0x12318,UD TIMES U PLUS U PLUS U GUNU,Neo Assyrian,a2b5w4,11
+0x1231c,UDUG,Neo Assyrian,a5b5c1w1,12
+0x120b2,EZEN TIMES LU,Neo Assyrian,a5b11,16
+0x120b1,EZEN TIMES LI,Neo Assyrian,a4b14w1,19
+0x120b3,EZEN TIMES U2,Neo Assyrian,a5b11,16
+0x120b6,GA GUNU,Neo Assyrian,a6b4c1d1,12
+0x12041,BAD,Old Assyrian,b1w1,2
+0x122d3,SHIR,Old Assyrian,b3w3,6
+0x12246,NAM,Old Assyrian,a3b1w9,13
+0x12363,ZI,Old Assyrian,a2b1w6,9
+0x12100,GI,Old Assyrian,a2b1c4d2,9
+0x12074,DIM,Old Assyrian,a2b1c1d1w1,6
+,LAL3,Old Assyrian,a2b2c3d3,10
+0x1206f,DAR,Old Assyrian,a3b6c1,10
+0x12295,SAG,Old Assyrian,a3b2c1d1,7
+0x122f3,TAG,Old Assyrian,a5b2c1d1w2,11
+0x1218d,KA2,Old Assyrian,a1b4w3,8
+0x1200a,AB,Old Assyrian,a3b2c1d1,7
+0x122eb,TA,Old Assyrian,a3b2w2,7
+0x120f6,GAN,Old Assyrian,a2b2c2d2,8
+0x1201c,AD,Old Assyrian,a4b2c2d2,10
+,ZI2,Old Assyrian,a4b4c1d1,10
+0x12154,IN,Old Assyrian,a2c1d1w6,10
+0x12217,LUGAL,Old Assyrian,a3b4c4d1w2,14
+0x12240,NAGA,Old Assyrian,a6b1c1d1,9
+,AZ,Old Assyrian,a8b7c5d1w1,22
+,AM,Old Assyrian,a1b2w4,7
+0x12313,UD,Old Assyrian,a1c2,3
+0x1230b,U,Old Assyrian,w1,1
+,KUG,Old Assyrian,a2b5w4,11
+0x12096,EL,Old Assyrian,a3b2w2,7
+0x120be,GA2 TIMES ASH2 PLUS GAL,Akkadian,a5b11,16
+0x1202e,AN OVER AN,Akkadian,a2b2c2d2,8
+0x12362,ZE2,Akkadian,a4b4c1d1,10
+0x122a5,SAG TIMES UR,Akkadian,a6b4c1d1,12
+0x1200f,AB TIMES HA,Akkadian,a5b2c1d1w2,11
+0x121e9,LAGAB TIMES UD,Akkadian,a2b2c2d2,8
+0x121c1,LAGAB TIMES BI,Akkadian,a6b4c1d1,12
+0x121b5,KUSHU2,Akkadian,a2b1c1d1w1,6
+0x122ed,TA TIMES HI,Akkadian,a2b2c3d3,10
+0x12023,AL TIMES GISH,Akkadian,a6b4c1d1,12
+0x1229a, SAG TIMES KAK,Akkadian,a4b2c2d2,10
+0x122fb,TAR,Akkadian,a1c2,3
+0x12246,NAM,Akkadian,a3b1w9,13
+0x12458,ONE ESHE3,Akkadian,b1w1,2
+0x12050,BU CROSSING BU,Akkadian,a4b4c1d1,10
+0x12260,NISAG,Akkadian,a6b4c1d1,12
+0x1238d,MUSH3 TIMES ZA,Akkadian,a6b1c1d1,9
+,KAB Variant Form,Neo-Babylonian,a3b2w2,7
+0x122eb,TA,Old Babylonian,a3b2w2,7
+0x122ed,TA TIMES HI,Old Babylonian,a1b2w4,7
+0x122fb,TAR,Old Babylonian,a1c2,3
+0x1230b,U,Old Babylonian,w1,1
+0x12015,AB GUNU,Old Babylonian,a1b4c2,7
+0x12041,BAD,Old Babylonian,b1w1,2
+0x12094,EDIN,Old Babylonian,a1b2w4,7
+0x12096,EL,Old Babylonian,a3b2w2,7
+0x122eb,TA,Neo-Babylonian,a3b2w2,7
+0x122eb,TA,Neo-Babylonian,a3b2w2,7
+0x12195,KAK,Old Babylonian,a1c2,3
+0x120f0,GAD,Old Babylonian,a1c2,3
+0x1218f,KAB,Neo-Babylonian,a3b2w2,7
+0x122ad,SHA,Old Babylonian,a1b4c2,7
+0x122e1,SILA3,Old Babylonian,a1c2,3
+0x1230b,U,Neo-Babylonian,w1,1
+0x1230b,U,Old Babylonian,w1,1
+0x12041,BAD,Old Babylonian,b1w1,2
+0x12056,DAG,Old Babylonian,a4b4c1d1,10
+0x12195,KAK,Old Babylonian,a1c2,3
+0x12014,AB TIMES U PLUS U PLUS U,Neo-Babylonian,a1b4w3,8
+0x12020,AL,Neo-Babylonian,a3b2c1d1,7
+0x12041,BAD,Neo-Babylonian,b1w1,2
+0x122eb,TA,Middle Hittite,a3b2w2,7
+0x1212f,HI TIMES ASH2,Middle Hittite,b3w3,6
+0x12363,ZI,Neo-Babylonian,a1b2w4,7
+0x1230b,U,Middle Hittite,w1,1
+0x120b1,EZEN TIMES LI,Neo-Assyrian,a4b14w1,19
+0x120b3,EZEN TIMES U2,Neo-Assyrian,a5b11,16
+0x120b5,GA,Neo-Assyrian,a3b2w2,7
+0x12041,BAD,Middle Hittite,b1w1,2
+0x12081,DUG,Middle Hittite,a3b2w2,7
+0x12096,EL,Middle Hittite,a3b2w2,7
+0x12108,GIR2,Middle Hittite,a3b2w2,7
+0x12145,IG,Middle Hittite,a1b4w3,8
+0x12195,KAK,Middle Hittite,a1c2,3
+0x12261,NU,Middle Hittite,b1w1,2
+,form TA,Middle Hittite,a3b2w2,7
+,form TAR,Middle Hittite,a1c2,3
+0x1212f,HI TIMES ASH2,Middle Hittite,b3w3,6
+0x12108,GIR2,Middle Hittite,a3b2w2,7
+0x1207b,DU OVER DU,Old Babylonian,a5b6w2,13
+0x1210a,GIR3,Old Babylonian,b1c2w2,5
+0x1212b,HA GUNU,Old Babylonian,a4b3w2,9
+0x1212f,HI TIMES ASH2,Old Babylonian,b3w4,7
+0x1213d,HUB2 TIMES UD,Old Babylonian,a3c3w1,7
+0x120e3,GA2 TIMES SAL,Neo-Babylonian,a4b3w2,9
+0x1214a,IGI GUNU,Old Babylonian,a1b2c4w1,8
+0x1214b,IL,Old Babylonian,a2b2c1w3,8
+0x1221c,LUL,Old Babylonian,a1c8w2,11
+0x120fe,GESHTIN,Neo-Babylonian,a1b3c1w1,6
+0x1223f,NA2,Old Babylonian,a2b4w6,12
+0x1224b,NE SHESHIG,Old Babylonian,a1b4w6,11
+0x1224f,NIM,Old Babylonian,a1c2w2,5
+0x121a0,KI,Neo-Babylonian,a2b3w2,7
+0x121a1,KI TIMES BAD,Neo-Babylonian,a2b5w3,10
+0x1227b,PAD,Old Babylonian,a3w2,5
+0x121a1,KI TIMES BAD,Neo-Babylonian,a2b5w3,10
+0x1228d,PIRIG TIMES ZA,Old Babylonian,b1c2w3,6
+0x1235c,UZU,Old Babylonian,b2w5,7
+0x1236e,ZUM,Old Babylonian,b1c4w2,7
+0x121c7,LAGAB TIMES GUD PLUS GUD,Neo-Babylonian,a4b6w4,14
+0x121f8,LIL,Neo-Babylonian,b4c1d1w6,12
+0x122ae,SHA3,Neo-Babylonian,c1d3w2,6
+0x12016,AB2,Old Babylonian,c2w1,3
+0x12029,ALAN,Old Babylonian,b8w8,16
+0x12032,ANSHE,Old Babylonian,b4c2w4,10
+0x12044,BAL,Old Babylonian,b2w5,7
+0x12046,BALAG,Old Babylonian,a1b8c3d1w4,17
+0x12070,DARA3,Old Babylonian,b1c2w4,7
+0x12074,DIM,Old Babylonian,c2w3,5
+0x12075,DIM TIMES SHE,Old Babylonian,a2b1c4w5,12
+0x12088,DUN4,Old Babylonian,a4b6w4,14
+0x12095,EGIR,Old Babylonian,a2b8w4,14
+0x12100,GI,Old Babylonian,a2b1c1w3,7
+0x12103,GI CROSSING GI,Old Babylonian,c6d2w6,14
+0x122da,SHUBUR,Neo-Babylonian,a5b3w3,11
+0x122de,SIG4,Neo-Babylonian,b4w6,10
+0x122de,SIG4,Neo-Babylonian,b4w6,10
+0x122e6,SUHUR,Neo-Babylonian,a4b2c5d1w1,13
+0x122e6,SUHUR,Neo-Babylonian,a4b2c5d1w2,14
+0x122e7,SUM,Neo-Babylonian,a2w4,6
+0x122e7,SUM,Neo-Babylonian,a2w5,7
+0x122ed,TA TIMES HI,Neo-Babylonian,a3b2w6,11
+0x122ed,TA TIMES HI,Neo-Babylonian,a1b2w7,10
+0x122fb,TAR,Neo-Babylonian,a1w2,3
+0x1201a,AB2 TIMES SHA3,Neo-Babylonian,a3c1d1w3,8
+0x12124,GUM TIMES SHE,Old Babylonian,b4w7,11
+0x12132,HI TIMES GAD,Old Babylonian,a1c6,7
+0x12154,IN,Old Babylonian,c2w6,8
+0x12192,KAD4,Old Babylonian,b5c2,7
+0x12217,LUGAL,Old Babylonian,b2c1w3,6
+0x1206e,DAM,Neo-Babylonian,a3b4w3,10
+0x1206e,DAM,Neo-Babylonian,a3b4w3,10
+0x12232,MUSH,Old Babylonian,b1w5,6
+0x12240,NAGA,Old Babylonian,a2c2w4,8
+0x12246,NAM,Old Babylonian,a1b1w6,8
+0x12250,NIM TIMES GAN2 TENU,Old Babylonian,a2c4w2,8
+0x12253,NINDA2 TIMES AN,Old Babylonian,b4c2w2,8
+0x12258,NINDA2 TIMES NE,Old Babylonian,a1b8w6,15
+0x12313,UD,Old Babylonian,a1w2,3
+0x12322,UMBIN,Old Babylonian,a4b4c2w5,15
+0x1213d,HUB2 TIMES UD,Neo-Babylonian,a3b2w5,10
+0x1214b,IL,Neo-Babylonian,a2b2c2d1w1,8
+0x1219b,KAM4,Neo-Babylonian,b4c1d1w6,12
+0x1221c,LUL,Neo-Babylonian,a1b2c1w4,8
+0x1223f,NA2,Neo-Babylonian,b4w6,10
+0x1224b,NE SHESHIG,Neo-Babylonian,a1b4w6,11
+0x122de,SIG4,Old Babylonian,b4c2w4,10
+0x12077,DIN,Old Babylonian,c3d1,4
+0x12054,BUR2,Neo-Babylonian,a3b2w5,10
+0x12054,BUR2,Neo-Babylonian,a3b2w5,10
+0x122ac,SAR,Middle Hittite,a1b1w6,8
+0x12129,HA,Neo-Babylonian,a3w2,5
+0x122e7,SUM,Middle Hittite,a2w5,7
+0x12313,UD,Neo-Babylonian,a1w2,3
+0x12324,UMUM TIMES KASKAL,Neo-Babylonian,a2b8w4,14
+0x12016,AB2,Middle Hittite,c2w1,3
+0x120e3,GA2 TIMES SAL,Neo-Assyrian,a4b3w2,9
+0x12100,GI,Middle Hittite,a2b1c1w3,7
+0x12124,GUM TIMES SHE,Middle Hittite,b4w7,11
+0x12154,IN,Middle Hittite,c2w6,8
+0x12189,KA TIMES UD,Middle Hittite,a3b4w3,10
+0x12217,LUGAL,Middle Hittite,b2c1w3,6
+0x12284,PI TIMES E,Middle Hittite,a4b3w2,9
+0x12286,PI TIMES IB,Middle Hittite,a4b3w2,9
+0x12288,PI TIMES U2,Middle Hittite,a4b3w2,9
+0x12313,UD,Middle Hittite,a1w2,3
+,EZEN SHE,Middle Hittite,a2b8w4,14
+0x12112,GISH crossing GISH,Middle Hittite,a2c4w2,8
+0x121c3,LAGAB TIMES EN,Neo-Assyrian,a4b3w2,9
+,form GAR3,Middle Hittite,b3w4,7
+,form LI,Middle Hittite,a2w5,7
+0x121d0,LAGAB TIMES KIN,Neo-Assyrian,a5b6w2,13
+0x121d9,LAGAB TIMES ME PLUS EN,Neo-Assyrian,a5b3w3,11
+0x1224f,NIM,Middle Hittite,a1c2w2,5
+0x1236e,ZUM,Middle Hittite,b1c4w2,7
+0x12313,UD,Middle Hittite,a1w2,3
+0x121b2,KUN,Middle Hittite,a2w4,6
+0x12313,UD,Middle Hittite,a1w2,3
+0x12141,IB,Neo Assyrian,a3b2,5
+0x12191,KAD3,Neo Assyrian,a3b1c4,8
+0x1226d,NUNUZ,Neo Assyrian,a2c6,8
+0x12048,BARA2,Neo Assyrian,a2b7,9
+0x120a6,EZEN TIMES BAD,Neo Assyrian,a2b8w1,11
+0x120ab,EZEN TIMES IGI GUNU,Neo Assyrian,a3b12w1,16
+0x120ac,EZEN TIMES KASKAL,Neo Assyrian,a2b9c2,13
+0x120af,EZEN TIMES LA,Neo Assyrian,a3b11,14
+0x1208a,E,Neo Assyrian,a3b2,5
+0x121f7,LI,Neo Assyrian,a2b7w1,10
+0x12232,MUSH,Neo Assyrian,a3b1c5,9
+0x12002,A TIMES BAD,Neo Assyrian,a3b1w1,5
+0x1200d,AB TIMES GAL,Neo Assyrian,a2b8w1,11
+0x12010,AB TIMES IGI GUNU,Neo Assyrian,a2b9w2,13
+0x1207b,DU OVER DU,Neo Assyrian,a2b6w2,10
+0x12029,ALAN,Neo Assyrian,a2b9c8w2,21
+0x12155,IR,Neo Assyrian,a3b2,5
+0x1215c,KA TIMES BAD,Neo Assyrian,a2b6w1,9
+0x121b1,KUL GUNU,Neo Assyrian,a3b1c2w1,7
+0x121a4,KID,Neo Assyrian,a3b2,5
+0x1231b,UD SHESHIG TIMES BAD,Neo Assyrian,a2b6w1,9
+0x12325,UMUM TIMES PA,Neo Assyrian,a2b7c2w7,18
+0x12328,UR,Neo Assyrian,a3b2,5
+0x12334,UR4,Neo Assyrian,a3b2,5
+0x12292,RU,Neo Assyrian,a3b1c2,6
+0x12291,RI,Neo Assyrian,a3b1w1,5
+0x12293,SA,Neo Assyrian,a3b2,5
+0x122ac,SAR,Neo Assyrian,a2b8,10
+0x122b0,SHA3 TIMES BAD,Neo Assyrian,a3b1c2w1,7
+0x122e4,SUD,Neo Assyrian,a3b1c4,8
+0x12223,MA2,Neo Assyrian,a3b2,5
+0x12292,RU,Old Assyrian,a3b1c2,6
+0x12216,LU3,Neo Assyrian,a2b7,9
+0x12291,RI,Old Assyrian,a3b1w1,5
+0x12055,DA,Old Assyrian,a2b6w1,9
+0x12328,UR,Old Assyrian,a3b2,5
+0x120b7,GA2,Akkadian,a3b2,5
+0x1218f,KAB,Akkadian,a2b8w1,11
+0x12033,APIN,Akkadian,a2b8w1,11
+0x12055,DA,Akkadian,a2b8w1,11
+0x12328,UR,Akkadian,a3b2,5
+0x12222,MA GUNU,Akkadian,a2b7,9
+0x12002,A TIMES BAD,Akkadian,a3b1w1,5
+0x12223,MA2,Akkadian,a3b2,5
+0x12128,GURUSH,Akkadian,a3b2,5
+0x12223,MA2,Neo-Babylonian,a3b2,5
+,IB Variant Form,Neo-Babylonian,a3b2,5
+0x121a4,KID,Neo-Babylonian,a3b2,5
+,SAG Variant Form,Neo-Babylonian,a3b2,5
+0x12328,UR,Neo-Babylonian,a3b2,5
+,RI Variant Form,Neo-Babylonian,a3b1w1,5
+0x12141,IB,Neo-Babylonian,a3b2,5
+0x12292,RU,Neo-Babylonian,a3b1w1,5
+0x1208d,E2,Neo-Babylonian,a3b2,5
+,GA2 Variant Form,Neo-Babylonian,a3b2,5
+0x122c6,SHIM,Neo-Babylonian,a2b6w2,10
+0x12216,LU3,Neo-Babylonian,a2b8,10
+0x12048,BARA2,Neo-Babylonian,a2b8,10
+0x120f7,GAN2,Old Babylonian,a3b2,5
+0x120b7,GA2,Neo-Babylonian,a3b2,5
+0x1208a,E,Old Babylonian,a3b2,5
+0x1219f,KESH2,Old Babylonian,a2b8,10
+0x1222e,MUG,Old Babylonian,a3b1c2,6
+0x121a4,KID,Neo-Babylonian,a3b2,5
+0x12141,IB,Old Babylonian,a3b2,5
+0x12223,MA2,Old Babylonian,a3b2,5
+0x12291,RI,Old Babylonian,a3b1w1,5
+0x12292,RU,Old Babylonian,a3b1w1,5
+0x12311,U2,Old Babylonian,a3b2,5
+0x12328,UR,Old Babylonian,a3b2,5
+0x120b7,GA2,Old Babylonian,a3b2,5
+0x1208a,E,Neo-Babylonian,a3b2,5
+0x122e0,SIK2,Old Babylonian,a2b6w1,9
+0x1222f,MUG GUNU,Old Babylonian,a3b1c2,6
+0x12034,ARAD,Old Babylonian,a3b1c2,6
+0x12134,HI TIMES NUN,Old Babylonian,a3b1c4,8
+0x12291,RI,Old Babylonian,a3b1w1,5
+0x120a6,EZEN TIMES BAD,Middle Hittite,a2b8w1,11
+0x12048,BARA2,Neo-Babylonian,a2b8,10
+0x12216,LU3,Neo-Babylonian,a2b8,10
+0x12239,MUSH3,Neo-Babylonian,a3b1w1,5
+0x12291,RI,Neo-Babylonian,a3b1w1,5
+0x12292,RU,Neo-Babylonian,a3b1w1,5
+0x1207b,DU OVER DU,Middle Hittite,a2b6w2,10
+0x1219f,KESH2,Middle Hittite,a2b8,10
+,EZENN,Neo-Assyrian,a2b7,9
+0x120a6,EZEN TIMES BAD,Neo-Assyrian,a2b8w1,11
+0x120ab,EZEN TIMES IGI GUNU,Neo-Assyrian,a3b12w1,16
+0x120ac,EZEN TIMES KASKAL,Neo-Assyrian,a2b9c2,13
+0x120af,EZEN TIMES LA,Neo-Assyrian,a3b11,14
+0x12291,RI,Middle Hittite,a3b1w1,5
+0x12292,RU,Middle Hittite,a3b1w1,5
+,form EZEN TIMES BAD,Middle Hittite,a2b7w1,10
+0x1219f,KESH2,Middle Hittite,a2b8,10
+0x12292,RU,Middle Hittite,a3b1w1,5
+,GAB,Old Assyrian,b2w6,8
+,BIL2,Old Assyrian,a11b9w4,24
+0x12248,NE,Old Assyrian,a1b7w4,12
+,KUM,Old Assyrian,a2b4w4,10
+0x1232b,UR2,Old Assyrian,a3b4w2,9
+0x1214b,IL,Old Assyrian,a5b3w5,13
+,ANSZE,Old Assyrian,a1b5c3d3w2,14
+0x12308,TUM,Old Assyrian,a4b2c2d2w2,12
+0x12049,BI,Old Assyrian,a6b2w2,10
+0x1224c,NI,Old Assyrian,a2c1d1,4
+0x12155,IR,Old Assyrian,a3c1d1,5
+,GU4,Old Assyrian,a1b2c1d1,5
+0x12020,AL,Old Assyrian,a5b2c2d1,10
+0x120b5,GA,Old Assyrian,a3b5c1d1,10
+0x1208a,E,Old Assyrian,a4b5,9
+0x12081,DUG,Old Assyrian,a6b2c1d1,10
+,DUL3,Old Assyrian,a2b6c1d1,10
+0x121fd,LU2,Old Assyrian,a5b1c1d1w2,10
+0x122ac,SAR,Old Assyrian,a2b2w6,10
+0x120fc,GAR3,Old Assyrian,b5w3,8
+0x12053,BUR,Old Assyrian,a3b5d1,9
+0x12009,A2,Old Assyrian,a2b6w5,13
+0x122fc,TE,Old Assyrian,a1w4,5
+0x1214e,IM,Old Assyrian,a2b1w4,7
+0x1224f,NIM,Old Assyrian,a1c1d1w2,5
+,UL,Old Assyrian,a1b2w3,6
+0x121a0,KI,Old Assyrian,a1b4c1w1,7
+,MESZ,Old Assyrian,a1b1w3,5
+0x12116,GU,Old Assyrian,a1b1w4,6
+0x1200a,AB,Akkadian,a1b2c1d1,5
+0x121ec,LAGAR,Akkadian,a2c1d1,4
+0x121c8,LAGAB TIMES HA,Akkadian,a6b2w2,10
+0x12348,URU TIMES PA,Akkadian,a4b5,9
+0x122a8,SAG GUNU,Akkadian,a6b2c1d1,10
+0x1228f,RA,Akkadian,a4b5,9
+0x12008,A TIMES SAG,Akkadian,a6b2c1d1,10
+0x12296,SAG TIMES A,Akkadian,a6b2c1d1,10
+0x12123,GUM,Akkadian,a2b4w4,10
+0x12287,PI TIMES U,Akkadian,a1b1w3,5
+0x1211e,GUD,Akkadian,a1b2c1d1,5
+0x12192,KAD4,Akkadian,a2b6c1d1,10
+0x12155,IR,Akkadian,a3c1d1,5
+0x122fc,TE,Akkadian,a2c1d1,4
+,NIM2,Akkadian,a1c1d1w2,5
+0x122d6,SHITA,Akkadian,a2c1d1,4
+0x1238c,MESH,Akkadian,a1b1w3,5
+,NUMERIC SIGN FIVE SIXTHS DISH,Akkadian,a3c1d1,5
+,NUMERIC SIGN TWO THIRDS DISH,Akkadian,a2c1d1,4
+0x1238f,NIN,Akkadian,a3b5c1d1,10
+,LI Variant Form,Neo-Babylonian,a2b2w6,10
+0x1230c,U GUD,Neo-Babylonian,a1b2w3,6
+0x122ac,SAR,Neo-Babylonian,a2b1w4,7
+,SAR Variant Form,Neo-Babylonian,a2b2w6,10
+0x12155,IR,Neo-Babylonian,a3c1d1,5
+0x12154,IN,Neo-Babylonian,b2w6,8
+0x122fc,TE,Neo-Babylonian,a1w4,5
+0x12034,ARAD,Neo-Babylonian,a1b1w3,5
+0x122d6,SHITA,Neo-Babylonian,a3c1d1,5
+0x1223d,MUSH3 GUNU,Neo-Babylonian,a4b5,9
+,SHEN Variant Form,Neo-Babylonian,a4b5,9
+0x1222d,MU OVER MU,Neo-Babylonian,b2w6,8
+0x121f7,LI,Neo-Babylonian,a2b2w6,10
+0x122fc,TE,Old Babylonian,a1w4,5
+0x1202a,ALEPH,Old Babylonian,a1b1w4,6
+0x1214e,IM,Old Babylonian,a1b1w4,6
+0x1226d,NUNUZ,Old Babylonian,a1w4,5
+0x1238c,MESH,Old Babylonian,a1b1w3,5
+0x12034,ARAD,Old Babylonian,a1b1w3,5
+0x12116,GU,Old Babylonian,a1b1w4,6
+0x12119,GU2 TIMES KAK,Old Babylonian,a1b2w3,6
+0x12145,IG,Old Babylonian,a2b1w4,7
+0x12164,KA TIMES GAN2 TENU,Old Babylonian,a2b4w4,10
+0x12227,MASH2,Old Babylonian,a1b1w3,5
+0x12244,NAGAR,Old Babylonian,a1b1w3,5
+0x12363,ZI,Old Babylonian,a2b1w4,7
+0x1214e,IM,Neo-Babylonian,a2b1w4,7
+0x120fb,GAR,Old Babylonian,a2c1d1,4
+0x1224f,NIM,Neo-Babylonian,a1c1d1w2,5
+0x1211e,GUD,Neo-Babylonian,a1b2w3,6
+0x1238c,MESH,Old Babylonian,a1b1w3,5
+0x12223,MA2,Old Babylonian,a1b2c1d1,5
+0x1235a,UZ3,Neo-Babylonian,a3b4w2,9
+0x1238c,MESH,Neo-Babylonian,a1b1w3,5
+0x120e2,GA2 TIMES PA,Middle Hittite,a4b5,9
+0x12044,BAL,Neo-Babylonian,a1b2w3,6
+0x12116,GU,Neo-Babylonian,a1b1w4,6
+0x12155, IR,Neo-Babylonian,a3c1d1,5
+0x1230c,U GUD,Middle Hittite,a1b2w3,6
+0x12034,ARAD,Middle Hittite,a1b1w3,5
+0x121a3,KI TIMES UD,Neo-Assyrian,a3b4w2,9
+0x121a5,KIN,Neo-Assyrian,a3b4w2,9
+0x12244,NAGAR,Middle Hittite,a1b1w3,5
+0x12259,NINDA2 TIMES NUN,Middle Hittite,a4b5,9
+0x12287,PI TIMES U,Middle Hittite,a1b1w3,5
+0x121c6,LAGAB TIMES GUD,Neo-Assyrian,a3b4w2,9
+,form SAR,Middle Hittite,a2b2w6,10
+,form TA TIMES HI,Middle Hittite,a2b2w6,10
+,form AMAR TIMES SHE,Middle Hittite,b2w6,8
+0x1207d,DU SHESHIG,Middle Hittite,a2b4w4,10
+0x1210a,GIR3,Neo-Babylonian,a4b5c1w3,13
+0x1214d,IL2,Neo-Babylonian,a6b5w2,13
+0x120fc,GAR3,Old Babylonian,b4c2w1,7
+0x121a7,KISH,Old Babylonian,b6c6,12
+0x121ac,KU3,Old Babylonian,a1b5c2d5,13
+0x121ad,KU4,Old Babylonian,a1c4w8,13
+0x121b2,KUN,Old Babylonian,a1b1c4w2,8
+0x121e1,LAGAB TIMES SUM,Old Babylonian,a1b2w13,16
+0x121ef,LAGAR GUNU,Old Babylonian,a2c5,7
+0x121f7,LI,Old Babylonian,a1b4c2w8,15
+0x121fd,LU2,Old Babylonian,a4c4d1,9
+0x122ac,SAR,Old Babylonian,a1b2w12,15
+0x1221d,LUM,Neo-Babylonian,b4c2,6
+0x1223b,MUSH3 TIMES A PLUS DI,Neo-Babylonian,a9b3w2,14
+0x1223f,NA2,Neo-Babylonian,b3w6,9
+0x1226e,NUNUZ AB2 TIMES ASHGAB,Neo-Babylonian,a6b4w6,16
+0x122b7,SHA6,Old Babylonian,a3b5w9,17
+0x122bb,SHE HU,Old Babylonian,a2b1w9,12
+0x122bf,SHEN,Old Babylonian,a10b5c2,17
+0x122c0,SHESH,Old Babylonian,a2b1c3,6
+0x122da,SHUBUR,Old Babylonian,a5b3w4,12
+0x122dd,SIG,Old Babylonian,a1c2d1,4
+0x122e2,SU,Old Babylonian,a5b2c2,9
+0x122eb,TA,Old Babylonian,a2b2c2,6
+0x122f3,TAG,Old Babylonian,a5b2c4,11
+0x122fb,TAR,Old Babylonian,a2c1,3
+0x1201d,AK,Old Babylonian,a1b10,11
+0x1205b,DAG KISIM5 TIMES GA,Old Babylonian,a9b8c4w2,23
+0x1210a,GIR3,Old Babylonian,a2b6c6,14
+0x1214b,IL,Old Babylonian,a5b2c3d1w2,13
+0x1214e,IM,Old Babylonian,a2b1c5w2,10
+0x1221d,LUM,Old Babylonian,b8c4,12
+0x1226e,NUNUZ AB2 TIMES ASHGAB,Neo-Babylonian,a6b4c1d1w5,17
+0x1227c,PAN,Neo-Babylonian,b3c2,5
+,BULUG3,Neo-Babylonian,c1d1w6,8
+0x1228c,PIRIG TIMES UD,Neo-Babylonian,a1b3c1w4,9
+0x1228c,PIRIG TIMES UD,Neo-Babylonian,a1b3c1w4,9
+0x1231c,UDUG,Neo-Babylonian,a6b2c3w1,12
+0x1223e,NA,Old Babylonian,b5c1d1w1,8
+0x1224b,NE SHESHIG,Old Babylonian,a3b6c4w1,14
+0x1224f,NIM,Old Babylonian,a1c2w1,4
+0x1228c,PIRIG TIMES UD,Old Babylonian,a8b5c4w2,19
+0x1228d,PIRIG TIMES ZA,Old Babylonian,a10b5c4,19
+0x1235c,UZU,Old Babylonian,a2b2c12w2,18
+0x1236e,ZUM,Old Babylonian,a1b1c6,8
+0x12009,A2,Old Babylonian,a3b7c1w8,19
+0x12016,AB2,Old Babylonian,a1c2w1,4
+0x12029,ALAN,Old Babylonian,a2b10c2d2w5,21
+0x12049,BI,Old Babylonian,a6b2c2,10
+0x12054,BUR2,Old Babylonian,a4b2c2w2,10
+0x12097,EN,Old Babylonian,a3b6w4,13
+0x12100,GI,Old Babylonian,a2b1c8,11
+0x12104,GI4,Old Babylonian,a2b5c8,15
+0x12116,GU,Old Babylonian,a1b1c2w2,6
+0x12119,GU2 TIMES KAK,Old Babylonian,a2b2c4w1,9
+0x12120,GUD TIMES KUR,Old Babylonian,a1b2c2w3,8
+0x12123,GUM,Old Babylonian,b4c4,8
+0x12126,GUR7,Old Babylonian,a10b7c4w1,22
+0x12129,HA,Old Babylonian,a2c1w2,5
+0x12130,HI TIMES BAD,Old Babylonian,b1c4w1,6
+0x12145,IG,Old Babylonian,a2b6w3,11
+0x12154,IN,Old Babylonian,a2c2w16,20
+0x12174,KA TIMES ME,Old Babylonian,a4b6c2w1,13
+0x12217,LUGAL,Old Babylonian,a5b4c2w2,13
+0x12239,MUSH3,Old Babylonian,a1b1c1d1w1,5
+0x12244,NAGAR,Old Babylonian,a5b1c2w1,9
+0x12246,NAM,Old Babylonian,a3b2c4w7,16
+0x12301,TIR,Old Babylonian,a8b2c1d1w8,20
+0x12305,TU,Old Babylonian,a1c4w8,13
+0x12314,UD KUSHU2,Old Babylonian,a2b1c5d1w1,10
+0x12318,UD TIMES U PLUS U PLUS U GUNU,Old Babylonian,a2b6w3,11
+0x1235c,UZU,Neo-Babylonian,b3w5,8
+0x12363,ZI,Old Babylonian,a2b1w8,11
+,GIŠ crossing GIŠ,Old Babylonian,c5d1,6
+,EN x GAN2 tenû,Old Babylonian,a6b8w4,18
+0x1237c,GIG,Old Babylonian,b8w7,15
+0x1237d,HUSH,Neo-Babylonian,b3c1w4,8
+,UD šešig,Old Babylonian,c3d1w3,7
+0x12029,ALAN,Neo-Babylonian,a2b8c8w2,20
+0x12032,ANSHE,Neo-Babylonian,a1b7c1,9
+0x12046,BALAG,Neo-Babylonian,a2b8w2,12
+0x12046,BALAG,Neo-Babylonian,a2b6c1d1w2,12
+0x12066,DAG KISIM5 TIMES LU PLUS MASH2,Neo-Babylonian,a9b7w7,23
+0x12070,DARA3,Neo-Babylonian,a2b9w4,15
+0x12070,DARA3,Neo-Babylonian,a2b8c3,13
+0x12075,DIM TIMES SHE,Neo-Babylonian,b3w5,8
+0x12075, DIM TIMES SHE,Neo-Babylonian,b1c1d1w5,8
+0x121e1,LAGAB TIMES SUM,Middle Hittite,a3b2w5,10
+0x122b7,SHA6,Middle Hittite,a11b7w2,20
+,KIB,Neo-Babylonian,a2c2d2,6
+0x122f3,TAG,Middle Hittite,b3c2,5
+0x12318,UD TIMES U PLUS U PLUS U GUNU,Neo-Babylonian,a2b6w3,11
+0x1201d,AK,Middle Hittite,a1b10,11
+0x1205b,DAG KISIM5 TIMES GA,Middle Hittite,a5b4c2w2,13
+0x1214d,IL2,Middle Hittite,a6b5w2,13
+0x12074,DIM,Middle Hittite,a1b1c2w2,6
+0x12076,DIM2,Middle Hittite,a2b2c2,6
+0x12088,DUN4,Middle Hittite,a5b3w4,12
+0x12095,EGIR,Middle Hittite,a2b6w3,11
+0x12134,HI TIMES NUN,Neo Assyrian,a3b2c4,9
+0x121d5,LAGAB TIMES LISH,Neo Assyrian,a3b2c1,6
+0x121d4,LAGAB TIMES LAGAB,Neo Assyrian,a3b3,6
+0x121d8,LAGAB TIMES ME,Neo Assyrian,a3b3,6
+0x121df,LAGAB TIMES SHU2,Neo Assyrian,a3b2c1,6
+0x12276,NUNUZ AB2 TIMES SILA3,Neo Assyrian,a3b3c7w2,15
+0x12054,BUR2,Neo Assyrian,a3b2c3,8
+0x121e9,LAGAB TIMES UD,Neo Assyrian,a3b2c2,7
+0x1222f,MUG GUNU,Neo Assyrian,a3b3,6
+0x1201a,AB2 TIMES SHA3,Neo Assyrian,a3b2c2w1,8
+0x120ea,GA2 TIMES U,Neo Assyrian,a3b2w1,6
+0x120b5,GA,Neo Assyrian,a3b2c2,7
+0x121be,LAGAB TIMES AN,Neo Assyrian,a3b4,7
+0x1211f,GUD TIMES A PLUS KUR,Neo Assyrian,a3b2c4,9
+0x1231d,UM,Neo Assyrian,a3b4,7
+0x12294,SAG NUTILLU,Neo Assyrian,a3b2w1,6
+0x12295,SAG,Neo Assyrian,a3b4,7
+0x1218d,KA2,Neo Assyrian,a3b4,7
+0x122eb,TA,Neo Assyrian,a3b4,7
+0x12351,USH,Neo Assyrian,a3b2w1,6
+0x120bd,GA2 TIMES ASH,Neo Assyrian,a3b3,6
+0x1233a,URU TIMES BAR,Neo Assyrian,a3b4,7
+0x1221b,LUH,Neo Assyrian,a3b2w1,6
+0x12311,U2,Neo Assyrian,a3b4,7
+,URUDU,Old Assyrian,a3b4,7
+,USZ,Old Assyrian,a3b2w1,6
+0x121fb,LU,Old Assyrian,a3b3,6
+,GA2 TIMES ASZ,Akkadian,a3b3,6
+0x120ea,GA2 TIMES U,Akkadian,a3b2w1,6
+0x121df,LAGAB TIMES SHU2,Akkadian,a3b2w1,6
+,TUN3,Akkadian,a3b3,6
+0x121fb,LU,Akkadian,a3b3,6
+0x121d8,LAGAB TIMES ME,Akkadian,a3b3,6
+0x121d5,LAGAB TIMES LISH,Akkadian,a3b2c1,6
+0x12337,URU,Akkadian,a3b3,6
+,TA*,Akkadian,a3b2w1,6
+,DAB,Akkadian,a3b4,7
+0x12351,USH,Akkadian,a3b2w1,6
+0x1234f,URUDA,Akkadian,a3b4,7
+,LU Variant Form,Neo-Babylonian,a3b3,6
+0x122c3,SHID,Neo-Babylonian,a3b3,6
+0x12351,USH,Neo-Babylonian,a3b2w1,6
+0x121fb,LU,Neo-Babylonian,a3b3,6
+0x121fb,LU,Old Babylonian,a3b3,6
+0x122c3,SHID,Old Babylonian,a3b3,6
+0x1218f,KAB,Old Babylonian,a3b2w1,6
+0x122c3,SHID,Neo-Babylonian,a3b3,6
+0x12053,BUR,Old Babylonian,a3b3,6
+0x12073,DIB,Old Babylonian,a3b3,6
+0x12138,HUB2,Old Babylonian,a3b2w1,6
+0x12229,MES,Old Babylonian,a3b4,7
+0x12295,SAG,Old Babylonian,a3b2c2,7
+0x12347,URU TIMES MIN,Old Babylonian,a3b3,6
+0x1208a,E,Neo-Babylonian,a3b2,5
+0x1222e,MUG,Neo-Babylonian,a3b2c1,6
+0x1222e,MUG,Neo-Babylonian,a3b2c1,6
+0x1233a,URU TIMES BAR,Neo-Babylonian,a3b4,7
+0x12073,DIB,Old Babylonian,a3b3,6
+0x12086,DUN3 GUNU,Old Babylonian,a3b3,6
+0x12197,KAL,Old Babylonian,a3b2,5
+0x12295,SAG,Old Babylonian,a3b2c2,7
+0x12328,UR,Old Babylonian,a3b2,5
+0x12351,USH,Old Babylonian,a3b2c1,6
+0x120b7,GA2,Hittite,a3b2,5
+0x12053,BUR,Neo-Babylonian,a3b4,7
+0x12053,BUR,Neo-Babylonian,a3b4,7
+0x121a4,KID,Middle Hittite,a3b2,5
+0x121ac,KU3,Middle Hittite,a3b4,7
+0x121c7,LAGAB TIMES GUD PLUS GUD,Middle Hittite,a3b2w1,6
+0x121fb,LU,Middle Hittite,a3b3,6
+0x12223,MA2,Neo-Babylonian,a3b2,5
+0x12295,SAG,Neo-Babylonian,a3b2,5
+0x12311,U2,Neo-Babylonian,a3b2,5
+0x1208a,E,Middle Hittite,a3b2,5
+0x1214b,IL,Middle Hittite,a3b2c4,9
+0x12351,USH,Neo-Babylonian,a3b2w1,6
+0x1218f,KAB,Middle Hittite,a3b2w1,6
+0x120b7,GA2,Neo-Assyrian,a3b2,5
+0x120bd,GA2 TIMES ASH,Neo-Assyrian,a3b3,6
+0x120bf,GA2 TIMES BAD,Neo-Assyrian,a3b2w1,6
+0x120ea,GA2 TIMES U,Neo-Assyrian,a3b2w1,6
+0x12073,DIB,Middle Hittite,a3b3,6
+0x12087,DUN3 GUNU GUNU,Middle Hittite,a3b4,7
+0x121a4,KID,Neo-Assyrian,a3b2,5
+0x121a6,KISAL,Neo-Assyrian,a3b4,7
+0x12138,HUB2,Middle Hittite,a3b2w1,6
+0x12141,IB,Middle Hittite,a3b2,5
+0x12223,MA2,Middle Hittite,a3b2,5
+0x12295,SAG,Middle Hittite,a3b4,7
+0x12311,U2,Middle Hittite,a3b2,5
+0x12328,UR,Middle Hittite,a3b2,5
+0x121d5,LAGAB TIMES LISH,Neo-Assyrian,a3b2w1,6
+0x121d8,LAGAB TIMES ME,Neo-Assyrian,a3b3,6
+0x1208a,E,Middle Hittite,a3b2,5
+0x12141,IB,Middle Hittite,a3b2,5
+0x12328,UR,Middle Hittite,a3b2,5
+0x121df,LAGAB TIMES SHU2,Neo-Assyrian,a3b2w1,6
+0x1205b,DAG KISIM5 TIMES GA,Middle Hittite,a5b4c2w4,15
+0x1214b,IL,Middle Hittite,a4b2c3w1,10
+0x1218d,KA2,Middle Hittite,a2b7w2,11
+0x1221c,LUL,Middle Hittite,a2b1c2w4,9
+0x1223f,NA2,Middle Hittite,b1w9,10
+0x1224b,NE SHESHIG,Middle Hittite,a2b8c1w6,17
+0x1228c,PIRIG TIMES UD,Middle Hittite,a1b4c1w2,8
+0x1228d,PIRIG TIMES ZA,Middle Hittite,a4b4c1,9
+0x12055,DA,Middle Hittite,a1b4c1,6
+0x12074,DIM,Middle Hittite,a1b2c2w2,7
+0x12075,DIM TIMES SHE,Middle Hittite,b2c2w5,9
+0x12104,GI4,Middle Hittite,a2b5w5,12
+0x12119,GU2 TIMES KAK,Middle Hittite,a3b2c2w3,10
+0x12284,PI TIMES E,Middle Hittite,a4b2c1w2,9
+0x12322,UMBIN,Middle Hittite,a8b11w5,24
+0x12360,ZAG,Middle Hittite,b6c1,7
+0x1221c,LUL,Middle Hittite,a2b2c2w5,11
+0x120fd,GASHAN,Middle Hittite,a3c1w3,7
+0x121a8,KISIM5,Middle Hittite,c2w2,4
+0x121f8,LIL,Middle Hittite,b3w7,10
+0x121fd,LU2,Middle Hittite,c3w1,4
+0x122c1,SHESH2,Middle Hittite,a3b6w3,12
+0x12088,DUN4,Neo-Babylonian,a4b7w4,15
+0x12095,EGIR,Neo-Babylonian,a3b6w3,12
+0x12098,EN TIMES GAN2,Neo-Babylonian,a5b1w5,11
+,GUN,Neo-Babylonian,a6b4c1w2,13
+0x12119,GU2 TIMES KAK,Neo-Babylonian,a3b3c4,10
+0x12119,GU2 TIMES KAK,Neo-Babylonian,a3b3c4,10
+0x12124,GUM TIMES SHE,Neo-Babylonian,b4w5,9
+0x12134,HI TIMES NUN,Neo-Babylonian,a3b1w4,8
+0x12161,KA TIMES ESH2,Neo-Babylonian,a4b8w1,13
+0x12164,KA TIMES GAN2 TENU,Neo-Babylonian,a6b4c2w1,13
+0x122d2,SHINIG,Middle Hittite,a3b2c1w10,16
+0x122d3,SHIR,Middle Hittite,b6w3,9
+0x122da,SHUBUR,Middle Hittite,a6b1w5,12
+0x122e4,SUD,Middle Hittite,a3b1w4,8
+0x122e6,SUHUR,Middle Hittite,b1w7,8
+0x12224,MAH,Neo-Babylonian,a2b1c1d1w3,8
+0x122fa,TAK4,Middle Hittite,a6b3c1w5,15
+0x12227,MASH2,Neo-Babylonian,a3b1c3,7
+0x12240,NAGA,Neo-Babylonian,b1c1w5,7
+0x12240,NAGA,Neo-Babylonian,a2b1c1w5,9
+0x122fd,TE GUNU,Middle Hittite,a1b3c2w3,9
+,NIM TIMES GAN2,Neo-Babylonian,a1b3c3d1w2,10
+0x12274,NUNUZ AB2 TIMES LA,Neo-Babylonian,a3b7c5d1w1,17
+0x12290,RAB,Neo-Babylonian,b4c3d1,8
+0x12322,UMBIN,Neo-Babylonian,a6b7w4,17
+0x12324,UMUM TIMES KASKAL,Neo-Babylonian,a2b6w4,12
+0x1201e,AK TIMES ERIN2,Middle Hittite,a3b10w2,15
+0x1205f,DAG KISIM5 TIMES GUD,Middle Hittite,a4b4c2w4,14
+0x1210a,GIR3,Middle Hittite,b2c3,5
+0x12340,URU TIMES GU,Neo-Babylonian,a3b3w5,11
+0x1210b,GIR3 TIMES A PLUS IGI,Middle Hittite,a4b2c1w4,11
+0x1213e,HUL2,Middle Hittite,a3b2c1w1,7
+0x1214e,IM,Middle Hittite,a2b1c3w1,7
+0x1216e,KA TIMES IM,Middle Hittite,a4b5w5,14
+0x12377,EZEN TIMES GUD,Neo-Babylonian,a4b8w2,14
+0x1227e,PESH2,Neo-Babylonian,a6b4c3d1w1,15
+0x1221c,LUL,Middle Hittite,a1b1c2w6,10
+0x1222d,MU OVER MU,Middle Hittite,b2c3w4,9
+0x1223a,MUSH3 TIMES A,Middle Hittite,a5b1w1,7
+0x1224b,NE SHESHIG,Middle Hittite,a2b4c2w8,16
+0x1224f,NIM,Middle Hittite,a1c4w1,6
+0x1225a,NINDA2 TIMES SHE,Middle Hittite,b4w5,9
+0x1227e,PESH2,Middle Hittite,a5b5c2w2,14
+0x1228b,PIRIG TIMES KAL,Middle Hittite,a4b6c1,11
+,NENNI,Neo-Assyrian,a3b4w6,13
+0x120a4,EZEN TIMES A PLUS LAL TIMES LAL,Neo-Assyrian,a7b8,15
+0x1235a,UZ3,Middle Hittite,a1b1c1w3,6
+0x1235c,UZU,Middle Hittite,a1b2w5,8
+0x120a7,EZEN TIMES DUN3 GUNU,Neo-Assyrian,a6b11,17
+0x120b4,EZEN TIMES UD,Neo-Assyrian,a3b7w2,12
+0x120b8,GA2 TIMES A PLUS DA PLUS HA,Neo-Assyrian,a12b6w1,19
+0x12029,ALAN,Middle Hittite,b6w8,14
+0x12046,BALAG,Middle Hittite,a3b4w5,12
+0x120c5,GA2 TIMES DIM TIMES SHE,Neo-Assyrian,a4b3c2d1w4,14
+0x12048,BARA2,Middle Hittite,a2b9w3,14
+0x120c8,GA2 TIMES EL PLUS LA,Neo-Assyrian,a7b8w1,16
+0x120ca,GA2 TIMES EN TIMES GAN2 TENU,Neo-Assyrian,a9b6w2,17
+0x120d0,GA2 TIMES GIR2 PLUS SU,Neo-Assyrian,a8b8w1,17
+,GA2 TIMES HI PLUS,Neo-Assyrian,a5b9c4w1,19
+0x120e9,GA2 TIMES TAK4,Neo-Assyrian,a11b3w1,15
+0x12057,DAG KISIM5 TIMES A PLUS MASH,Middle Hittite,a7b3c2w2,14
+0x12064,DAG KISIM5 TIMES LA,Middle Hittite,a4b9c2w2,17
+0x12070,DARA3,Middle Hittite,a8b8w5,21
+0x12075,DIM TIMES SHE,Middle Hittite,a2b1c2w6,11
+0x12084,DUN,Middle Hittite,a6b3w3,12
+0x121ad,KU4,Neo-Assyrian,a1b7,8
+0x121b0,KUL,Neo-Assyrian,a3b1w2,6
+0x12097,EN,Middle Hittite,a3b1w2,6
+0x12098,EN TIMES GAN2,Middle Hittite,a5b3w6,14
+0x12103,GI CROSSING GI,Middle Hittite,a2c2w11,15
+0x12104,GI4,Middle Hittite,a2b5c1w3,11
+0x12172,KA TIMES LI,Middle Hittite,a4b4w6,14
+0x12165,KA TIMES GAR,Middle Hittite,a3b4w4,11
+0x12181,KA TIMES SHE,Middle Hittite,a2b4w5,11
+0x12232,MUSH,Middle Hittite,a3b1w5,9
+0x12240,NAGA,Middle Hittite,a2c2w5,9
+0x12246,NAM,Middle Hittite,a1b1w7,9
+0x12258,NINDA2 TIMES NE,Middle Hittite,a2b8w5,15
+0x12290,RAB,Middle Hittite,b3c2w4,9
+0x12301,TIR,Middle Hittite,a10b2w4,16
+0x12322,UMBIN,Middle Hittite,a7b8w6,21
+0x12387,KA TIMES UR2,Middle Hittite,a4b8w2,14
+,AMAR KUG,Middle Hittite,a2b2w5,9
+,GI E,Middle Hittite,a5b3c1w3,12
+,KA ASH3,Middle Hittite,a2b4w7,13
+,KA LUM,Middle Hittite,a2b8w3,13
+0x1238e,NA4,Middle Hittite,a1b1c1w2,5
+0x121c7,LAGAB TIMES GUD PLUS GUD,Neo-Assyrian,a4b7w4,15
+,form KUN,Middle Hittite,a6b1w3,10
+,form SHE HU,Middle Hittite,a2b2w5,9
+,form SHUBUR,Middle Hittite,a6b2w6,14
+,form SUD,Middle Hittite,a3b1w4,8
+0x121d3,LAGAB TIMES KUL PLUS HI PLUS A,Neo-Assyrian,a5b3c6w1,15
+0x12097,EN,Middle Hittite,a3b1w2,6
+0x120fc,GAR3,Middle Hittite,b1w7,8
+0x1204d,BU,Old Assyrian,b1w4,5
+,UZ,Old Assyrian,a2b1w7,10
+,MUSZ,Old Assyrian,a3b1w7,11
+,SZA3,Old Assyrian,a3c3,6
+,Number 1/6,Old Assyrian,b3c3,6
+,AH,Old Assyrian,a4b1w3,8
+,KAM,Old Assyrian,b1c2d2,5
+0x12016,AB2,Old Assyrian,c1d1w1,3
+,AR,Old Assyrian,a4b1w2,7
+0x12129,HA,Old Assyrian,a4w2,6
+0x1206e,DAM,Old Assyrian,a3b3w3,9
+0x1221d,LUM,Old Assyrian,b4w8,12
+0x1222e,MUG,Akkadian,a2b1c1d1,5
+0x122eb,TA,Akkadian,a2b2c1d1,6
+0x120a3,EZEN TIMES A PLUS LAL,Akkadian,a8b7,15
+0x120a4,EZEN TIMES A PLUS LAL TIMES LAL,Akkadian,a9b8,17
+0x120a6,EZEN TIMES BAD,Akkadian,a4b7c1d1,13
+0x120ac,EZEN TIMES KASKAL,Akkadian,a4b6c2d2,14
+0x120b3,EZEN TIMES U2,Akkadian,a8b8,16
+0x120b4,EZEN TIMES UD,Akkadian,a4b6c2d2,14
+0x120b5,GA,Akkadian,a6b6c1d1,14
+0x120b6,GA GUNU,Akkadian,a10b6c1d1,18
+0x120b9,GA2 TIMES A PLUS HA,Akkadian,a10b2w2,14
+0x120bf,GA2 TIMES BAD,Akkadian,a3b3c1d1,8
+0x120c5,GA2 TIMES DIM TIMES SHE,Akkadian,a5b3c2d2w4,16
+0x120c6,GA2 TIMES DUB,Akkadian,a12b6,18
+0x120cb,GA2 TIMES GAN2 TENU,Akkadian,a8b2c2,12
+0x120cc,GA2 TIMES GAR,Akkadian,a6b2d1,9
+0x120ce,GA2 TIMES GI4,Akkadian,a4b7c5d2,18
+0x120cf,GA2 TIMES GI4 PLUS A,Akkadian,a7b7c5d2,21
+0x120d1,GA2 TIMES HA PLUS LU PLUS ESH2,Akkadian,a11b12w2,25
+0x120d4,GA2 TIMES HI PLUS LI,Akkadian,a5b6c3d3w10,27
+0x120d5,GA2 TIMES HUB2,Akkadian,a6b3c1d1w1,12
+0x120d7,GA2 TIMES ISH PLUS HU PLUS ASH,Akkadian,a7b8w2,17
+0x120d8,GA2 TIMES KAK,Akkadian,a4b2c1d1,8
+0x120d9,GA2 TIMES KASKAL,Akkadian,a3b2c2d2,9
+0x120de,GA2 TIMES ME PLUS EN,Akkadian,a7b8w2,17
+0x120df,GA2 TIMES MI,Akkadian,a3b10w1,14
+0x120e1,GA2 TIMES NUN OVER NUN,Akkadian,a13b4,17
+0x120e3,GA2 TIMES SAL,Akkadian,a4b3c1d1,9
+0x120e4,GA2 TIMES SAR,Akkadian,a5b4w9,18
+0x120e5,GA2 TIMES SHE,Akkadian,a3b2w10,15
+0x120e6,GA2 TIMES SHE PLUS TUR,Akkadian,a4b4c2d2w10,22
+0x120e8,GA2 TIMES SUM,Akkadian,a3b2w10,15
+0x120eb,GA2 TIMES UD,Akkadian,a3b2c2d2,9
+0x120fe,GESHTIN,Akkadian,a2b2c1d1w2,8
+0x120ff,GESHTIN TIMES KUR,Akkadian,a2b2c1d1w5,11
+0x120f8,GAN2 TENU,Akkadian,a5c2,7
+0x121af,KU7,Akkadian,a2b2c1d1,6
+0x121b2,KUN,Akkadian,a5b2c2d2,11
+0x120fb,GAR,Akkadian,a3d1,4
+0x1201d,AK,Akkadian,a1b9w1,11
+0x1201c,AD,Akkadian,a3b2c2d2,9
+0x121c7,LAGAB TIMES GUD PLUS GUD,Akkadian,a4b6c2d2,14
+0x121be,LAGAB TIMES AN,Akkadian,a3b3c1d1,8
+0x120d2,GA2 TIMES HAL,Akkadian,a3b3c1d1,8
+,ZUM2,Akkadian,a4b7c1d1,13
+0x12091,E2 TIMES SAL,Akkadian,a6b6c1d1,14
+,ZADIM,Akkadian,a2b1c1d1,5
+0x12054,BUR2,Akkadian,a2b2c1d1w2,8
+0x1235a,UZ3,Akkadian,a4b3c1d1,9
+0x12016,AB2,Akkadian,c1d1w1,3
+0x12118,GU2,Akkadian,a3b2c2d2,9
+0x12280,PI TIMES A,Akkadian,a4b1w2,7
+0x12360,ZAG,Akkadian,a4b6c2d2,14
+0x12049,BI,Akkadian,a4b2c1d1,8
+0x1202a,ALEPH,Akkadian,b1c2d2,5
+0x12096,EL,Akkadian,a3b3c1d1,8
+0x12294,SAG NUTILLU,Akkadian,a2b2c1d1,6
+,NUMERIC SIGN OLD ASSYRIAN ONE SIXTH,Akkadian,b3c3,6
+0x1212e,HI TIMES ASH,Akkadian,b1c2d2,5
+0x12077,DIN,Akkadian,c1d1w1,3
+0x12307,TUK,Akkadian,a2b1c1d1,5
+0x12129,HA,Akkadian,a4w2,6
+0x122e9,SUR,Old Babylonian,b1w4,5
+0x1204d,BU,Old Babylonian,b1w4,5
+0x1222c,MU,Old Babylonian,b1w4,5
+0x1204d,BU,Neo-Babylonian,b1w4,5
+0x1222c,MU,Old Babylonian,a2b1w4,7
+0x12016,AB2,Neo-Babylonian,c1d1w1,3
+0x12019,AB2 TIMES ME PLUS EN,Neo-Babylonian,a3b3w3,9
+0x121b2,KUN,Middle Hittite,a4b1w3,8
+0x12100,GI,Neo-Babylonian,a2b1c1d1,5
+0x12129,HA,Neo-Babylonian,a4w2,6
+0x12246,NAM,Neo-Babylonian,a2b1w7,10
+0x1204d,BU,Middle Hittite,b1w4,5
+0x1222c,MU,Middle Hittite,b1w4,5
+0x12116,GU,Middle Hittite,b1w4,5
+0x12129,HA,Middle Hittite,a4w2,6
+0x12280,PI TIMES A,Middle Hittite,a4b1w2,7
+0x12363,ZI,Middle Hittite,a2b1w4,7
+0x1214e,IM,Middle Hittite,a2b1w4,7
+0x12100,GI,Middle Hittite,a2b1w4,7
+0x12133,HI TIMES KIN,Neo Assyrian,a3b4c4d2,13
+0x1213e,HUL2,Neo Assyrian,a3b4c1w1,9
+0x12140,I A,Neo Assyrian,a3b5,8
+0x12189,KA TIMES UD,Neo Assyrian,a3b5c2,10
+0x121cb,LAGAB TIMES IGI GUNU,Neo Assyrian,a3b7w1,11
+0x121db,LAGAB TIMES NE,Neo Assyrian,a3b6c4,13
+0x1225e,NINDA2 TIMES U2 PLUS ASH,Neo Assyrian,a3b9w1,13
+0x12272,NUNUZ AB2 TIMES IGI GUNU,Neo Assyrian,a3b7c6w3,19
+0x12274,NUNUZ AB2 TIMES LA,Neo Assyrian,a3b6c6w2,17
+0x12275,NUNUZ AB2 TIMES NE,Neo Assyrian,a3b6c10w2,21
+0x12192,KAD4,Neo Assyrian,a3b5c3,11
+0x12230,MUNSUB,Neo Assyrian,a3b9c11d1w1,25
+0x12433,SHAR2 TIMES GAL PLUS MIN,Neo Assyrian,a3b4c2d2,11
+0x12012,AB TIMES LAGAB,Neo Assyrian,a3b6w1,10
+0x12019,AB2 TIMES ME PLUS EN,Neo Assyrian,a3b4c2w1,10
+0x12071,DARA4,Neo Assyrian,a3b8c2,13
+0x12023,AL TIMES GISH,Neo Assyrian,a3b5w1,9
+0x120d9,GA2 TIMES KASKAL,Neo Assyrian,a3b4c2,9
+0x12154,IN,Neo Assyrian,a3b7,10
+0x1215b,KA TIMES ASH2,Neo Assyrian,a3b8,11
+0x1215e,KA TIMES BAR,Neo Assyrian,a3b6,9
+0x1202f,AN THREE TIMES,Neo Assyrian,a3b6,9
+0x121a3,KI TIMES UD,Neo Assyrian,a3b4c2w1,10
+0x121a5,KIN,Neo Assyrian,a3b4c2,9
+0x12119,GU2 TIMES KAK,Neo Assyrian,a3b4c4,11
+0x121c6,LAGAB TIMES GUD,Neo Assyrian,a3b4c2,9
+0x12321,UM TIMES U,Neo Assyrian,a3b4w1,8
+0x12324,UMUM TIMES KASKAL,Neo Assyrian,a3b7w7,17
+0x1232a,UR SHESHIG,Neo Assyrian,a3b4c2,9
+0x1229d,SAG TIMES MI,Neo Assyrian,a3b8w1,12
+0x122a8,SAG GUNU,Neo Assyrian,a3b7,10
+0x122ae,SHA3,Neo Assyrian,a3c2,5
+0x122b5,SHA3 TIMES U,Neo Assyrian,a3c2w1,6
+0x122ee,TA TIMES MI,Neo Assyrian,a3b8w1,12
+0x122ef,TA GUNU,Neo Assyrian,a3b5,8
+0x1235a,UZ3,Neo Assyrian,a3b4c2,9
+0x1216d,KA TIMES IGI,Neo Assyrian,a3b6w1,10
+0x1234e,URU TIMES URUDA,Neo Assyrian,a3b7w1,11
+0x1235b,UZ3 TIMES KASKAL,Neo Assyrian,a3b6c4,13
+0x12342,URU TIMES IGI,Neo Assyrian,a3b4w1,8
+0x12340,URU TIMES GU,Neo Assyrian,a3b4c4,11
+0x121b7,LA,Old Assyrian,a3b7,10
+0x1216b,KA TIMES GU,Neo Assyrian,a3b6c4,13
+0x1216f,KA TIMES KAK,Neo Assyrian,a3b7,10
+0x12174,KA TIMES ME,Neo Assyrian,a3b6,9
+0x121fd,LU2,Neo Assyrian,a3b7,10
+0x121ff,LU2 TIMES BAD,Neo Assyrian,a3b8w1,12
+0x1201d,AK,Old Assyrian,a3b6,9
+0x12293,SA,Old Assyrian,a3b5,8
+,IA,Old Assyrian,a3b5,8
+0x1228f,RA,Old Assyrian,a3b5,8
+,SIG2,Old Assyrian,a3b4w1,8
+0x120c4,GA2 TIMES DI,Akkadian,a3b4c2d2,11
+0x121db,LAGAB TIMES NE,Akkadian,a3b6c4,13
+0x121cb,LAGAB TIMES IGI GUNU,Akkadian,a3b7w1,11
+0x1223d,MUSH3 GUNU,Akkadian,a3b5w1,9
+0x122c3,SHID,Akkadian,a3b5,8
+0x12140,I A,Akkadian,a3b5,8
+0x12350,URUDA TIMES U,Akkadian,a3b4w1,8
+0x121a5,KIN,Neo-Babylonian,a3b4w1,8
+0x121fc,LU TIMES BAD,Neo-Babylonian,a3b4w1,8
+0x120a1,EZEN,Neo-Babylonian,a3b8,11
+0x120a6,EZEN TIMES BAD,Neo-Babylonian,a3b7w1,11
+0x120ac,EZEN TIMES KASKAL,Neo-Babylonian,a3b8c2,13
+0x122bf,SHEN,Old Babylonian,a3b5,8
+0x1202f,AN THREE TIMES,Old Babylonian,a3b6,9
+0x12140,I A,Old Babylonian,a3b5,8
+0x12147,IGI DIB,Old Babylonian,a3b5w1,9
+0x12155,IR,Old Babylonian,a3c2,5
+0x1202f,AN THREE TIMES,Neo-Babylonian,a3b6,9
+0x120b5,GA,Old Babylonian,a3b4c2,9
+0x1213e,HUL2,Neo-Babylonian,a3b4w1,8
+0x1213e,HUL2,Neo-Babylonian,a3b4w1,8
+0x1219f,KESH2,Neo-Babylonian,a3b8,11
+0x1228f,RA,Old Babylonian,a3b5,8
+0x12033,APIN,Old Babylonian,a3b7,10
+0x12140,I A,Old Babylonian,a3b5,8
+0x12308,TUM,Old Babylonian,a3b4c2,9
+0x12362,ZE2,Old Babylonian,a3b4c2,9
+0x1238f,NIN,Old Babylonian,a3b5c2,10
+0x12094,EDIN,Neo-Babylonian,a3b4c4,11
+0x12140,I A,Neo-Babylonian,a3b5,8
+0x12183,KA TIMES SHU,Neo-Babylonian,a3b8w1,12
+0x1202f,AN THREE TIMES,Middle Hittite,a3b6,9
+0x1215e,KA TIMES BAR,Middle Hittite,a3b5w1,9
+0x120d9,GA2 TIMES KASKAL,Neo-Assyrian,a3b4c2,9
+0x120df,GA2 TIMES MI,Neo-Assyrian,a3b6w1,10
+0x12140,I A,Middle Hittite,a3b5,8
+0x12155,IR,Middle Hittite,a3c2,5
+0x12174,KA TIMES ME,Middle Hittite,a3b5w1,9
+0x12380,KA TIMES GISH,Middle Hittite,a3b6w1,10
+0x12384,KA TIMES PA,Middle Hittite,a3b6w1,10
+0x121cb,LAGAB TIMES IGI GUNU,Neo-Assyrian,a3b7w1,11
+0x121d4,LAGAB TIMES LAGAB,Neo-Assyrian,a3b4,7
+0x121d7,LAGAB TIMES LUL,Neo-Assyrian,a3b8,11
+0x121db,LAGAB TIMES NE,Neo-Assyrian,a3b6c4,13
+0x12087,DUN3 GUNU GUNU,Middle Hittite,a3b6,9
+0x12295,SAG,Middle Hittite,a3b4,7
+0x1213d,HUB2 TIMES UD,Neo Assyrian,a4b1c4,9
+0x12148,IGI RI,Neo Assyrian,a4b2w2,8
+0x120c5,GA2 TIMES DIM TIMES SHE,Neo Assyrian,a4b3c6d1,14
+0x121cc,LAGAB TIMES IM,Neo Assyrian,a4b3c4,11
+0x121e0,LAGAB TIMES SHU2 PLUS SHU2,Neo Assyrian,a4b2c2,8
+0x12280,PI TIMES A,Neo Assyrian,a4b1c2,7
+0x1203f,ASHGAB,Neo Assyrian,a4b2,6
+0x1204b,BI TIMES GAR,Neo Assyrian,a4b2w2,8
+0x12053,BUR,Neo Assyrian,a4b3,7
+0x12085,DUN3,Neo Assyrian,a4b4,8
+0x1208d,E2,Neo Assyrian,a4b2,6
+0x12005,A TIMES IGI,Neo Assyrian,a4b1w1,6
+0x12013,AB TIMES SHESH,Neo Assyrian,a4b11w3,18
+0x1207e,DUB,Neo Assyrian,a4b4,8
+0x120d8,GA2 TIMES KAK,Neo Assyrian,a4b4,8
+0x120e2,GA2 TIMES PA,Neo Assyrian,a4b4,8
+0x12103,GI CROSSING GI,Neo Assyrian,a4b1c9,14
+0x12198,KAL TIMES BAD,Neo Assyrian,a4b3w1,8
+0x1215d,KA TIMES BALAG,Neo Assyrian,a4b13w2,19
+0x120eb,GA2 TIMES UD,Neo Assyrian,a4b2c2,8
+0x121b2,KUN,Neo Assyrian,a4b3c4,11
+0x121c3,LAGAB TIMES EN,Neo Assyrian,a4b3c2,9
+0x12284,PI TIMES E,Neo Assyrian,a4b3c2,9
+0x12286,PI TIMES IB,Neo Assyrian,a4b3c2,9
+0x122b1,SHA3 TIMES GISH,Neo Assyrian,a4b2c2,8
+0x1212b,HA GUNU,Neo Assyrian,a4b3w1,8
+0x12364,ZI OVER ZI,Neo Assyrian,a4b1c9,14
+0x12347,URU TIMES MIN,Neo Assyrian,a4b3,7
+0x12096,EL,Neo Assyrian,a4b2c2,8
+0x120f7,GAN2,Old Assyrian,a4b2,6
+0x1231d,UM,Old Assyrian,a4b3,7
+0x12311,U2,Old Assyrian,a4b4,8
+0x12197,KAL,Old Assyrian,a4b2,6
+0x121f4,LAM,Old Assyrian,a4b2w2,8
+0x120e2,GA2 TIMES PA,Akkadian,a4b4,8
+0x121e0,LAGAB TIMES SHU2 PLUS SHU2,Akkadian,a4b2w2,8
+0x1221b,LUH,Akkadian,a4b4,8
+0x121d4,LAGAB TIMES LAGAB,Akkadian,a4b4,8
+0x1233a,URU TIMES BAR,Akkadian,a4b4,8
+0x12005,A TIMES IGI,Akkadian,a4b1w1,6
+0x12148,IGI RI,Akkadian,a4b2w2,8
+0x12311,U2,Akkadian,a4b2,6
+0x12374,DAG3,Akkadian,a4b2c2,8
+0x12293,SA,Akkadian,a4b4,8
+0x120f7,GAN2,Neo-Babylonian,a4b2,6
+,SA Variant Form,Neo-Babylonian,a4b2,6
+0x12197,KAL,Neo-Babylonian,a4b2,6
+0x12148,IGI RI,Neo-Babylonian,a4b2w2,8
+0x122a8,SAG GUNU,Neo-Babylonian,a4b4,8
+0x12229,MES,Neo-Babylonian,a4b4,8
+0x12311,U2,Neo-Babylonian,a4b2,6
+,KAL Variant Form,Neo-Babylonian,a4b2,6
+0x120e2,GA2 TIMES PA,Neo-Babylonian,a4b4,8
+0x120e2,GA2 TIMES PA,Old Babylonian,a4b4,8
+0x120bc,GA2 TIMES AN,Neo-Babylonian,a4b4,8
+0x120bc,GA2 TIMES AN,Neo-Babylonian,a4b4,8
+0x122a8,SAG GUNU,Old Babylonian,a4b2c2,8
+0x1208d,E2,Old Babylonian,a4b2,6
+0x1221b,LUH,Old Babylonian,a4b2,6
+0x1223d,MUSH3 GUNU,Old Babylonian,a4b4,8
+0x1233a,URU TIMES BAR,Old Babylonian,a4b4,8
+0x12056,DAG,Old Babylonian,a4b2,6
+0x12148,IGI RI,Old Babylonian,a4b2w2,8
+0x12197,KAL,Old Babylonian,a4b2,6
+0x12293,SA,Old Babylonian,a4b2,6
+0x120bc,GA2 TIMES AN,Old Babylonian,a4b3c2,9
+0x1207e,DUB,Neo-Babylonian,a4b4,8
+0x1221b,LUH,Neo-Babylonian,a4b2,6
+0x1221b,LUH,Neo-Babylonian,a4b2,6
+0x120f7,GAN2,Old Babylonian,a4b2,6
+0x1221b,LUH,Old Babylonian,a4b4,8
+0x1231d,UM,Old Babylonian,a4b4,8
+0x12020,AL,Old Babylonian,a4b2c2,8
+0x12074,DIM,Old Babylonian,a4b1c4,9
+0x12148,IGI RI,Old Babylonian,a4b2w2,8
+0x120f7,GAN2,Middle Hittite,a4b2,6
+0x121b9,LAGAB TIMES A,Middle Hittite,a4b2,6
+0x12085,DUN3,Neo-Babylonian,a4b3,7
+,TUR3,Neo-Babylonian,a4b3,7
+0x12293,SA,Neo-Babylonian,a4b2,6
+0x12326,UN,Neo-Babylonian,a4b2,6
+0x1213d,HUB2 TIMES UD,Middle Hittite,a4b2w2,8
+0x12347,URU TIMES MIN,Neo-Babylonian,a4b3,7
+0x1221b,LUH,Middle Hittite,a4b2,6
+,HUL,Neo-Assyrian,a4b3w1,8
+0x120eb,GA2 TIMES UD,Neo-Assyrian,a4b2w2,8
+0x120f7,GAN2,Neo-Assyrian,a4b2,6
+0x120f8,GAN2 TENU,Neo-Assyrian,a4b2,6
+0x121b2,KUN,Neo-Assyrian,a4b3c4,11
+0x121b9,LAGAB TIMES A,Neo-Assyrian,a4b2,6
+0x12107,GIDIM,Middle Hittite,a4b3w1,8
+0x12148,IGI RI,Middle Hittite,a4b2w2,8
+0x12197,KAL,Middle Hittite,a4b2,6
+0x12371,AB2 TIMES A,Middle Hittite,a3c2w1,6
+0x121cc,LAGAB TIMES IM,Neo-Assyrian,a4b3c4,11
+,form SHID,Middle Hittite,a4b3w1,8
+0x12197,KAL,Middle Hittite,a4b2,6
+0x121e0,LAGAB TIMES SHU2 PLUS SHU2,Neo-Assyrian,a4b2w2,8
+0x120e9,GA2 TIMES TAK4,Akkadian,a9b3c1,13
+0x120f1,GAD OVER GAD GAR OVER GAR,Akkadian,a8c2d4,14
+0x120fd,GASHAN,Akkadian,c3d3w1,7
+0x120fc,GAR3,Akkadian,b4c1d1w1,7
+0x121ac,KU3,Akkadian,c7d7,14
+0x1208f,E2 TIMES GAR,Akkadian,a8b5d1,14
+0x1202f,AN THREE TIMES,Akkadian,a3b3c3d3,12
+0x1201f,AK TIMES SHITA PLUS GISH,Akkadian,a5b6c1d1,13
+0x1203f,ASHGAB,Akkadian,a5b1c1,7
+0x1225b,NINDA2 TIMES SHE PLUS A AN,Akkadian,a4b5c1d1w12,23
+0x1224a,NE TIMES UD,Akkadian,a1b4c6d2,13
+0x1226f,NUNUZ AB2 TIMES BI,Akkadian,a6b2c6d6w1,21
+0x12261,NU,Akkadian,a1b1d1,3
+0x122c0,SHESH,Akkadian,b2c2d2w2,8
+0x122bf,SHEN,Akkadian,a14b4,18
+0x1225c,NINDA2 TIMES SHE PLUS ASH,Akkadian,b5w12,17
+0x1225d,NINDA2 TIMES SHE PLUS ASH PLUS ASH,Akkadian,b6w12,18
+0x1229f,SAG TIMES SAL,Akkadian,a4b3c2d2,11
+0x12041,BAD,Akkadian,b1c1d1,3
+0x12018,AB2 TIMES GAN2 TENU,Akkadian,a5c3d1w1,10
+0x12074,DIM,Akkadian,a2b1c2d2,7
+0x12088,DUN4,Akkadian,a7b7w4,18
+0x12088,DUN4,Akkadian,a10b10c1d1,22
+0x12116,GU,Akkadian,a2b1c1d1w2,7
+,MIR,Akkadian,a7b7,14
+,MURU2,Akkadian,b4c2d2w3,11
+0x12319,UD GUNU,Akkadian,b4c2d2,8
+0x12363,ZI,Akkadian,a2b1w10,13
+,ARAD2,Akkadian,a3b1c1d1w4,10
+,AD3,Akkadian,a3b4c1d1,9
+0x121bb,LAGAB TIMES A PLUS GAR,Akkadian,a8b2d1,11
+,SISKUR,Akkadian,b2w14,16
+0x120cd,GA2 TIMES GI,Akkadian,a4b1c3d3,11
+0x120f6,GAN,Akkadian,a8b2c2d2,14
+0x122a3,SAG TIMES UB,Akkadian,a4b2c3d3,12
+0x122a2,SAG TIMES U2,Akkadian,a7b4c1d1,13
+0x122a0,SAG TIMES SHID,Akkadian,a6b7c1d1,15
+0x12295,SAG,Akkadian,a3b4c1d1,9
+0x122a4,SAG TIMES UM,Akkadian,a9b6c1d1,17
+0x122a6,SAG TIMES USH,Akkadian,a6b4c1d1w1,13
+0x122c6,SHIM,Akkadian,a7b2c1d1w1,12
+0x122c7,SHIM TIMES A,Akkadian,a10b2c1d1w1,15
+0x120f4,GALAM,Akkadian,a1b2c1d1w1,6
+0x121da,LAGAB TIMES MUSH,Akkadian,a6b3c2d2w1,14
+0x121dc,LAGAB TIMES SHE PLUS SUM,Akkadian,a2b2w20,24
+0x121dd,LAGAB TIMES SHITA PLUS GISH PLUS ERIN2,Akkadian,a5b4c3d3,15
+0x121de,LAGAB TIMES SHITA PLUS GISH TENU,Akkadian,a7b5c1,13
+,LAGAB TIMES SUM2,Akkadian,a2b2w10,14
+0x121e2,LAGAB TIMES TAG,Akkadian,a8b4c2d2,16
+0x121e3,LAGAB TIMES TAK4,Akkadian,a8b3c1,12
+0x12313,UD,Akkadian,c2d2,4
+0x122e2,SU,Akkadian,a5b2c1d1,9
+0x1200d,AB TIMES GAL,Akkadian,a2b7c1d1,11
+,USAN,Akkadian,a8b2c2d2,14
+0x1211f,GUD TIMES A PLUS KUR,Akkadian,a4b2c1d1w3,11
+0x1216a,KA TIMES GISH CROSSING GISH,Akkadian,a2b2c8d3,15
+0x1216d,KA TIMES IGI,Akkadian,a4b3c5d1w1,14
+0x1216e,KA TIMES IM,Akkadian,a5b3c7d4,19
+0x1216f,KA TIMES KAK,Akkadian,a4b2c6d2,14
+0x1217a, KA TIMES NE,Akkadian,a4b6c9d1,20
+0x1215e,KA TIMES BAR,Akkadian,a4b3c5d1,13
+0x1217c,KA TIMES PI,Akkadian,a4b3c5d1w2,15
+0x1217d,KA TIMES RU,Akkadian,a3b4c7d3,17
+0x1229b,SAG TIMES KUR,Akkadian,a3b2c1d1w3,10
+0x1229d,SAG TIMES MI,Akkadian,a3b10c1d1w1,16
+0x122b5,SHA3 TIMES U,Akkadian,c3d3w1,7
+0x122b6,SHA3 TIMES U PLUS A,Akkadian,a3c3d3w1,10
+,SA6,Akkadian,a14b6w2,22
+0x121ed,LAGAR TIMES SHE,Akkadian,a2c1d1w10,14
+0x121ef,LAGAR GUNU,Akkadian,a2c5d1,8
+0x121c6,LAGAB TIMES GUD,Akkadian,a3b4c1d1,9
+0x121bd,LAGAB TIMES AL,Akkadian,a7b4c1d1,13
+0x121a0,KI,Akkadian,b4c2d2,8
+0x1212c,HAL,Akkadian,b1c1d1,3
+0x12020,AL,Akkadian,a5b2c1d1,9
+0x12012,AB TIMES LAGAB,Akkadian,a3b4c1d1,9
+0x12119,GU2 TIMES KAK,Akkadian,a4b2c3d3,12
+0x1230c,U GUD,Akkadian,a1b2c1d1w1,6
+0x12266,NUN LAGAR TIMES SAL,Akkadian,a8b2c2d2,14
+0x12174,KA TIMES ME,Akkadian,a4b3c5d1,13
+0x1227c,PAN,Akkadian,c2d2,4
+0x1212d,HI,Akkadian,c2d2,4
+0x1209f,ERIN2,Akkadian,c2d2,4
+0x122dd,SIG,Akkadian,c2d2,4
+0x12390,NIN9,Akkadian,a3b4c1d1,9
+0x1219c,KASKAL,Akkadian,c2d2,4
+0x1219c,KASKAL,Neo-Babylonian,c2d2,4
+0x121a0,KI,Old Babylonian,b4c2d2,8
+0x121f4,LAM,Old Babylonian,a5c2,7
+0x1203f,ASHGAB,Old Babylonian,a5c2,7
+0x1209f,ERIN2,Old Babylonian,c2d2,4
+0x12087,DUN3 GUNU GUNU,Old Babylonian,a7b7,14
+0x12326,UN,Old Babylonian,a8b4c2d2,16
+,NA NA NA NA,Old Babylonian,a2c5d1,8
+0x1203f,ASHGAB,Middle Hittite,a5b1c1,7
+0x1203f,ASHGAB,Middle Hittite,a5b1c1,7
+0x12293,SA,Middle Hittite,a5b1c1,7
+0x1200c,AB TIMES DUN3 GUNU,Akkadian,a8b4c1d1,14
+0x1204a,BI TIMES A,Akkadian,a7b2c1d1,11
+0x1204b,BI TIMES GAR,Akkadian,a7b2c1d2,12
+0x1204c,BI TIMES IGI GUNU,Akkadian,a5b7c1d1w1,15
+0x1200e,AB TIMES GAN2 TENU,Akkadian,a6b2c3d1,12
+0x1215f,KA TIMES BI,Akkadian,a7b4c6d2,19
+0x1217a,KA TIMES NE,Akkadian,a8b3c5d1,17
+0x1217e,KA TIMES SA,Akkadian,a7b6c5d1,19
+0x1217f,KA TIMES SAR,Akkadian,a5b4c5d1w9,24
+0x1218b,KA TIMES USH,Akkadian,a6b4c5d1,16
+0x1221c,LUL,Akkadian,a2c6d5,13
+0x1219d,KASKAL LAGAB TIMES U OVER LAGAB TIMES U,Akkadian,a4b4c2d2w1,13
+0x1223f,NA2,Akkadian,a2b4c2d2w6,16
+0x1220a,LU2 TIMES LAGAB,Akkadian,a6b2c3d1,12
+0x1220c,LU2 TIMES NE,Akkadian,a5b4c6d1,16
+0x124e6,LAK-228,Akkadian,a5b4c3d3w1,16
+0x124a7,DUG TIMES SHE,Akkadian,a2b2c1d1w10,16
+0x1207e,DUB,Akkadian,a9b4,13
+0x122cb,SHIM TIMES GAR,Akkadian,a10b2c1d2w1,16
+0x122cc,SHIM TIMES IGI,Akkadian,a8b3c1d1w2,15
+0x122ce,SHIM TIMES KUSHU2,Akkadian,a11b3c2d2w2,20
+0x122d0,SHIM TIMES MUG,Akkadian,a9b3c2d2w1,17
+0x122d1,SHIM TIMES SAL,Akkadian,a8b3c2d2w1,16
+0x122ca,SHIM TIMES DIN,Akkadian,a7b2c2d2w3,16
+0x121d3,LAGAB TIMES KUL PLUS HI PLUS A,Akkadian,a5b4c2d2w3,16
+0x121cf,LAGAB TIMES KI,Akkadian,a2b6c2d2,12
+0x121ce,LAGAB TIMES IM PLUS LU,Akkadian,a7b6c2d3,18
+0x121c9,LAGAB TIMES HAL,Akkadian,a2b3c1d1,7
+0x121c5,LAGAB TIMES GAR,Akkadian,a5b2d1,8
+0x121c3,LAGAB TIMES EN,Akkadian,a5b7w2,14
+0x121cc,LAGAB TIMES IM,Akkadian,a4b3c2d3,12
+0x121cd,LAGAB TIMES IM PLUS HA,Akkadian,a8b3c2d3w1,17
+0x121c2,LAGAB TIMES DAR,Akkadian,a4b8c1,13
+0x121b6,KWU318,Akkadian,a5b7c2d2,16
+,LAHSZU,Akkadian,a5b3c2d2w1,13
+0x1234d,URU TIMES UD,Akkadian,a3b3c2d2,10
+0x1234c,URU TIMES U PLUS GUD,Akkadian,a4b5c1d1w1,12
+0x1234a,URU TIMES SIG4,Akkadian,a3b3c6d6,18
+0x1233f,URU TIMES GAR,Akkadian,a6b3d1,10
+0x1233e,URU TIMES GAN2 TENU,Akkadian,a8b3c2,13
+0x1233b,URU TIMES DUN,Akkadian,a8b5c3d2,18
+0x122b1,SHA3 TIMES GISH,Akkadian,a1b2c3d3,9
+0x122b3,SHA3 TIMES SHU2,Akkadian,a1c3d3w1,8
+,URU TIMES ASZGAB,Akkadian,a8b4c1,13
+0x12340,URU TIMES GU,Akkadian,a5b4c1d1w2,13
+0x12341,URU TIMES HA,Akkadian,a7b3w2,12
+0x12342,URU TIMES IGI,Akkadian,a4b4w1,9
+0x12343,URU TIMES IM,Akkadian,a5b4c2d3,14
+0x12345,URU TIMES KI,Akkadian,a3b7c2d2,14
+0x12346,URU TIMES LUM,Akkadian,a3b3c8d4,18
+0x12349,URU TIMES SHE,Akkadian,a3b3w10,16
+0x12004,A TIMES HA,Akkadian,a7w2,9
+0x120c1,GA2 TIMES BUR,Akkadian,a4b8c1d1,14
+0x120c7,GA2 TIMES EL,Akkadian,a6b5c1d1,13
+0x120e0,GA2 TIMES NUN,Akkadian,a8b3,11
+0x120ec,GA2 TIMES UD PLUS DU,Akkadian,a4b4c2d1w1,12
+0x121a3,KI TIMES UD,Akkadian,b4c4d4,12
+0x121a2,KI TIMES U,Akkadian,b4c2d2w1,9
+0x121a1,KI TIMES BAD,Akkadian,b5c3d3,11
+0x122af,SHA3 TIMES A,Akkadian,a3c3d3,9
+0x122b0,SHA3 TIMES BAD,Akkadian,b1c4d4,9
+0x122b4,SHA3 TIMES TUR,Akkadian,a1b2c5d5,13
+0x1212f,HI TIMES ASH2,Akkadian,a1b4c2d2,9
+0x1206e,DAM,Akkadian,a3b4c1d1w1,10
+0x122d3,SHIR,Akkadian,b2c2d2,6
+0x122c8,SHIM TIMES BAL,Akkadian,a8b5c1d1w3,18
+0x121a5,KIN,Akkadian,a3b5d1w1,10
+0x122f3,TAG,Akkadian,a6b2c2d2,12
+0x1212a,HA TENU,Akkadian,c4w2,6
+0x1212b,HA GUNU,Akkadian,a4b4w2,10
+0x121a8,KISIM5,Akkadian,c1d1w2,4
+,NUMUN GUNU,Akkadian,a4b2w3,9
+0x1223e,NA,Akkadian,b4c2d2w1,9
+0x121f4,LAM,Akkadian,a5c2d2,9
+0x121f5,LAM TIMES KUR,Akkadian,a5c2d2w3,12
+0x122ac,SAR,Akkadian,a2b2w9,13
+0x1220e,LU2 TIMES SI PLUS ASH,Akkadian,a6b2c3d1,12
+0x1231c,UDUG,Akkadian,a4b2w3,9
+0x12221,MA TIMES TAK4,Akkadian,a8b4c1,13
+0x12323,UMUM,Akkadian,a2b6c2d2,12
+0x12286,PI TIMES IB,Akkadian,a7b3w2,12
+0x121c0,LAGAB TIMES BAD,Akkadian,a2b3c1d1,7
+0x12072,DI,Akkadian,b2c2d2,6
+0x12292,RU,Akkadian,b2c2d2,6
+0x12147,IGI DIB,Neo-Babylonian,a4b4w1,9
+0x120e3,GA2 TIMES SAL,Neo-Babylonian,a4b2w3,9
+0x12335,URI,Old Babylonian,a4b4w2,10
+0x120e1,GA2 TIMES NUN OVER NUN,Old Babylonian,a8b4c1d1,14
+0x1212b,HA GUNU,Neo-Babylonian,a4b4w2,10
+0x1212b,HA GUNU,Neo-Babylonian,a4b4w2,10
+0x12072,DI,Old Babylonian,b2c2d2,6
+0x1212b,HA GUNU,Middle Hittite,a4b4w2,10
+0x1227e,PESH2,Neo-Babylonian,a5b7w2,14
+,KIMIN,Neo-Assyrian,a4b4w1,9
+,form  AK TIMES ERIN2,Middle Hittite,a4b4w2,10
+0x12143,IDIM OVER IDIM BUR,Neo Assyrian,a4b5w2,11
+0x12184,KA TIMES SIG,Neo Assyrian,a4b5c2,11
+0x121cf,LAGAB TIMES KI,Neo Assyrian,a4b6w1,11
+0x121d7,LAGAB TIMES LUL,Neo Assyrian,a4b9,13
+0x121dc,LAGAB TIMES SHE PLUS SUM,Neo Assyrian,a4b7c4,15
+0x121e1,LAGAB TIMES SUM,Neo Assyrian,a4b7,11
+0x1227b,PAD,Neo Assyrian,a4w1,5
+0x1240a,FIVE DISH,Neo Assyrian,a5,5
+0x120b0,EZEN TIMES LAL TIMES LAL,Neo Assyrian,a4b9,13
+0x12088,DUN4,Neo Assyrian,a4b7c2,13
+0x121ee,LAGAR TIMES SHE PLUS SUM,Neo Assyrian,a4b6c4w1,15
+0x12070,DARA3,Neo Assyrian,a4b4c4,12
+0x1201e,AK TIMES ERIN2,Neo Assyrian,a4b5c2,11
+0x12022,AL TIMES DIM2,Neo Assyrian,a4b5c2w2,13
+0x12021,AL TIMES AL,Neo Assyrian,a4b6w2,12
+0x12026,AL TIMES KI,Neo Assyrian,a4b7w2,13
+0x120d3,GA2 TIMES HAL PLUS LA,Neo Assyrian,a4b8,12
+0x120d6,GA2 TIMES IGI GUNU,Neo Assyrian,a4b7w1,12
+0x12105,GI4 OVER GI4,Neo Assyrian,a4b8c8,20
+0x12193,KAD5,Neo Assyrian,a4b5c4,13
+0x1219e,KASKAL OVER KASKAL LAGAB TIMES U OVER LAGAB TIMES U,Neo Assyrian,a4b8c4w2,18
+0x1219d,KASKAL LAGAB TIMES U OVER LAGAB TIMES U,Neo Assyrian,a4b6c2w2,14
+0x12150,IM CROSSING IM,Neo Assyrian,a4c9d1,14
+0x12160,KA TIMES ERIN2,Neo Assyrian,a4b5c2,11
+0x121ac,KU3,Neo Assyrian,a4w1,5
+0x12161,KA TIMES ESH2,Neo Assyrian,a4b9,13
+0x121bd,LAGAB TIMES AL,Neo Assyrian,a4b5w1,10
+0x121c2,LAGAB TIMES DAR,Neo Assyrian,a4b4c4,12
+0x121c7,LAGAB TIMES GUD PLUS GUD,Neo Assyrian,a4b6c4,14
+0x1232e,UR2 TIMES AL,Neo Assyrian,a4b7w2,13
+0x12289,PI CROSSING PI,Neo Assyrian,a4b5c2,11
+0x1228b,PIRIG TIMES KAL,Neo Assyrian,a4b6c2,12
+0x1228d,PIRIG TIMES ZA,Neo Assyrian,a4b4c2,10
+0x12297,SAG TIMES DU,Neo Assyrian,a4b7w1,12
+0x1229a,SAG TIMES KAK,Neo Assyrian,a4b6,10
+0x1229c,SAG TIMES LUM,Neo Assyrian,a4b8c2,14
+0x1229f,SAG TIMES SAL,Neo Assyrian,a4b5c2,11
+0x122a3,SAG TIMES UB,Neo Assyrian,a4b8c2,14
+0x122b2,SHA3 TIMES NE,Neo Assyrian,a4b4c6,14
+0x122b4,SHA3 TIMES TUR,Neo Assyrian,a4b5c2,11
+0x122b3,SHA3 TIMES SHU2,Neo Assyrian,a4c3,7
+0x12129,HA,Neo Assyrian,a4w1,5
+0x120e6,GA2 TIMES SHE PLUS TUR,Neo Assyrian,a4b7c4,15
+0x1216e,KA TIMES IM,Neo Assyrian,a4b6c4,14
+0x122aa,SAL LAGAB TIMES ASH2,Neo Assyrian,a4b6c2,12
+0x12252,NINDA2,Neo Assyrian,a4w1,5
+0x1210b,GIR3 TIMES A PLUS IGI,Neo Assyrian,a4b5w2,11
+0x12249,NE TIMES A,Neo Assyrian,a4b4c4,12
+0x1216a,KA TIMES GISH CROSSING GISH,Neo Assyrian,a4b7w2,13
+0x12205,LU2 TIMES KAD2,Neo Assyrian,a4b8c2,14
+,U3,Old Assyrian,a4b6w1,11
+,IA2,Old Assyrian,a5,5
+0x120a1,EZEN,Akkadian,a4b6,10
+0x120d6,GA2 TIMES IGI GUNU,Akkadian,a4b7w1,12
+0x1225e,NINDA2 TIMES U2 PLUS ASH,Akkadian,a4b7w2,13
+0x1233d,URU TIMES GAL,Akkadian,a4b8,12
+0x12249,NE TIMES A,Akkadian,a4b4c4,12
+,U3,Akkadian,a4b5w1,10
+0x1236f,KAP ELAMITE,Akkadian,a4b6w1,11
+0x1237a,GA2 TIMES ASH2,Akkadian,a4b6,10
+0x1209a,EN TIMES ME,Akkadian,a4b6w2,12
+0x1240a,five DISH,Akkadian,a5,5
+0x121ac,KU3,Neo-Babylonian,a4w1,5
+0x12259,NINDA2 TIMES NUN,Neo-Babylonian,a4b5w1,10
+0x1214d,IL2,Old Babylonian,a4b5w2,11
+0x121ac,KU3,Neo-Babylonian,a4w1,5
+0x12129,HA,Old Babylonian,a4w1,5
+0x1201e,AK TIMES ERIN2,Neo-Babylonian,a4b6,10
+0x1206e,DAM,Old Babylonian,a4b4c2,10
+0x1232b,UR2,Old Babylonian,a4b4,8
+0x12147,IGI DIB,Old Babylonian,a4b5w1,10
+0x12157,KA,Old Babylonian,a4b6c2,12
+0x12229,MES,Old Babylonian,a4b4,8
+0x12293,SA,Old Babylonian,a4b4,8
+0x12311,U2,Old Babylonian,a4b8,12
+0x1234e,URU TIMES URUDA,Neo-Babylonian,a4b7w1,12
+0x120bc,GA2 TIMES AN,Middle Hittite,a4b4,8
+0x12085,DUN3,Neo-Babylonian,a4b4,8
+0x12087,DUN3 GUNU GUNU,Neo-Babylonian,a4b6,10
+,LIBIR,Neo-Assyrian,a4b5w1,10
+0x120b0,EZEN TIMES LAL TIMES LAL,Neo-Assyrian,a4b9,13
+,SHITA2,Neo-Assyrian,a4b4,8
+0x120bc,GA2 TIMES AN,Neo-Assyrian,a4b4,8
+0x120c3,GA2 TIMES DA,Neo-Assyrian,a4b6w1,11
+0x120d3,GA2 TIMES HAL PLUS LA,Neo-Assyrian,a4b8,12
+0x120d6,GA2 TIMES IGI GUNU,Neo-Assyrian,a4b7w1,12
+0x120d8,GA2 TIMES KAK,Neo-Assyrian,a4b4,8
+0x120e2,GA2 TIMES PA,Neo-Assyrian,a4b4,8
+0x120e6,GA2 TIMES SHE PLUS TUR,Neo-Assyrian,a4b7c4,15
+0x121ac,KU3,Neo-Assyrian,a4w1,5
+0x12229,MES,Middle Hittite,a4b4,8
+0x121bd,LAGAB TIMES AL,Neo-Assyrian,a4b5w1,10
+0x121c2,LAGAB TIMES DAR,Neo-Assyrian,a4b4c4,12
+,form GA2 TIMES PA,Middle Hittite,a4b4,8
+0x121cf,LAGAB TIMES KI,Neo-Assyrian,a4b6w1,11
+0x121dc,LAGAB TIMES SHE PLUS SUM,Neo-Assyrian,a4b7c4,15
+0x12129,HA,Middle Hittite,a4w1,5
+0x12147,IGI DIB,Middle Hittite,a4b6w1,11
+0x122c5,SHID TIMES IM,Akkadian,a5b6c2d3,16
+0x121fe,LU2 TIMES AL,Akkadian,a9b8c4d2,23
+0x121ff,LU2 TIMES BAD,Akkadian,a4b1c4d2,11
+0x121f8,LIL,Akkadian,b2c1d1w11,15
+,UZ,Akkadian,a2b1w11,14
+0x122d2,SHINIG,Akkadian,a2c2d2w10,16
+0x12239,MUSH3,Akkadian,a2b3c3d3,11
+0x1223b,MUSH3 TIMES A PLUS DI,Akkadian,a5b3c3d3,14
+0x1223a,MUSH3 TIMES A,Akkadian,a5b1c1d1,8
+0x1220d,LU2 TIMES NU,Akkadian,a5b1c3d2,11
+0x12104,GI4,Akkadian,a1b5c5d2,13
+0x12102,GI TIMES U,Akkadian,a1b1c5d2w1,10
+0x12107,GIDIM,Akkadian,a4b4c4d1,13
+0x12095,EGIR,Akkadian,a4b8c2d2w2,18
+0x12092,E2 TIMES SHE,Akkadian,a5b5w10,20
+0x12093,E2 TIMES U,Akkadian,a5b5w1,11
+0x12090,E2 TIMES MI,Akkadian,a5b13w1,19
+0x12134,HI TIMES NUN,Akkadian,a5b1c2d2,10
+0x12135,HI TIMES SHE,Akkadian,c2d2w10,14
+0x12145,IG,Akkadian,a3b6w2,11
+0x12132,HI TIMES GAD,Akkadian,a1c3d3,7
+0x12161,KA TIMES ESH2,Akkadian,a5b9c5d1,20
+0x12165,KA TIMES GAR,Akkadian,a6b2c5d2,15
+0x1210b,GIR3 TIMES A PLUS IGI,Akkadian,a6b7c3d3w1,20
+0x1210c,GIR3 TIMES GAN2 TENU,Akkadian,a7b6c5d3,21
+0x1210e,GIR3 TIMES LU PLUS IGI,Akkadian,a6b10c3d3,22
+0x1210f,GIR3 TIMES PA,Akkadian,a3b8c3d3,17
+0x12138,HUB2,Akkadian,a3b1c3d3w1,11
+0x12070,DARA3,Akkadian,a2b5c5d5w2,19
+0x12069,DAG KISIM5 TIMES PAP PLUS PAP,Akkadian,a4b5c4d4w2,19
+,TAG TIMES SZU,Akkadian,a7b7c2d2,18
+0x122f8,TAG TIMES TUG2,Akkadian,a8b6c2d2,18
+0x122f9,TAG TIMES UD,Akkadian,a6b2c4d4,16
+0x122ea,SUR9,Akkadian,a4b3c3d2,12
+0x122ee,TA TIMES MI,Akkadian,a2b10w1,13
+0x122dc,SI GUNU,Akkadian,a2b6,8
+0x122ad,SHA,Akkadian,a1b4c1d1,7
+0x122c1,SHESH2,Akkadian,a12b9,21
+0x1213e,HUL2,Akkadian,a2b5w1,8
+0x1210a,GIR3,Akkadian,a2b6c3d3,14
+0x1210d,GIR3 TIMES IGI,Akkadian,a3b7c3d3w1,17
+0x1224b,NE SHESHIG,Akkadian,a1b4c4w4,13
+0x1215b,KA TIMES ASH2,Akkadian,a4b6c5d1,16
+0x1215c,KA TIMES BAD,Akkadian,a3b3c6d2,14
+0x1214f,IM TIMES TAK4,Akkadian,a8b2c3d3,16
+0x1214d,IL2,Akkadian,a10b9c1d1,21
+0x1213d,HUB2 TIMES UD,Akkadian,a3b1c3d3w1,11
+0x1232a,UR SHESHIG,Akkadian,a3b2w4,9
+0x12028,AL TIMES USH,Akkadian,a8b4c1d1w1,15
+0x12027,AL TIMES SHE,Akkadian,a5b2c1d1w4,13
+0x12026,AL TIMES KI,Akkadian,a5b6c3d3,17
+0x12025,AL TIMES KAD3,Akkadian,a8b3c1d1w3,16
+0x12024,AL TIMES HA,Akkadian,a9b2c1d1w2,15
+0x12021,AL TIMES AL,Akkadian,a10b4c2d2,18
+0x12034,ARAD,Akkadian,a3b1c1d1w1,7
+0x12011,AB TIMES IMIN,Akkadian,a1b2c1d1w7,12
+0x12010,AB TIMES IGI GUNU,Akkadian,a2b7c1d1w1,12
+0x12013,AB TIMES SHESH,Akkadian,a1b3c3d3,10
+0x12014,AB TIMES U PLUS U PLUS U,Akkadian,a1b2c1d1w3,8
+0x12015,AB GUNU,Akkadian,a1b2c5d1,9
+0x1229c,SAG TIMES LUM,Akkadian,a3b2c9d5,19
+0x12058,DAG KISIM5 TIMES AMAR,Akkadian,a4b7c2d2w6,21
+0x12063,DAG KISIM5 TIMES KAK,Akkadian,a5b5c3d3w2,18
+0x12067,DAG KISIM5 TIMES LUM,Akkadian,a4b5c11d6w2,28
+0x12068,DAG KISIM5 TIMES NE,Akkadian,a5b9c6d2w2,24
+0x12108,GIR2,Akkadian,a1b2c2d2,7
+0x12253,NINDA2 TIMES AN,Akkadian,a1b5c1d1w2,10
+0x12256,NINDA2 TIMES GUD,Akkadian,a1b6c1d1w2,11
+0x12258,NINDA2 TIMES NE,Akkadian,a1b8c4w2,15
+0x12244,NAGAR,Akkadian,a3b1c1d1w1,7
+0x12232,MUSH,Akkadian,a4b1c2d2w1,10
+0x12234,MUSH TIMES KUR,Akkadian,a4b1c2d2w4,13
+0x12120,GUD TIMES KUR,Akkadian,a1b2c1d1w3,8
+,USZ TIMES KU,Akkadian,a5b5w1,11
+,USZ TIMES KUR,Akkadian,a3b2w4,9
+0x1236a,ZU,Akkadian,a5b1c1d1,8
+0x12309,TUR,Akkadian,a1b2c2d2,7
+0x122ab,SANGA2,Akkadian,a7b7c2d2,18
+0x122e3,SU OVER SU,Akkadian,a10b4c2d2,18
+,TIR Variant Form,Neo-Babylonian,a3b2w4,9
+0x1201a,AB2 TIMES SHA3,Neo-Babylonian,a3b2w4,9
+0x1206f,DAR,Neo-Babylonian,a2b5w1,8
+0x12132,HI TIMES GAD,Neo-Babylonian,a1b2c2d2,7
+0x12301,TIR,Old Babylonian,a3b2w4,9
+0x12362,ZE2,Old Babylonian,a2b6,8
+0x1206f,DAR,Old Babylonian,a2b5w1,8
+0x1208a,E,Old Babylonian,a1b4c1d1,7
+0x12053,BUR,Old Babylonian,a1b4c1d1,7
+0x12224,MAH,Old Babylonian,a3b6w2,11
+0x120e5,GA2 TIMES SHE,Middle Hittite,a3b2w4,9
+0x1209e,EREN,Middle Hittite,a5b5w1,11
+0x12362,ZE2,Neo-Babylonian,a2b6,8
+0x12362,ZE2,Neo-Babylonian,a2b6,8
+0x120e5,GA2 TIMES SHE,Neo-Assyrian,a3b2w4,9
+0x12086,DUN3 GUNU,Middle Hittite,a2b6,8
+0x12147,IGI DIB,Middle Hittite,a2b5w1,8
+0x12216,LU3,Middle Hittite,a2b6,8
+0x12362,ZE2,Middle Hittite,a2b6,8
+0x12224,MAH,Middle Hittite,a3b2w4,9
+0x12069,DAG KISIM5 TIMES PAP PLUS PAP,Neo Assyrian,a5b6c2w2,15
+0x120c3,GA2 TIMES DA,Neo Assyrian,a5b6w1,12
+0x120c4,GA2 TIMES DI,Neo Assyrian,a5b4w1,10
+0x120c9,GA2 TIMES EN,Neo Assyrian,a5b3c2,10
+0x12188,KA TIMES U2,Neo Assyrian,a5b9,14
+0x1218b,KA TIMES USH,Neo Assyrian,a5b7w1,13
+0x121ca,LAGAB TIMES HI TIMES NUN,Neo Assyrian,a5b4c4,13
+0x121d0,LAGAB TIMES KIN,Neo Assyrian,a5b6c2,13
+0x121d3,LAGAB TIMES KUL PLUS HI PLUS A,Neo Assyrian,a5b3c2w1,11
+0x121d6,LAGAB TIMES LU,Neo Assyrian,a5b6,11
+0x121d9,LAGAB TIMES ME PLUS EN,Neo Assyrian,a5b4c2,11
+0x121da,LAGAB TIMES MUSH,Neo Assyrian,a5b3c4w1,13
+0x121e6,LAGAB TIMES U PLUS A,Neo Assyrian,a5b2w1,8
+0x121e8,LAGAB TIMES U2 PLUS ASH,Neo Assyrian,a5b7,12
+0x12257,NINDA2 TIMES ME PLUS GAN2 TENU,Neo Assyrian,a5b7w1,13
+0x12273,NUNUZ AB2 TIMES KAD3,Neo Assyrian,a5b3c10w2,20
+0x120a2,EZEN TIMES A,Neo Assyrian,a5b7,12
+0x121ea,LAGAB TIMES USH,Neo Assyrian,a5b4w1,10
+0x12006,A TIMES LAGAR GUNU,Neo Assyrian,a5b4w1,10
+0x12007,A TIMES MUSH,Neo Assyrian,a6b1c4w1,12
+0x1200c,AB TIMES DUN3 GUNU,Neo Assyrian,a5b8w1,14
+0x1200e,AB TIMES GAN2 TENU,Neo Assyrian,a5b6w1,12
+0x1200f,AB TIMES HA,Neo Assyrian,a5b4w2,11
+0x12025,AL TIMES KAD3,Neo Assyrian,a5b4c4w1,14
+0x12028,AL TIMES USH,Neo Assyrian,a5b5w2,12
+0x120cd,GA2 TIMES GI,Neo Assyrian,a5b3c4,12
+0x120ce,GA2 TIMES GI4,Neo Assyrian,a5b6c4,15
+0x120d4,GA2 TIMES HI PLUS LI,Neo Assyrian,a5b9c5,19
+0x1211b,GU2 TIMES NUN,Neo Assyrian,a5b3c4,12
+0x12158,KA TIMES A,Neo Assyrian,a5b5,10
+0x12162,KA TIMES GA,Neo Assyrian,a5b7c2,14
+0x121b9,LAGAB TIMES A,Neo Assyrian,a5b2,7
+0x121c4,LAGAB TIMES GA,Neo Assyrian,a5b4c2,11
+0x12121,GUD OVER GUD LUGAL,Neo Assyrian,a5b13c4,22
+0x12331,UR2 TIMES U2,Neo Assyrian,a5b8w1,14
+0x12332,UR2 TIMES U2 PLUS ASH,Neo Assyrian,a5b9w1,15
+0x12338,URU TIMES A,Neo Assyrian,a5b3,8
+0x120e8,GA2 TIMES SUM,Neo Assyrian,a5b7,12
+0x1217d,KA TIMES RU,Neo Assyrian,a5b6c2,13
+0x12353,USH TIMES KU,Neo Assyrian,a5b6w1,12
+0x120be,GA2 TIMES ASH2 PLUS GAL,Neo Assyrian,a5b9,14
+0x12250,NIM TIMES GAN2 TENU,Neo Assyrian,a5b4w2,11
+0x1223d,MUSH3 GUNU,Neo Assyrian,a5b5,10
+0x12241,NAGA INVERTED,Neo Assyrian,a5b7,12
+0x12240,NAGA,Neo Assyrian,a5b7,12
+0x122c5,SHID TIMES IM,Neo Assyrian,a5b4c4,13
+0x12056,DAG,Neo Assyrian,a5b2,7
+0x1217e,KA TIMES SA,Neo Assyrian,a5b7,12
+0x1220a,LU2 TIMES LAGAB,Neo Assyrian,a5b9,14
+0x1221b,LUH,Old Assyrian,a5b6,11
+0x12141,IB,Old Assyrian,a5b2,7
+,SUG,Akkadian,a5b2,7
+0x121e6,LAGAB TIMES U PLUS A,Akkadian,a5b2w1,8
+0x121ea,LAGAB TIMES USH,Akkadian,a5b4w1,10
+0x121d6,LAGAB TIMES LU,Akkadian,a5b5,10
+0x121b7,LA,Akkadian,a5b7,12
+,URU TIMES ISZ,Akkadian,a5b7w1,13
+0x12347,URU TIMES MIN,Akkadian,a5b3,8
+0x12259,NINDA2 TIMES NUN,Akkadian,a5b5w2,12
+0x12419,five GESH2,Akkadian,a5,5
+0x121b9,LAGAB TIMES A,Neo-Babylonian,a5b2,7
+0x121c5,LAGAB TIMES GAR,Neo-Babylonian,a5b2,7
+,DIR,Neo-Babylonian,a5b2,7
+0x1200f,AB TIMES HA,Neo-Babylonian,a5b4w2,11
+0x121b9,LAGAB TIMES A,Old Babylonian,a5b2,7
+0x122c6,SHIM,Old Babylonian,a5b4w2,11
+0x1209e,EREN,Old Babylonian,a5b6,11
+0x1240a,FIVE DISH,Old Babylonian,a5,5
+0x1240b,SIX DISH,Old Babylonian,a5,5
+,DIR,Neo-Babylonian,a5b2,7
+0x12326,UN,Old Babylonian,a5b2,7
+0x120f6,GAN,Old Babylonian,a5b4c2,11
+0x121b7,LA,Old Babylonian,a5b7,12
+0x1223d,MUSH3 GUNU,Neo-Babylonian,a5b5,10
+0x1231c,UDUG,Old Babylonian,a5b5w2,12
+0x1236a,ZU,Old Babylonian,a5b3,8
+0x1240a,FIVE DISH,Neo-Babylonian,a5,5
+0x12056,DAG,Neo-Babylonian,a5b2,7
+0x12056,DAG,Neo-Babylonian,a5b2,7
+0x121c5,LAGAB TIMES GAR,Middle Hittite,a5b2,7
+0x12165,KA TIMES GAR,Neo-Babylonian,a5b4w1,10
+0x1208d,E2,Middle Hittite,a5b2,7
+,DIR,Neo-Assyrian,a5b2,7
+0x120a2,EZEN TIMES A,Neo-Assyrian,a5b7,12
+0x120b2,EZEN TIMES LU,Neo-Assyrian,a5b7,12
+0x120be,GA2 TIMES ASH2 PLUS GAL,Neo-Assyrian,a5b8w1,14
+0x120c4,GA2 TIMES DI,Neo-Assyrian,a5b4w1,10
+0x120ce,GA2 TIMES GI4,Neo-Assyrian,a5b6c4,15
+0x120e4,GA2 TIMES SAR,Neo-Assyrian,a5b9,14
+0x120e8,GA2 TIMES SUM,Neo-Assyrian,a5b7,12
+0x12158,KA TIMES A,Middle Hittite,a5b4w1,10
+0x12293,SA,Middle Hittite,a5b2,7
+0x12326,UN,Middle Hittite,a5b2,7
+0x121c4,LAGAB TIMES GA,Neo-Assyrian,a5b4w2,11
+0x121ca,LAGAB TIMES HI TIMES NUN,Neo-Assyrian,a5b4c4,13
+0x121d6,LAGAB TIMES LU,Neo-Assyrian,a5b6,11
+0x121da,LAGAB TIMES MUSH,Neo-Assyrian,a5b3c4w1,13
+0x1208d,E2,Middle Hittite,a5b2,7
+0x1221b,LUH,Middle Hittite,a5b3,8
+0x12326,UN,Middle Hittite,a5b2,7
+0x1226e,NUNUZ AB2 TIMES ASHGAB,Akkadian,a6b4c4d4w1,19
+0x1229e,SAG TIMES NUN,Akkadian,a8b3c1d1,13
+0x12057,DAG KISIM5 TIMES A PLUS MASH,Akkadian,a8b6c2d2w1,19
+0x12060,DAG KISIM5 TIMES HA,Akkadian,a8b5c2d2w4,21
+0x12061,DAG KISIM5 TIMES IR,Akkadian,a7b5c3d3w2,20
+0x12065,DAG KISIM5 TIMES LU,Akkadian,a7b8c2d2w2,21
+0x12254,NINDA2 TIMES ASH,Akkadian,b5w2,7
+0x12255,NINDA2 TIMES ASH PLUS ASH,Akkadian,b6w2,8
+0x12257,NINDA2 TIMES ME PLUS GAN2 TENU,Akkadian,a6b5c2w2,15
+0x12252,NINDA2,Akkadian,b4w2,6
+0x12233,MUSH TIMES A,Akkadian,a7b1c2d2w1,13
+0x12235,MUSH TIMES ZA,Akkadian,a8b1c2d2w1,14
+0x12250,NIM TIMES GAN2 TENU,Akkadian,a6c3d1w2,12
+0x1232d,UR2 TIMES A PLUS NA,Akkadian,a5b8c4d2w1,20
+0x1232c,UR2 TIMES A PLUS HA,Akkadian,a9b4c2w2,17
+0x1232f,UR2 TIMES HA,Akkadian,a6b4c2w2,14
+0x12007,A TIMES MUSH,Akkadian,a7b1c2d2w1,13
+0x12273,NUNUZ AB2 TIMES KAD3,Akkadian,a5b1c4d3w4,17
+0x12272,NUNUZ AB2 TIMES IGI GUNU,Akkadian,a3b5c3d3w2,16
+0x12276,NUNUZ AB2 TIMES SILA3,Akkadian,a3c6d6w1,16
+0x12277,NUNUZ AB2 TIMES U2,Akkadian,a6b2c3d3w1,15
+0x12301,TIR,Akkadian,a10b2w10,22
+0x12299,SAG TIMES HA,Akkadian,a7b2c1d1w2,13
+0x12330,UR2 TIMES NUN,Akkadian,a7b5c2,14
+0x12331,UR2 TIMES U2,Akkadian,a6b6c2,14
+0x12332,UR2 TIMES U2 PLUS ASH,Akkadian,a6b7c2,15
+0x12196,KAK TIMES IGI GUNU,Akkadian,a2b5c1d1w1,10
+0x1236e,ZUM,Akkadian,a1b1c3d3,8
+0x12202,LU2 TIMES GAN2 TENU,Akkadian,a9c5d1,15
+0x12203,LU2 TIMES HI TIMES BAD,Akkadian,a4b1c5d3w1,14
+0x12205,LU2 TIMES KAD2,Akkadian,a5b1c4w1,11
+0x12206,LU2 TIMES KAD3,Akkadian,a7b1c4d1w3,16
+0x12210,LU2 TIMES TUG2,Akkadian,a6b4c3d1,14
+0x12321,UM TIMES U,Akkadian,a6b4w1,11
+0x12275,NUNUZ AB2 TIMES NE,Akkadian,a3b4c8d5w1,21
+0x12271,NUNUZ AB2 TIMES GUD,Akkadian,a3b2c6d6,17
+0x12265,NUN LAGAR TIMES MASH,Akkadian,a8b2c1d1,12
+0x1235b,UZ3 TIMES KASKAL,Akkadian,a4b3c3d3,13
+0x1227b,PAD,Akkadian,a3d1w1,5
+0x12075,DIM TIMES SHE,Akkadian,a2b1c2d2w4,11
+0x12325,UMUM TIMES PA,Akkadian,a3b8c2d2,15
+0x12334,UR4,Akkadian,a4c1d1,6
+0x1205d,DAG KISIM5 TIMES GI,Akkadian,a5b6c7d4w2,24
+0x1205f,DAG KISIM5 TIMES GUD,Akkadian,a5b7c3d3w2,20
+0x1206a,DAG KISIM5 TIMES SI,Akkadian,a6b7c2d2w2,19
+0x1206b,DAG KISIM5 TIMES TAK4,Akkadian,a10b6c3d2w2,23
+0x1206d,DAG KISIM5 TIMES USH,Akkadian,a7b7c2d2w3,21
+0x12127,GURUN,Akkadian,a2b2w4,8
+0x12124,GUM TIMES SHE,Akkadian,a2b4w14,20
+0x12163,KA TIMES GAL,Akkadian,a4b7c5d1,17
+0x12160,KA TIMES ERIN2,Akkadian,a3b2c7d3,15
+0x12314,UD KUSHU2,Akkadian,a2b1c3d3w1,10
+0x12315,UD TIMES BAD,Akkadian,b1c3d3,7
+0x12316,UD TIMES MI,Akkadian,b8c2d2w1,13
+0x12284,PI TIMES E,Akkadian,a2b5c1d1w2,11
+0x12283,PI TIMES BU,Akkadian,a1b2c2d2w2,9
+0x12285,PI TIMES I,Akkadian,a1b6w2,9
+0x12282,PI TIMES BI,Akkadian,a5b3c1d1w2,12
+0x12288,PI TIMES U2,Akkadian,a5b3w2,10
+0x12355,USH TIMES TAK4,Akkadian,a9b3c1w1,14
+0x1207d,DU SHESHIG,Akkadian,a1b2c1w5,9
+0x12268,NUN LAGAR TIMES USH,Akkadian,a10b3c1d1w1,16
+0x12006,A TIMES LAGAR GUNU,Akkadian,a5c5d1,11
+0x1201b,AB2 TIMES TAK4,Akkadian,a6b1c2d1w1,11
+0x12180,KA TIMES SHA,Akkadian,a5b6c6d2,19
+0x12181,KA TIMES SHE,Akkadian,a3b2c5d1w10,21
+0x12170,KA TIMES KI,Akkadian,a3b6c7d3,19
+0x12158,KA TIMES A,Akkadian,a6b2c5d1,14
+0x12183,KA TIMES SHU,Akkadian,a4b7c5d1,17
+0x12184,KA TIMES SIG,Akkadian,a3b2c7d3,15
+0x12186,KA TIMES TAR,Akkadian,a4b2c7d1,14
+0x12187,KA TIMES U,Akkadian,a3b2c5d1w1,12
+0x12189,KA TIMES UD,Akkadian,a3b2c7d3,15
+0x12009,A2,Akkadian,a2b8w7,17
+0x1214b,IL,Akkadian,a5b2c1d1w7,16
+0x12113,GISH TIMES BAD,Akkadian,a1b3c1d1,6
+0x1207c,DU GUNU,Akkadian,a1b6c1w1,9
+0x12081,DUG,Akkadian,a8b2c1d1,12
+0x1203f,ASHGAB,Neo-Babylonian,a4c1d1,6
+0x121e1,LAGAB TIMES SUM,Old Babylonian,a2b2w4,8
+0x120ee,GABA,Neo-Babylonian,a2b2w4,8
+0x1221d,LUM,Old Babylonian,b4w2,6
+0x12118,GU2,Old Babylonian,a2b2w4,8
+0x12308,TUM,Old Babylonian,b6w2,8
+0x1217b,KA TIMES NUN,Neo-Babylonian,a6b4w1,11
+0x1218d,KA2,Neo-Babylonian,a2b2w4,8
+0x1218d,KA2,Neo-Babylonian,a2b2w4,8
+0x121c7,LAGAB TIMES GUD PLUS GUD,Old Babylonian,b6w2,8
+0x1226d,NUNUZ,Neo-Babylonian,a2b2w4,8
+0x1214d,IL2,Old Babylonian,a6b7c2,15
+0x12158,KA TIMES A,Old Babylonian,a6b6c2,14
+0x122ed,TA TIMES HI,Middle Hittite,a2b2w4,8
+0x1217b,KA TIMES NUN,Middle Hittite,a6b4w1,11
+0x1221d,LUM,Middle Hittite,b4w2,6
+0x1236e,ZUM,Middle Hittite,b5w2,7
+0x120c9,GA2 TIMES EN,Neo-Assyrian,a5b3w2,10
+0x120f4,GALAM,Neo-Assyrian,b4w2,6
+0x12127,GURUN,Middle Hittite,a2b2w4,8
+0x12285,PI TIMES I,Middle Hittite,a1b6w2,9
+0x1221d,LUM,Middle Hittite,b4w2,6
+0x12064,DAG KISIM5 TIMES LA,Neo Assyrian,a6b7w2,15
+0x12068,DAG KISIM5 TIMES NE,Neo Assyrian,a6b8c4w2,20
+0x12067,DAG KISIM5 TIMES LUM,Neo Assyrian,a6b8c2w2,18
+0x1206a,DAG KISIM5 TIMES SI,Neo Assyrian,a7b4w2,13
+0x120cb,GA2 TIMES GAN2 TENU,Neo Assyrian,a7b4,11
+0x121d1,LAGAB TIMES KU3,Neo Assyrian,a6b2w1,9
+0x121de,LAGAB TIMES SHITA PLUS GISH TENU,Neo Assyrian,a6b6,12
+0x12266,NUN LAGAR TIMES SAL,Neo Assyrian,a7b3c2w1,13
+0x12265,NUN LAGAR TIMES MASH,Neo Assyrian,a7b3w1,11
+0x1226e,NUNUZ AB2 TIMES ASHGAB,Neo Assyrian,a6b4c6w2,18
+0x12277,NUNUZ AB2 TIMES U2,Neo Assyrian,a6b9c6w2,23
+0x1227e,PESH2,Neo Assyrian,a6b8w1,15
+0x1209e,EREN,Neo Assyrian,a6b8c2,16
+0x120a3,EZEN TIMES A PLUS LAL,Neo Assyrian,a6b8,14
+0x120a9,EZEN TIMES HA,Neo Assyrian,a6b7w1,14
+0x120ae,EZEN TIMES KU3,Neo Assyrian,a6b7w1,14
+0x12084,DUN,Neo Assyrian,a6b2w1,9
+0x12008,A TIMES SAG,Neo Assyrian,a6b4,10
+0x1201f,AK TIMES SHITA PLUS GISH,Neo Assyrian,a6b9,15
+0x12024,AL TIMES HA,Neo Assyrian,a6b3w2,11
+0x120d5,GA2 TIMES HUB2,Neo Assyrian,a6b3c2,11
+0x120db,GA2 TIMES KID PLUS LAL,Neo Assyrian,a7b5,12
+0x120de,GA2 TIMES ME PLUS EN,Neo Assyrian,a6b4c2,12
+0x120e0,GA2 TIMES NUN,Neo Assyrian,a7b3,10
+0x1214c,IL TIMES GAN2 TENU,Neo Assyrian,a6b5c2,13
+0x1215a,KA TIMES AD PLUS KU3,Neo Assyrian,a7b10w1,18
+0x12164,KA TIMES GAN2 TENU,Neo Assyrian,a6b7,13
+0x12098,EN TIMES GAN2,Neo Assyrian,a6b3c2,11
+0x121bc,LAGAB TIMES A PLUS LAL,Neo Assyrian,a6b3,9
+0x121c5,LAGAB TIMES GAR,Neo Assyrian,a6b2,8
+0x121c8,LAGAB TIMES HA,Neo Assyrian,a6b2w1,9
+0x12126,GUR7,Neo Assyrian,a7b10c6w1,24
+0x1231f,UM TIMES ME PLUS DA,Neo Assyrian,a6b9w1,16
+0x1232f,UR2 TIMES HA,Neo Assyrian,a6b4w2,12
+0x12330,UR2 TIMES NUN,Neo Assyrian,a6b5w1,12
+0x12296,SAG TIMES A,Neo Assyrian,a6b4,10
+0x12299,SAG TIMES HA,Neo Assyrian,a7b4w1,12
+0x1229e,SAG TIMES NUN,Neo Assyrian,a7b5,12
+0x122a0,SAG TIMES SHID,Neo Assyrian,a6b7,13
+0x122a2,SAG TIMES U2,Neo Assyrian,a6b8,14
+0x122a4,SAG TIMES UM,Neo Assyrian,a6b8,14
+0x122a6,SAG TIMES USH,Neo Assyrian,a6b6w1,13
+0x122a5,SAG TIMES UR,Neo Assyrian,a6b6,12
+0x122af,SHA3 TIMES A,Neo Assyrian,a6c2,8
+0x122b6,SHA3 TIMES U PLUS A,Neo Assyrian,a6c2w1,9
+0x1217b,KA TIMES NUN,Neo Assyrian,a6b6,12
+0x12352,USH TIMES A,Neo Assyrian,a6b2w1,9
+0x120ba,GA2 TIMES A PLUS IGI,Neo Assyrian,a7b3w1,11
+0x1233f,URU TIMES GAR,Neo Assyrian,a6b3,9
+0x122c4,SHID TIMES A,Neo Assyrian,a6b3,9
+0x1207e,DUB,Old Assyrian,a6b3,9
+0x12056,DAG,Old Assyrian,a6b2,8
+0x121a4,KID,Old Assyrian,a6b4,10
+0x12229,MES,Old Assyrian,a6b3,9
+,GIN2,Old Assyrian,a7b3,10
+0x120b0,EZEN TIMES LAL TIMES LAL,Akkadian,a6b8,14
+0x120ba,GA2 TIMES A PLUS IGI,Akkadian,a7b3w1,11
+0x120c9,GA2 TIMES EN,Akkadian,a6b7w2,15
+0x120e7,GA2 TIMES SHID,Akkadian,a6b7,13
+0x120f7,GAN2,Akkadian,a6b2,8
+,GIN2,Akkadian,a7b3,10
+0x121bc,LAGAB TIMES A PLUS LAL,Akkadian,a6b3,9
+0x121a4,KID,Akkadian,a6b4,10
+0x121d9,LAGAB TIMES ME PLUS EN,Akkadian,a6b7w2,15
+0x1234e,URU TIMES URUDA,Akkadian,a6b8,14
+0x12338,URU TIMES A,Akkadian,a6b3,9
+0x1231d,UM,Akkadian,a6b4,10
+,USZ TIMES A,Akkadian,a6b2w1,9
+0x12141,IB,Akkadian,a6b2,8
+0x12398,UM TIMES ME,Akkadian,a7b5,12
+0x120ed,GA2 OVER GA2,Akkadian,a6b4,10
+0x1227e,PESH2,Akkadian,a6b8w1,15
+0x122c4,SHID TIMES A,Neo-Babylonian,a6b3,9
+0x12352,USH TIMES A,Neo-Babylonian,a6b2w1,9
+0x121d1,LAGAB TIMES KU3,Neo-Babylonian,a6b2w1,9
+,EREN Variant Form,Neo-Babylonian,a6b2w1,9
+0x1234e,URU TIMES URUDA,Old Babylonian,a6b4,10
+0x1214d,IL2,Neo-Babylonian,a6b6w1,13
+0x1217e,KA TIMES SA,Neo-Babylonian,a6b6w1,13
+0x122a8,SAG GUNU,Old Babylonian,a6c2,8
+0x12122,GUL,Old Babylonian,a6b5w1,12
+0x12141,IB,Old Babylonian,a6b2,8
+0x12335,URI,Neo-Babylonian,a6b4,10
+0x1217e,KA TIMES SA,Middle Hittite,a6b5w1,12
+0x120a3,EZEN TIMES A PLUS LAL,Neo-Assyrian,a6b8,14
+0x120a9,EZEN TIMES HA,Neo-Assyrian,a6b7w1,14
+0x120ae,EZEN TIMES KU3,Neo-Assyrian,a6b7w1,14
+0x120ba,GA2 TIMES A PLUS IGI,Neo-Assyrian,a7b3w1,11
+0x120cb,GA2 TIMES GAN2 TENU,Neo-Assyrian,a7b4,11
+0x120d5,GA2 TIMES HUB2,Neo-Assyrian,a6b3w2,11
+0x120db,GA2 TIMES KID PLUS LAL,Neo-Assyrian,a7b5,12
+0x120de,GA2 TIMES ME PLUS EN,Neo-Assyrian,a6b4w2,12
+0x120e0,GA2 TIMES NUN,Neo-Assyrian,a7b3,10
+0x121bc,LAGAB TIMES A PLUS LAL,Neo-Assyrian,a6b3,9
+0x121c5,LAGAB TIMES GAR,Neo-Assyrian,a6b2,8
+0x121c8,LAGAB TIMES HA,Neo-Assyrian,a6b2w1,9
+0x121d1,LAGAB TIMES KU3,Neo-Assyrian,a6b2w1,9
+0x121de,LAGAB TIMES SHITA PLUS GISH TENU,Neo-Assyrian,a6b6,12
+0x1201a,AB2 TIMES SHA3,Akkadian,c4d4w1,9
+0x12171,KA TIMES KID,Akkadian,a9b6c5d1,21
+0x12173,KA TIMES LU,Akkadian,a6b5c5d1,17
+0x12188,KA TIMES U2,Akkadian,a7b4c5d1,17
+0x12003,A TIMES GAN2 TENU,Akkadian,a8c2,10
+0x12094,EDIN,Akkadian,a7b7c2d2w1,19
+0x1211d,GU2 GUNU,Akkadian,a7b2c2d2,13
+0x122de,SIG4,Akkadian,c6d6,12
+0x12040,BA,Akkadian,a1b1c1d1,4
+0x12044,BAL,Akkadian,a1b3w3,7
+0x12046,BALAG,Akkadian,a1b8c2d2w4,17
+0x12224,MAH,Akkadian,a2b3c1d2,8
+0x121fd,LU2,Akkadian,a4c3d1,8
+0x12387,KA TIMES UR2,Akkadian,a5b6c7d1,19
+0x12388,LAGAB TIMES GI,Akkadian,a3b3c5d2,13
+0x12191,KAD3,Akkadian,a3b1c1w3,8
+0x12217,LUGAL,Akkadian,a5b5c3d1,14
+0x12216,LU3,Akkadian,a2b10,12
+0x12157,KA,Akkadian,a3b2c5d1,11
+0x12082,DUGUD,Akkadian,b9w1,10
+0x12083,DUH,Akkadian,b2w8,10
+0x12100,GI,Akkadian,a1b1c5d2,9
+0x12110,GISAL,Akkadian,a2b4c1d1,8
+0x12308,TUM,Akkadian,a4b4c1d1w2,12
+0x12305,TU,Akkadian,a1c2d2w10,15
+0x12053,BUR,Akkadian,a1b6c1d1,9
+0x12076,DIM2,Akkadian,a2b2c1d2,7
+0x12391,NINDA2 TIMES BAL,Akkadian,a1b7w5,13
+,NUMERIC SIGN SHAR2 TIMES GAL PLUS DISH,Akkadian,a2b5c2d2,11
+,NUMERIC SIGN SHAR2 TIMES GAL PLUS MIN,Akkadian,a3b5c2d2,12
+0x120ee,GABA,Akkadian,b2w8,10
+0x122f6,TAG TIMES SHE,Akkadian,a6b2c2d2w10,22
+0x122fa,TAK4,Akkadian,a6b1c1,8
+0x122da,SHUBUR,Akkadian,a5b3c3d2,13
+0x1221d,LUM,Akkadian,c8d4,12
+0x1224e,NI2,Akkadian,a4b1c2d3,10
+0x1213a,HUB2 TIMES HAL,Akkadian,a3b2c2d2w1,10
+0x1213c,HUB2 TIMES LISH,Akkadian,a4b1c2d1w1,9
+0x1218d,KA2,Akkadian,a5b4w4,13
+0x122e9,SUR,Akkadian,a3b1d1,5
+0x12154,IN,Akkadian,a2c1d1w9,13
+0x12231,MURGU2,Akkadian,c4d2,6
+0x122e0,SIK2,Akkadian,a3b7c1,11
+0x122a9,SAL,Akkadian,a1b1c1d1,4
+0x12227,MASH2,Akkadian,a1b1c2d2,6
+0x121f7,LI,Akkadian,a2b4c1d1w10,18
+0x12051,BULUG,Akkadian,a1b2c1w2,6
+0x12056,DAG,Akkadian,a4b5c1d1,11
+0x12071,DARA4,Akkadian,a2b8c1d1,12
+0x12080,DUB2,Akkadian,a5b8c1d1w2,17
+0x12384,KA TIMES PA,Akkadian,a4b4c5d1,14
+0x12380,KA TIMES GISH,Akkadian,a4b4c5d1,14
+0x12392,NINDA2 TIMES GI,Akkadian,a1b5c5d2w2,15
+0x1225a,NINDA2 TIMES SHE,Akkadian,b4w12,16
+0x12143,IDIM OVER IDIM BUR,Akkadian,a1b10c1d1,13
+0x12130,HI TIMES BAD,Akkadian,b1c2d2w1,6
+0x1235f,ZA squared TIMES KUR,Akkadian,a8b8w3,19
+0x1231b,UD SHESHIG TIMES BAD,Akkadian,b1c3d3w4,11
+0x1237d,HUSH,Akkadian,a2b7c5d3,17
+0x1242d,two SHARU,Akkadian,c4d4w2,10
+0x12236,MUSH OVER MUSH,Akkadian,a8b2c4d4w1,19
+0x12369,ZIZ2,Akkadian,b4c1w1,6
+0x12365,ZI3,Akkadian,b7c2,9
+0x1214e,IM,Akkadian,a2b1c2d3,8
+0x1221e,LUM OVER LUM,Akkadian,c16d8,24
+0x12336,URI3,Akkadian,b1c1d1w2,5
+0x12052,BULUG Over BULUG,Akkadian,a2b4c2w4,12
+0x12105,GI4 over GI4,Akkadian,a2b10c10d4,26
+0x12303,TIR over TIR,Akkadian,a20b4w20,44
+0x12364,ZI OVER ZI,Akkadian,a4b2w20,26
+0x12371,AB2 TIMES A,Akkadian,a3c1d1w1,6
+0x12289,PI CROSSING PI,Akkadian,a4b2c3d1,10
+0x124a1,DUG TIMES LUH PLUS GISH,Akkadian,a8b8c1d1,18
+0x1221f,LUM OVER LUM GAR OVER GAR,Akkadian,a6c16d10,32
+0x1226a,NUN OVER NUN,Akkadian,a10b2,12
+0x1230a,TUR OVER TUR ZA OVER ZA,Akkadian,a10b4c4d4,22
+0x1207a,DU,Akkadian,a1b2c1w1,5
+0x1238b,LU2 TIMES SHU,Akkadian,a5b5c3d1,14
+0x12435,two BURU,Akkadian,c4d4w2,10
+0x12425,three SHAR2 variant form,Akkadian,c6d6,12
+0x12424,three SHAR2,Akkadian,c6d6,12
+0x12074,DIM,Neo-Babylonian,b1c1d1w2,5
+0x120fe,GESHTIN,Old Babylonian,a1b2c1w2,6
+0x1222d,MU OVER MU,Old Babylonian,b2w8,10
+0x120ee,GABA,Old Babylonian,b2w8,10
+0x1222d,MU OVER MU,Neo-Babylonian,b2w8,10
+0x1218d,KA2,Old Babylonian,a5b4w4,13
+0x1218f,KAB,Old Babylonian,a3b7c1,11
+0x12044,BAL,Old Babylonian,a1b3w3,7
+0x12055,DA,Old Babylonian,a3b7c1,11
+0x12138,HUB2,Old Babylonian,a3b7c1,11
+0x120b6,GA GUNU,Neo-Assyrian,a4b4c1d1w2,12
+0x12044,BAL,Middle Hittite,a1b3w3,7
+0x1222d,MU OVER MU,Middle Hittite,b2w8,10
+0x1222d,MU OVER MU,Akkadian,b2w12,14
+0x1226d,NUNUZ,Akkadian,a2c4d4,10
+0x1219e,KASKAL OVER KASKAL LAGAB TIMES U OVER LAGAB TIMES U,Akkadian,a4b4c4d4w2,18
+0x1207b,DU OVER DU,Akkadian,a2b4c2w2,10
+0x1204e,BU OVER BU AB,Akkadian,a1b4c3d3,11
+0x1206f,DAR,Akkadian,a2b6c1,9
+0x12381,KA TIMES GUD,Akkadian,a4b4c6d2,16
+0x12396,SAG TIMES IGI GUNU,Akkadian,a4b7c1d1w1,14
+0x122f1,TAB OVER TAB NI OVER NI DISH OVER DISH,Akkadian,a6b4c2d2,14
+0x1203b,ASH Over ASH TUG2 OVER TUG2 TUG2 Over TUG2 PAP,Akkadian,a8b18c1d1,28
+0x1230e,U OVER U PA OVER PA GAR OVER GAR,Akkadian,a8b4d2w2,16
+0x12151,IM opposing IM,Akkadian,a8b2c4d6,20
+0x122bd,SHE OVER SHE TAB OVER TAB GAR OVER GAR,Akkadian,a6b4d2w20,32
+0x1238e,NA4,Akkadian,a2c3d3,8
+0x1237f,KA TIMES ASH3,Akkadian,a9b2c5d1,17
+0x1237c,GIG,Akkadian,a2b8c4d4w1,19
+0x12213,LU2 opposing LU2,Akkadian,a8c6d2,16
+0x12078,DIN KASKAL U GUNU DISH,Akkadian,a1b4c3d3w3,14
+0x12373,DAG KISIM5 TIMES U2 PLUS MASH,Akkadian,a9b8c2d2w2,23
+0x12370,AB TIMES NUN,Akkadian,a6b3c1d1,11
+0x12149,IGI OVER IGI SHIR OVER SHIR UD OVER UD,Akkadian,a1b3c4d4w2,14
+0x12378,EZEN TIMES SHE,Akkadian,a4b6w10,20
+0x12377,EZEN TIMES GUD,Akkadian,a5b8c1d1,15
+0x12379,GA2 TIMES AN PLUS KAK PLUS A,Akkadian,a8b3c2d2,15
+0x12218,LUGAL OVER LUGAL,Akkadian,a10b10c6,26
+0x12045,BAL OVER BAL,Akkadian,a1b6w6,13
+0x120f9,GAN2 OVER GAN2,Akkadian,a12b4,16
+0x1236e,ZUM,Neo-Babylonian,a1b5w2,8
+0x122a9,SAL,Old Babylonian,b1c2,3
+0x1207c,DU GUNU,Old Babylonian,a2b6c1,9
+0x1212b,HA GUNU,Old Babylonian,a2b4c2w2,10
+0x1212c,HAL,Old Babylonian,b1c2,3
+0x1236e,ZUM,Neo-Babylonian,a1b5w2,8
+0x12122,GUL,Middle Hittite,a1b5w2,8
