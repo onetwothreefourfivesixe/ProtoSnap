@@ -1,0 +1,4 @@
+column,line_index,line_label,primed,is_first_line,sparse,n_signs,ax0,ay0,ax1,ay1,thickness,tilt_deg
+single,22,,,True,False,9,143.4,323.3,908.6,296.3,164.7,-2.0
+single,24,,,False,False,9,113.8,582.6,1154.9,551.2,150.5,-1.7
+single,26,,,False,False,10,95.5,821.2,1545.3,802.9,150.5,-0.7

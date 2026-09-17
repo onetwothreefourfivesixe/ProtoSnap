@@ -1,7 +1,17 @@
 .DS_Store
 .venv
+__pycache__/
 singleSignImages
 # output
 weights
 cuneiformFonts/
 fontTargets/
+
+# data sets and everything derived from them stay out of git; tracked extracts are produced by
+# line_cropping/report (docs/metrics_comparison.md and samples/)
+artifacts_json/
+ebl_tablets/
+fat-cross_processed/
+ebl_detection_2024/
+external/
+protosnap_inputs/

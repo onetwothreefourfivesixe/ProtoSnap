@@ -1,0 +1,12 @@
+column,line_index,line_label,primed,is_first_line,sparse,n_signs,ax0,ay0,ax1,ay1,thickness,tilt_deg
+single,1,1',True,True,True,1,805.8,96.4,927.0,88.1,99.5,-3.9
+single,2,2',True,False,True,2,656.3,181.7,907.8,164.4,101.5,-3.9
+single,3,3',True,False,True,1,610.4,258.7,906.6,238.3,104.6,-3.9
+single,4,4',True,False,False,3,455.3,358.8,899.2,302.4,96.3,-7.2
+single,5,5',True,False,False,6,325.8,455.7,910.3,405.6,98.9,-4.9
+single,6,6',True,False,False,4,271.7,503.3,900.6,547.5,104.0,4.0
+single,7,7',True,False,False,4,355.6,629.4,907.8,507.7,98.6,-12.4
+single,8,8',True,False,False,3,413.1,680.8,895.4,636.2,91.3,-5.3
+single,9,9',True,False,False,5,298.7,751.6,895.8,721.6,78.6,-2.9
+single,10,10',True,False,False,4,319.3,832.8,911.2,802.0,99.6,-3.0
+single,11,11',True,False,False,3,311.5,905.7,904.0,903.6,81.4,-0.2

@@ -1,0 +1,219 @@
+<title>Old Assyrian Line Marker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#e9e6df; --panel:#f7f5f0; --panel-2:#eeebe4; --line-ui:#d3cec3; --ink:#22252a; --ink-2:#5d6169; --ink-3:#8b8f97;
+  --accent:#0f8f78; --accent-ink:#0b6b5a; --select:#c8267a; --warn:#b4640a; --warn-bg:#f6e6cf; --ok-bg:#d7ece4;
+  --mark:#19d3ad; --mark-selected:#ff4fa8; --mark-empty:#ffc247;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ground:#1a1c20; --panel:#23262c; --panel-2:#2b2f36; --line-ui:#3a3f48; --ink:#e7e5df; --ink-2:#aeb2b9; --ink-3:#7d828b;
+  --accent:#2fc4a5; --accent-ink:#9fe8d6; --select:#ff6db8; --warn:#f0a94a; --warn-bg:#3a2e1a; --ok-bg:#1d3a32;
+}}
+:root[data-theme="dark"]{
+  --ground:#1a1c20; --panel:#23262c; --panel-2:#2b2f36; --line-ui:#3a3f48; --ink:#e7e5df; --ink-2:#aeb2b9; --ink-3:#7d828b;
+  --accent:#2fc4a5; --accent-ink:#9fe8d6; --select:#ff6db8; --warn:#f0a94a; --warn-bg:#3a2e1a; --ok-bg:#1d3a32;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45;padding-inline:16px;padding-block:12px;min-height:100vh}
+.app{display:grid;grid-template-columns:240px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:12px;max-width:1400px;margin:0 auto;height:calc(100vh - 24px)}
+header{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;background:var(--panel);border:1px solid var(--line-ui);border-radius:6px;padding:10px 14px}
+h1{font-size:15px;font-weight:600;margin:0;letter-spacing:.01em}
+.face-id{font-family:var(--mono);font-size:15px;font-weight:500}
+.meta{color:var(--ink-2);font-family:var(--mono);font-size:12px}
+.spacer{flex:1}
+.count{font-family:var(--mono);font-size:13px;padding:4px 10px;border-radius:4px;background:var(--ok-bg);font-variant-numeric:tabular-nums}
+.count.off{background:var(--warn-bg);color:var(--warn)}
+.count b{font-weight:600}
+button{font:inherit;font-size:13px;padding:6px 11px;border-radius:5px;border:1px solid var(--line-ui);background:var(--panel-2);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--ink-3)}
+button:focus-visible,.item:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500}
+button.primary:hover{filter:brightness(1.08)}
+.save{font-size:12px;color:var(--ink-3);min-width:80px}
+aside{background:var(--panel);border:1px solid var(--line-ui);border-radius:6px;display:flex;flex-direction:column;min-height:0}
+.progress{padding:10px 12px;border-bottom:1px solid var(--line-ui);font-size:12px;color:var(--ink-2)}
+.bar{height:5px;background:var(--panel-2);border-radius:3px;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0}
+.list{overflow:auto;flex:1;padding:6px}
+.item{display:grid;grid-template-columns:10px 1fr auto;align-items:center;gap:8px;width:100%;text-align:left;padding:6px 8px;border:0;border-radius:4px;background:transparent;font-family:var(--mono);font-size:12px;color:var(--ink)}
+.item:hover{background:var(--panel-2)}
+.item.active{background:var(--panel-2);box-shadow:inset 3px 0 0 var(--accent)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--line-ui)}
+.dot.draft{background:var(--warn)}
+.dot.done{background:var(--accent)}
+.tag{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+main{background:var(--panel);border:1px solid var(--line-ui);border-radius:6px;min-height:0;display:flex;flex-direction:column}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line-ui);font-size:12px;color:var(--ink-2)}
+.toolbar select{font:inherit;padding:4px 6px;border-radius:4px;border:1px solid var(--line-ui);background:var(--panel-2);color:var(--ink)}
+.viewport{overflow:auto;flex:1;padding:12px;display:flex;justify-content:center;align-items:flex-start}
+.stage{position:relative;display:inline-block;max-width:100%;cursor:crosshair;user-select:none;-webkit-user-select:none;touch-action:none;background:#000}
+.stage img{display:block;max-width:100%;height:auto;pointer-events:none}
+.mark{position:absolute;left:0;right:0;height:0;border-top:2px solid var(--mark);cursor:ns-resize;pointer-events:auto}
+.mark::before{content:attr(data-n);position:absolute;left:4px;top:-9px;font:500 11px/1 var(--mono);color:#001b15;background:var(--mark);padding:2px 5px;border-radius:3px}
+.mark::after{content:"";position:absolute;left:0;right:0;top:-7px;height:14px}
+.mark.empty{border-top-style:dashed;border-top-color:var(--mark-empty)}
+.mark.empty::before{background:var(--mark-empty);color:#2a1d00}
+.mark.selected{border-top-color:var(--mark-selected);border-top-width:3px}
+.mark.selected::before{background:var(--mark-selected);color:#fff}
+.hint{padding:8px 12px;border-top:1px solid var(--line-ui);font-size:12px;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:6px 16px}
+kbd{font-family:var(--mono);font-size:11px;padding:1px 5px;border:1px solid var(--line-ui);border-radius:3px;background:var(--panel-2);color:var(--ink-2)}
+.notice{padding:8px 12px;background:var(--warn-bg);color:var(--warn);font-size:12px}
+@media (max-width:760px){.app{grid-template-columns:1fr;height:auto}aside{max-height:220px}}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .3s}}
+</style>
+
+<div class="app">
+  <header>
+    <h1>Old Assyrian Line Marker</h1>
+    <span class="face-id" id="faceId">—</span>
+    <span class="meta" id="faceMeta"></span>
+    <span class="spacer"></span>
+    <span class="count" id="count">0 lines · ATF 0</span>
+    <button id="prevBtn" title="Previous face (K)">‹ Prev</button>
+    <button id="nextBtn" title="Next face (J)">Next ›</button>
+    <button id="doneBtn" class="primary" title="Mark this face done and go to the next (D)">Mark done → next</button>
+    <span class="save" id="saveState"></span>
+  </header>
+
+  <aside>
+    <div class="progress"><span id="progressText">0 of 100 done</span><div class="bar"><i id="progressBar"></i></div></div>
+    <div class="list" id="list" role="listbox" aria-label="Faces"></div>
+  </aside>
+
+  <main>
+    <div class="notice" id="notice" hidden>Saving is unavailable in this view. Marks stay in this browser only.</div>
+    <div class="toolbar">
+      <span>Start from</span>
+      <select id="startSel"><option value="profile">profile fit</option><option value="detector">detector</option><option value="none">nothing</option></select>
+      <button id="resetBtn" title="Replace the marks with the chosen start (R)">Reset to start</button>
+      <button id="clearBtn" title="Remove every mark (C)">Clear</button>
+      <button id="deleteBtn" title="Delete the selected mark (Delete)">Delete selected</button>
+      <span class="spacer"></span>
+      <span id="lineInfo"></span>
+    </div>
+    <div class="viewport"><div class="stage" id="stage"><img id="img" alt="Deskewed tablet face"></div></div>
+    <div class="hint">
+      <span><kbd>click</kbd> add a line at the centre of a text line</span>
+      <span><kbd>drag</kbd> move</span>
+      <span><kbd>↑</kbd><kbd>↓</kbd> nudge selected (<kbd>shift</kbd> ×5)</span>
+      <span><kbd>Del</kbd> remove</span>
+      <span><kbd>J</kbd>/<kbd>K</kbd> next / previous face</span>
+      <span><kbd>D</kbd> done → next</span>
+      <span>Dashed amber lines were inserted by spacing and have no detected signs behind them.</span>
+    </div>
+  </main>
+</div>
+
+<script>
+(async function(){
+  const $=s=>document.querySelector(s);
+  const state={faces:[],idx:0,labels:{},selected:-1,db:null,timer:null,dirty:false};
+  const data=await (await fetch('data/faces.json')).json();
+  state.faces=data.faces;
+  try{ const saved=JSON.parse(localStorage.getItem('oa-line-marks')||'{}'); Object.assign(state.labels,saved);}catch(e){}
+
+  // ---------- storage ----------
+  function docFor(id){return state.db.doc('labels/'+id.replace(/[^A-Za-z0-9_\-.~:@+]/g,'_'));}
+  async function loadRemote(){
+    const db=await window.claude?.use?.('db').catch(()=>null);
+    state.db=db||null;
+    if(!db){ $('#notice').hidden=false; return; }
+    try{
+      const snap=await db.collection('labels').get();
+      snap.docs.forEach(d=>{const v=d.data(); if(v&&v.face) state.labels[v.face]=v;});
+    }catch(e){ console.warn('load failed',e); }
+    renderList(); renderFace();
+  }
+  function persist(){
+    const f=cur(); const rec=state.labels[f.id];
+    try{localStorage.setItem('oa-line-marks',JSON.stringify(state.labels));}catch(e){}
+    if(!state.db||!rec) return;
+    $('#saveState').textContent='saving…';
+    docFor(f.id).set(rec).then(()=>{$('#saveState').textContent='saved';}).catch(e=>{$('#saveState').textContent='not saved';console.warn(e);});
+  }
+  function schedule(){ clearTimeout(state.timer); state.timer=setTimeout(persist,500); }
+
+  // ---------- model ----------
+  const cur=()=>state.faces[state.idx];
+  function rec(f){
+    if(!state.labels[f.id]){
+      const start=f.starts[$('#startSel').value]||f.starts.profile||[];
+      state.labels[f.id]={face:f.id,lines:start.map(y=>({y:+y,src:'start'})),status:'draft',scale:f.scale,skew_deg:f.skew_deg,img_w:f.w,img_h:f.h,atf_lines:f.atf_lines,updatedAt:new Date().toISOString()};
+    }
+    return state.labels[f.id];
+  }
+  function setLines(lines,status){ const r=rec(cur()); r.lines=lines.slice().sort((a,b)=>a.y-b.y); if(status) r.status=status; r.updatedAt=new Date().toISOString(); renderMarks(); renderCount(); renderListItem(); schedule(); }
+
+  // ---------- rendering ----------
+  function renderList(){
+    const list=$('#list'); list.innerHTML='';
+    state.faces.forEach((f,i)=>{
+      const b=document.createElement('button'); b.className='item'+(i===state.idx?' active':''); b.setAttribute('role','option'); b.dataset.i=i;
+      const st=state.labels[f.id]?.status||'';
+      b.innerHTML=`<span class="dot ${st}"></span><span>${f.id}</span><span class="tag">${f.split}</span>`;
+      b.addEventListener('click',()=>go(i)); list.appendChild(b);
+    });
+    renderProgress();
+  }
+  function renderListItem(){ const el=$('#list').children[state.idx]; if(el){ const st=state.labels[cur().id]?.status||''; el.querySelector('.dot').className='dot '+st; } renderProgress(); }
+  function renderProgress(){ const done=state.faces.filter(f=>state.labels[f.id]?.status==='done').length; $('#progressText').textContent=`${done} of ${state.faces.length} done`; $('#progressBar').style.width=(100*done/state.faces.length)+'%'; }
+  function renderFace(){
+    const f=cur(); const r=rec(f);
+    $('#faceId').textContent=f.id; $('#faceMeta').textContent=`${f.px_per_line.toFixed(0)} px/line · ${f.stratum} · skew ${f.skew_deg>0?'+':''}${f.skew_deg}°`;
+    const img=$('#img'); img.src=f.img; img.width=f.w; img.height=f.h;
+    state.selected=-1; renderMarks(); renderCount();
+    document.querySelectorAll('.item').forEach((el,i)=>el.classList.toggle('active',i===state.idx));
+    const act=$('#list').children[state.idx]; if(act) act.scrollIntoView({block:'nearest'});
+    $('#saveState').textContent=state.db?(r.status==='done'?'done':''):'';
+  }
+  function dispScale(){ const img=$('#img'); return img.clientWidth/cur().w; }
+  function renderMarks(){
+    const stage=$('#stage'); stage.querySelectorAll('.mark').forEach(m=>m.remove());
+    const s=dispScale(); const r=rec(cur());
+    r.lines.forEach((l,i)=>{
+      const m=document.createElement('div'); m.className='mark'+(l.src==='inserted'?' empty':'')+(i===state.selected?' selected':'');
+      m.style.top=(l.y*s)+'px'; m.dataset.n=i+1; m.dataset.i=i; stage.appendChild(m);
+    });
+    $('#lineInfo').textContent=state.selected>=0?`line ${state.selected+1} at row ${Math.round(r.lines[state.selected].y/ cur().scale)} of the face`:'';
+  }
+  function renderCount(){ const r=rec(cur()); const n=r.lines.length; const el=$('#count'); el.innerHTML=`<b>${n}</b> lines · ATF ${r.atf_lines}`; el.classList.toggle('off',n!==r.atf_lines); }
+
+  // ---------- interaction ----------
+  const stage=$('#stage'); let drag=null;
+  stage.addEventListener('pointerdown',e=>{
+    const m=e.target.closest('.mark'); const rect=stage.getBoundingClientRect(); const s=dispScale();
+    if(m){ state.selected=+m.dataset.i; drag={i:state.selected,startY:e.clientY,orig:rec(cur()).lines[state.selected].y,moved:false}; stage.setPointerCapture(e.pointerId); renderMarks(); return; }
+    const y=(e.clientY-rect.top)/s; const lines=rec(cur()).lines.slice(); lines.push({y:Math.max(0,Math.min(cur().h,y)),src:'manual'});
+    lines.sort((a,b)=>a.y-b.y); state.selected=lines.findIndex(l=>l.y===Math.max(0,Math.min(cur().h,y))); setLines(lines);
+  });
+  stage.addEventListener('pointermove',e=>{ if(!drag) return; const s=dispScale(); const dy=(e.clientY-drag.startY)/s; if(Math.abs(dy)>0.5) drag.moved=true; const r=rec(cur()); r.lines[drag.i].y=Math.max(0,Math.min(cur().h,drag.orig+dy)); r.lines[drag.i].src='manual'; renderMarks(); });
+  stage.addEventListener('pointerup',e=>{ if(!drag) return; const moved=drag.moved; drag=null; if(moved){ const r=rec(cur()); const y=r.lines[state.selected].y; const lines=r.lines.slice().sort((a,b)=>a.y-b.y); state.selected=lines.findIndex(l=>l.y===y); setLines(lines);} });
+  window.addEventListener('resize',renderMarks); $('#img').addEventListener('load',renderMarks);
+
+  function go(i){ if(i<0||i>=state.faces.length) return; persist(); state.idx=i; renderFace(); }
+  function deleteSelected(){ if(state.selected<0) return; const lines=rec(cur()).lines.slice(); lines.splice(state.selected,1); state.selected=-1; setLines(lines); }
+  function nudge(d){ if(state.selected<0) return; const r=rec(cur()); r.lines[state.selected].y=Math.max(0,Math.min(cur().h,r.lines[state.selected].y+d)); r.lines[state.selected].src='manual'; setLines(r.lines); }
+  $('#prevBtn').onclick=()=>go(state.idx-1); $('#nextBtn').onclick=()=>go(state.idx+1);
+  $('#doneBtn').onclick=()=>{ setLines(rec(cur()).lines,'done'); persist(); go(Math.min(state.faces.length-1,state.idx+1)); };
+  $('#deleteBtn').onclick=deleteSelected;
+  $('#clearBtn').onclick=()=>{ state.selected=-1; setLines([]); };
+  $('#resetBtn').onclick=()=>{ const f=cur(); const start=f.starts[$('#startSel').value]||[]; state.selected=-1; setLines(start.map(y=>({y:+y,src:'start'}))); };
+  document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='SELECT'||e.target.tagName==='INPUT') return;
+    const k=e.key.toLowerCase();
+    if(k==='j'||e.key==='ArrowRight'){go(state.idx+1);e.preventDefault();}
+    else if(k==='k'||e.key==='ArrowLeft'){go(state.idx-1);e.preventDefault();}
+    else if(k==='d'){$('#doneBtn').click();}
+    else if(k==='r'){$('#resetBtn').click();}
+    else if(k==='c'){$('#clearBtn').click();}
+    else if(e.key==='Delete'||e.key==='Backspace'){deleteSelected();e.preventDefault();}
+    else if(e.key==='ArrowUp'){nudge(e.shiftKey?-5:-1);e.preventDefault();}
+    else if(e.key==='ArrowDown'){nudge(e.shiftKey?5:1);e.preventDefault();}
+    else if(e.key==='Escape'){state.selected=-1;renderMarks();}
+  });
+
+  renderList(); renderFace(); loadRemote();
+})();
+</script>

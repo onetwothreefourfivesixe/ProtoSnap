@@ -1,0 +1,5 @@
+- Work for ProtoSnap:
+- Use the transliterations with sign values to try and improve the cropping of tablets by line
+- Figure out how to both measure the angle or rotation of the vector sign from the font
+- Also figure out how to identify the first sign of the tablet to start from (maybe use the wedge lines that separate the different lines) and if possible, the ending sign to make the line
+- Maybe train a model to identify first sign to run the sign detection
