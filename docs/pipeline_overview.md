@@ -155,7 +155,11 @@ This sign-level trial exceeded the project's stated aim, which is the clean line
 
 *Figure 11. The same kind of result on single-line crops: BM.42263 reverse line 2, BM.131470 obverse line 7, CBS.1601 reverse line 5. Green is the sign box; coloured strokes are the fitted skeleton, one colour per stroke.*
 
-## 9. Running the pipeline
+## 9. Metrics in one place
+
+`python -m line_cropping.report.aggregate_metrics` collects every result table of both sets and writes `docs/metrics_comparison.md`, a side-by-side comparison of data, detection, line finding, crops and ProtoSnap, with the per-set values and their source files in `ebl_tablets/metrics/` and `fat-cross_processed/metrics/`. `python -m line_cropping.report.compile_sample` regenerates `samples/`, the tracked extract of 20 tablets per set with every output.
+
+## 10. Running the pipeline
 
 All commands run from the repository root; the detector runs in the mmdetection environment at `~/venvs/mmdet`.
 

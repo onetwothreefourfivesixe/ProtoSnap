@@ -15,6 +15,7 @@ New to the project? Read `docs/pipeline_overview.md` first: it explains the whol
 | `crops/` | Phase 4 | `make_crops.py` (gap-bounded single-line crops) |
 | `eval/` | Phase 5 | `evaluate_lines.py`, `evaluate_crops.py`, `evaluate_oa.py`, `phase5_eval.py`, `render_lines.py` |
 | `protosnap/` | Phase 6 | `protosnap_prep.py`, `phase6_summary.py` |
+| `report/` | reporting | `aggregate_metrics.py` (every metric table of both sets -> `docs/metrics_comparison.md`, per-set `metrics/`), `compile_sample.py` (tracked `samples/`: metrics tables + 20 tablets per set with all outputs) |
 | `experiments/` | early trials | `profile_lines_oa.py`, `comb_fit_oa.py` (the first Old Assyrian profile experiments) |
 
 Data lives outside the package and is gitignored: `artifacts_json/` (CDLI dump and derived tables), `ebl_tablets/`
