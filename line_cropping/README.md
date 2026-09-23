@@ -12,6 +12,7 @@ New to the project? Read `docs/pipeline_overview.md` first: it explains the whol
 | `truth/` | ground truth | `ebl_ground_truth.py` (lines from eBL sign boxes), `oa_sample.py`, `labels_from_db.py`, `labeler/` (source of the Old Assyrian Line Marker page) |
 | `faces/` | Phase 2 | `prepare_faces.py` (cut sides from composite photos; Old Assyrian face list and edge rotation) |
 | `lines/` | Phase 3 | `profile_lines.py`, `find_lines.py` (profile methods), `detect_signs.py` (eBL detector, mmdet env), `lines_from_boxes.py` (boxes -> lines) |
+| `signs/` | sign classifier | `build_dataset.py` (per-script datasets from `signs_snippets_metadata.json`, face-level hold-out), `train_classifier.py` (ResNet-34), `classify.py` (inference) |
 | `crops/` | Phase 4 | `make_crops.py` (gap-bounded single-line crops) |
 | `eval/` | Phase 5 | `evaluate_lines.py`, `evaluate_crops.py`, `evaluate_oa.py`, `phase5_eval.py`, `render_lines.py` |
 | `protosnap/` | Phase 6 | `protosnap_prep.py`, `phase6_summary.py` |
@@ -285,6 +286,42 @@ aborted the first attempt after 21 targets.
 `overlay_results.py` projects each fitted skeleton back onto the unrotated face and onto the gap-bounded line crop of
 its line (undoing ProtoSnap's 512-px stretch and y flip, then applying the face deskew), writing
 `output/phase6_OB/overlays/{faces,lines}/` plus `line_contact_sheet.jpg` and `index.csv`.
+
+## Sign classifier from the snippet metadata (20 Sep 2026; negative result for alignment)
+
+`signs_snippets_metadata.json` is a classification set: one cropped sign per entry with its name and script, and no
+position on the tablet. It cannot train or fine-tune the detector; it can train a sign classifier, which was tried
+as a way to improve the sign-to-box alignment in `protosnap/protosnap_prep.py`.
+
+- `signs/build_dataset.py` builds NA and OB datasets with hold-out at FACE level: a snippet's eBL line index is mapped
+  to its face through the Phase 1 line table, and snippets on Phase 5 test faces never enter training (tablet-level
+  hold-out left OB with 3,767 training snippets; face-level gives 8,472). Classes are signs with >= 20 training samples.
+- `signs/train_classifier.py`: ResNet-34 from cached ImageNet weights, 112 px letterboxed inputs held in RAM,
+  class-balanced sampling, 15 epochs, under 3 minutes per script on the RTX 4060. Weights in `weights/sign_classifier/`.
+
+| script | classes | train / val / test snippets | held-out test top-1 | top-5 |
+|---|---|---|---|---|
+| OB | 108 | 8,472 / 887 / 7,684 | 0.81 | 0.95 |
+| NA | 104 | 14,913 / 2,333 / 3,685 | 0.82 (intact 0.87, damaged 0.50, partially broken 0.29) | 0.93 |
+
+(NA validation top-1 is 0.94, but its validation tablets are mostly detector-derived crops of clean signs; quote the
+held-out figure.)
+
+**Effect on alignment (Phase 5 test faces only, `protosnap_prep --classifier --split test --no-write`):** none for OB
+(matched box = eBL truth box of that sign: 66% with and without) and slightly negative for NA (63% -> 59%).
+The reason, measured on detector boxes matched to truth boxes by IoU alone (no labels involved):
+
+| | detector label correct | classifier correct | classifier correct where the detector is wrong |
+|---|---|---|---|
+| OB (4,795 boxes) | 92% (97% on signs the classifier knows) | 85% | 50% of 125 boxes |
+| NA (1,823 boxes) | 83% (96%) | 83% | 50% of 56 boxes |
+
+The eBL detector was trained on a superset of the same annotations, with context, and its label is already right on
+about 97% of correctly localised boxes; the classifier is weaker and knows fewer classes (104-108 against 173), so it
+adds noise rather than information. The alignment's remaining errors are not labelling errors: the detector finds only
+about 55% of the signs a transliteration lists, so the sequence alignment has gaps to bridge. Effort belongs in
+detection recall, not classification. `--classifier` therefore stays off by default. Where a snippet-trained
+classifier could still matter is a script the detector handles badly, such as Old Assyrian (9,175 OA snippets exist).
 
 ## Old Assyrian set without ground truth (experiment, 15 Sep 2026)
 

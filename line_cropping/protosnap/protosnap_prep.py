@@ -57,17 +57,22 @@ def atf_line_signs(line, vmap):
     return out
 
 
-def nw_align(a, b, match=2.0, mismatch=0.0, gap=-1.0):
-    n, m = len(a), len(b); S = np.zeros((n + 1, m + 1)); S[:, 0] = np.arange(n + 1) * gap; S[0, :] = np.arange(m + 1) * gap
+def nw_align(a, b, match=2.0, mismatch=0.0, gap=-1.0, score=None):
+    """Global alignment of sequence a (ATF signs) to b (boxes). `score[i][j]`, when given, replaces the
+    match/mismatch rule (e.g. 2 x classifier probability of sign i at box j). Returns {i: j} for aligned pairs."""
+    n, m = len(a), len(b); S = np.zeros((n + 1, m + 1)); P = np.zeros((n + 1, m + 1), dtype=np.int8)
+    S[:, 0] = np.arange(n + 1) * gap; S[0, :] = np.arange(m + 1) * gap; P[1:, 0] = 1; P[0, 1:] = 2
     for i in range(1, n + 1):
         for j in range(1, m + 1):
-            S[i, j] = max(S[i - 1, j - 1] + (match if a[i - 1] == b[j - 1] else mismatch), S[i - 1, j] + gap, S[i, j - 1] + gap)
-    i, j, pairs = n, m, []
-    while i > 0 and j > 0:
-        if S[i, j] == S[i - 1, j - 1] + (match if a[i - 1] == b[j - 1] else mismatch): pairs.append((i - 1, j - 1)); i -= 1; j -= 1
-        elif S[i, j] == S[i - 1, j] + gap: i -= 1
+            sij = score[i - 1][j - 1] if score is not None else (match if a[i - 1] == b[j - 1] else mismatch)
+            c = (S[i - 1, j - 1] + sij, S[i - 1, j] + gap, S[i, j - 1] + gap); k = int(np.argmax(c)); S[i, j] = c[k]; P[i, j] = k
+    i, j, pairs = n, m, {}
+    while i > 0 or j > 0:
+        k = P[i, j]
+        if k == 0 and i > 0 and j > 0: pairs[i - 1] = j - 1; i -= 1; j -= 1
+        elif k == 1: i -= 1
         else: j -= 1
-    return dict(pairs)
+    return pairs
 
 
 def iou(a, b):
@@ -79,6 +84,9 @@ def iou(a, b):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--script', default='OB'); ap.add_argument('--font', default='Santakku'); ap.add_argument('--out', default='protosnap_inputs/OB')
     ap.add_argument('--limit-crops', type=int, default=None); ap.add_argument('--pad', type=float, default=0.15); ap.add_argument('--min-side', type=int, default=40)
+    ap.add_argument('--classifier', action='store_true', help='score sign-to-box alignment with the trained sign classifier (weights/sign_classifier/<script>) instead of the detector label alone')
+    ap.add_argument('--split', choices=['all', 'test', 'tune'], default='all', help='restrict to faces of this Phase 5 split (use test for uncontaminated evaluation of --classifier)')
+    ap.add_argument('--no-write', action='store_true', help='evaluate the alignment only; write no target images')
     ap.add_argument('--first-only', action='store_true', help='write a target only for the first sign of each line: first ATF token matched to the leftmost detector box')
     a = ap.parse_args(); os.makedirs(os.path.join(a.out, 'signs'), exist_ok=True)
     vmap = value_map(a.script)
@@ -88,7 +96,13 @@ def main():
     skel = {f.split('_')[0] for f in os.listdir(f'skeletons/{a.font}') if f.endswith('_adf.csv')}
     faces = {f['face']: f for f in csv.DictReader(open('ebl_tablets/faces/faces.csv'))}
     crops = [c for c in csv.DictReader(open('ebl_tablets/line_crops/crops.csv')) if c['script'] == a.script and c['atf_aligned'] == 'True' and c['side'] in ('obverse', 'reverse', 'face')]
+    if a.split != 'all':
+        fs = {r['face'] for r in csv.DictReader(open('ebl_tablets/split.csv')) if r['split'] == a.split}; crops = [c for c in crops if c['face'] in fs]
     if a.limit_crops: crops = crops[:a.limit_crops]
+    clf = None
+    if a.classifier:
+        from line_cropping.signs.classify import SignClassifier
+        clf = SignClassifier(a.script)
     by_face = collections.defaultdict(list)
     for c in crops: by_face[c['face']].append(c)
     samples, align_rows = [], []; stats = collections.Counter(); frag_cache = {}; rot_cache = {}
@@ -129,16 +143,26 @@ def main():
             inb = sorted([b for b in boxes if float(c['y0']) <= b['ry'] <= float(c['y1']) and abs(b['ry'] - float(c['y_center'])) < 0.5 * float(c['pitch_px'])], key=lambda b: b['rx'])
             stats['lines'] += 1; stats['atf_signs'] += len(signs); stats['boxes'] += len(inb)
             if not inb or not signs: continue
-            pairs = nw_align([s or '?' for _, s in signs], [b['sign'] for b in inb])
+            if clf is not None:
+                if gray is None: gray = cv2.imread(f['file'])
+                cr = []
+                for b in inb:
+                    x0, y0, x1, y1 = [int(v) for v in b['box']]; cr.append(gray[max(0, y0):max(y0 + 2, y1), max(0, x0):max(x0 + 2, x1)])
+                Pm = clf.probs(cr)
+                sc_mat = [[(2.0 * float(Pm[j, clf.index[sn]]) + (0.5 if inb[j]['sign'] == sn else 0.0)) if (sn in clf.index) else (2.0 if inb[j]['sign'] == sn else 0.0) for j in range(len(inb))] for _, sn in signs]
+                for j, b in enumerate(inb): b['clf_sign'] = clf.classes[int(Pm[j].argmax())]; b['clf_p'] = float(Pm[j].max())
+                pairs = nw_align([s or '?' for _, s in signs], [b['sign'] for b in inb], score=sc_mat)
+            else:
+                pairs = nw_align([s or '?' for _, s in signs], [b['sign'] for b in inb])
             for k, (tok, sname) in enumerate(signs):
                 j = pairs.get(k); row = dict(face=face, line_no=c['line_no'], atf_line=c['atf_line'], pos=k + 1, token=tok, sign=sname or '', matched=j is not None)
                 if j is not None:
-                    b = inb[j]; row.update(det_sign=b['sign'], det_score=b['score'], box=' '.join(f'{v:.0f}' for v in b['box']))
+                    b = inb[j]; row.update(det_sign=b['sign'], det_score=b['score'], box=' '.join(f'{v:.0f}' for v in b['box']), clf_sign=b.get('clf_sign', ''), clf_p=round(b.get('clf_p', 0), 3) if 'clf_p' in b else '')
                     tb = [t for t in truth if t[1] == sname] if sname else []
                     row['truth_iou'] = round(max((iou(b['box'], t[0]) for t in tb), default=0.0), 2) if tb else ''
                     row['det_agrees'] = (b['sign'] == sname)
                     hx = sign_hex(sname) if sname else None; row['hex'] = hx or ''; row['is_first'] = (k == 0 and j == 0)
-                    if hx and hx in proto and hx in skel and (not a.first_only or row['is_first']):
+                    if hx and hx in proto and hx in skel and (not a.first_only or row['is_first']) and not a.no_write:
                         if gray is None:
                             img = cv2.imread(f['file']); gray = img
                         x0, y0, x1, y1 = b['box']; pw, ph = (x1 - x0) * a.pad, (y1 - y0) * a.pad
@@ -151,11 +175,13 @@ def main():
     with open(os.path.join(a.out, 'samples.csv'), 'w', newline='', encoding='utf-8') as fh:
         w = csv.DictWriter(fh, fieldnames=['fn', 'file_path', 'abz', 'name', 'hex', 'sign']); w.writeheader(); w.writerows(samples)
     with open(os.path.join(a.out, 'alignment.csv'), 'w', newline='', encoding='utf-8') as fh:
-        keys = ['face', 'line_no', 'atf_line', 'pos', 'token', 'sign', 'matched', 'det_sign', 'det_score', 'det_agrees', 'box', 'truth_iou', 'hex', 'is_first', 'target']
+        keys = ['face', 'line_no', 'atf_line', 'pos', 'token', 'sign', 'matched', 'det_sign', 'det_score', 'det_agrees', 'clf_sign', 'clf_p', 'box', 'truth_iou', 'hex', 'is_first', 'target']
         w = csv.DictWriter(fh, fieldnames=keys, extrasaction='ignore'); w.writeheader(); w.writerows(align_rows)
     A = align_rows; matched = [r for r in A if r['matched']]; withsign = [r for r in A if r['sign']]
     print(f"lines {stats['lines']}, ATF signs {stats['atf_signs']} (with a sign name {len(withsign)}), detector boxes in those lines {stats['boxes']}")
     print(f"ATF signs matched to a box: {len(matched)} ({len(matched)/max(1,len(A)):.0%}); detector class agrees with ATF sign: {np.mean([r['det_agrees'] for r in matched if r['sign']]):.0%}")
+    if clf is not None:
+        ca = [r for r in matched if r['sign'] and r.get('clf_sign')]; print(f"classifier top-1 equals the ATF sign on matched boxes: {np.mean([r['clf_sign'] == r['sign'] for r in ca]):.0%} (n={len(ca)})")
     ious = [float(r['truth_iou']) for r in matched if r.get('truth_iou') not in ('', None)]
     print(f"matched box overlaps an eBL truth box of the same sign (IoU>0.5): {np.mean(np.array(ious)>0.5):.0%} (n={len(ious)})")
     print(f"ProtoSnap targets written: {stats['targets']} (signs without a {a.font} prototype/skeleton: {stats['no_prototype']}) -> {a.out}/samples.csv")

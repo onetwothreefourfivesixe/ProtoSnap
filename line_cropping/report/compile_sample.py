@@ -79,6 +79,14 @@ def compile_metrics(out):
     if conf:
         c = np.array([float(r['confidence']) for r in conf if r['confidence']]); a = np.array([float(r['agreement']) for r in conf if r['agreement']])
         md += ['## Old Assyrian confidence without truth', '', f'- faces scored {len(conf)}; median confidence {np.median(c):.2f}, lowest decile below {np.percentile(c, 10):.2f}; median dp-vs-det_n agreement {np.median(a):.2f}', '']
+    # sign classifiers trained on the snippet metadata
+    cl = sorted(glob.glob('weights/sign_classifier/*/metrics.json'))
+    if cl:
+        md += ['## Sign classifiers (eBL snippet metadata, face-level hold-out)', '', '| script | classes | held-out test top-1 | top-5 | n |', '|---|---|---|---|---|']
+        for f in cl:
+            mj = json.load(open(f, encoding='utf-8')); shutil.copy2(f, os.path.join(m, f'sign_classifier_{mj["script"]}_metrics.json'))
+            md.append(f"| {mj['script']} | {mj['n_classes']} | {mj['test_top1']:.2f} | {mj['test_top5']:.2f} | {mj['test_n']} |")
+        md += ['', 'Used for sign-to-box alignment these classifiers give no gain over the detector label (see line_cropping/README.md).', '']
     # ProtoSnap runs
     md += ['## ProtoSnap runs', '']
     for run in sorted(glob.glob('output/phase6_*')):
