@@ -84,6 +84,7 @@ def iou(a, b):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--script', default='OB'); ap.add_argument('--font', default='Santakku'); ap.add_argument('--out', default='protosnap_inputs/OB')
     ap.add_argument('--limit-crops', type=int, default=None); ap.add_argument('--pad', type=float, default=0.15); ap.add_argument('--min-side', type=int, default=40)
+    ap.add_argument('--crops', default='ebl_tablets/line_crops/crops.csv', help='crop table to work from (e.g. the line model\'s crops)')
     ap.add_argument('--classifier', action='store_true', help='score sign-to-box alignment with the trained sign classifier (weights/sign_classifier/<script>) instead of the detector label alone')
     ap.add_argument('--split', choices=['all', 'test', 'tune'], default='all', help='restrict to faces of this Phase 5 split (use test for uncontaminated evaluation of --classifier)')
     ap.add_argument('--no-write', action='store_true', help='evaluate the alignment only; write no target images')
@@ -95,7 +96,7 @@ def main():
         if r.get(a.font) == 'True' and r['name']: proto[r['hex']] = r['name']
     skel = {f.split('_')[0] for f in os.listdir(f'skeletons/{a.font}') if f.endswith('_adf.csv')}
     faces = {f['face']: f for f in csv.DictReader(open('ebl_tablets/faces/faces.csv'))}
-    crops = [c for c in csv.DictReader(open('ebl_tablets/line_crops/crops.csv')) if c['script'] == a.script and c['atf_aligned'] == 'True' and c['side'] in ('obverse', 'reverse', 'face')]
+    crops = [c for c in csv.DictReader(open(a.crops)) if c['script'] == a.script and c['atf_aligned'] == 'True' and c['side'] in ('obverse', 'reverse', 'face')]
     if a.split != 'all':
         fs = {r['face'] for r in csv.DictReader(open('ebl_tablets/split.csv')) if r['split'] == a.split}; crops = [c for c in crops if c['face'] in fs]
     if a.limit_crops: crops = crops[:a.limit_crops]

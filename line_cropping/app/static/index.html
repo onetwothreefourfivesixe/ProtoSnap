@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Line Splitter</title>
+<style>
+:root {
+  --ground: #15171a;
+  --panel: #1e2125;
+  --panel-2: #262a2f;
+  --rule: #33383f;
+  --ink: #e7e4dd;
+  --muted: #9aa1a9;
+  --faint: #6d747c;
+  --view: #57b8f0;
+  --line: #3fc1a6;
+  --hot: #f2b33d;
+  --bad: #f07a6a;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--ground); color: var(--ink); font: 14px/1.45 var(--sans); padding-inline: 16px; padding-block: 12px; }
+.app { display: grid; grid-template-columns: 300px minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 12px; height: calc(100vh - 24px); max-width: 1800px; margin: 0 auto; }
+header { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; padding: 4px 2px; }
+h1 { font-size: 17px; font-weight: 650; margin: 0; letter-spacing: .01em; }
+.sub { color: var(--muted); font-size: 13px; }
+.status { margin-left: auto; font: 12px var(--mono); color: var(--faint); }
+aside { background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; padding: 14px; overflow: auto; display: flex; flex-direction: column; gap: 18px; }
+section h2 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 8px; }
+.drop { display: block; border: 1.5px dashed var(--rule); border-radius: 8px; padding: 18px 12px; text-align: center; color: var(--muted); cursor: pointer; transition: border-color .15s, background .15s; }
+.drop:hover, .drop.over { border-color: var(--view); background: rgba(87, 184, 240, .06); color: var(--ink); }
+.drop strong { color: var(--ink); font-weight: 600; }
+.drop input { display: none; }
+.fname { margin-top: 8px; font: 12px var(--mono); color: var(--muted); word-break: break-all; }
+.views { display: flex; flex-direction: column; gap: 4px; }
+.vrow { display: flex; align-items: center; gap: 8px; padding: 5px 6px; border-radius: 5px; cursor: pointer; }
+.vrow:hover { background: var(--panel-2); }
+.vrow .sw { width: 10px; height: 10px; border: 2px solid var(--view); border-radius: 2px; }
+.vrow .meta { margin-left: auto; font: 12px var(--mono); color: var(--faint); }
+.opt { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+.opt label { flex: 1; }
+.opt output { font: 12px var(--mono); color: var(--muted); min-width: 34px; text-align: right; }
+input[type=range] { width: 100%; accent-color: var(--line); }
+input[type=checkbox] { accent-color: var(--line); width: 15px; height: 15px; }
+.help { color: var(--faint); font-size: 12px; margin-top: 2px; }
+button { font: inherit; border-radius: 6px; border: 1px solid var(--rule); background: var(--panel-2); color: var(--ink); padding: 8px 12px; cursor: pointer; }
+button:hover:not(:disabled) { border-color: var(--muted); }
+button:disabled { opacity: .45; cursor: default; }
+button.primary { width: 100%; background: var(--line); border-color: var(--line); color: #08201b; font-weight: 650; }
+button:focus-visible, .vrow:focus-visible, .crop:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+.summary { font-size: 13px; color: var(--muted); }
+.summary b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+a.dl { color: var(--line); }
+.msg { padding: 8px 10px; border-radius: 6px; font-size: 13px; background: rgba(240, 122, 106, .12); color: var(--bad); }
+main { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 12px; min-height: 0; }
+.pane { background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; display: flex; flex-direction: column; min-height: 0; }
+.pane-head { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--rule); font-size: 13px; color: var(--muted); }
+.pane-head .title { color: var(--ink); font-weight: 600; }
+.pane-head .tools { margin-left: auto; display: flex; gap: 6px; }
+.pane-head button { padding: 3px 9px; font-size: 12px; }
+.scroll { overflow: auto; flex: 1; min-height: 0; }
+.stage { position: relative; margin: 12px auto; width: max-content; max-width: none; }
+.stage img { display: block; }
+.stage svg { position: absolute; inset: 0; overflow: visible; }
+.stage svg rect, .stage svg polygon { vector-effect: non-scaling-stroke; }
+.stage svg text { stroke-width: calc(3px / var(--z, 1)); }
+.vbox { fill: rgba(87, 184, 240, .05); stroke: var(--view); stroke-width: 2; stroke-dasharray: 6 4; cursor: pointer; }
+.vbox.on { fill: rgba(87, 184, 240, .14); stroke-dasharray: none; }
+.vbox.done { fill: none; stroke-opacity: .45; pointer-events: none; }
+.vlabel { fill: var(--view); font: 600 calc(14px / var(--z, 1)) var(--sans); paint-order: stroke; stroke: var(--ground); stroke-width: 3px; }
+.lpoly { fill: rgba(63, 193, 166, .10); stroke: var(--line); stroke-width: 1.5; cursor: pointer; }
+.lpoly.hot { fill: rgba(242, 179, 61, .28); stroke: var(--hot); stroke-width: 2.5; }
+.lnum { fill: var(--line); font: 600 calc(12px / var(--z, 1)) var(--mono); paint-order: stroke; stroke: var(--ground); stroke-width: 3px; pointer-events: none; }
+.lnum.hot { fill: var(--hot); }
+.empty { color: var(--faint); padding: 40px 20px; text-align: center; }
+.crops { padding: 10px 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+.vhead { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding-top: 6px; }
+.crop { border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; background: #0f1113; cursor: pointer; }
+.crop.hot { border-color: var(--hot); box-shadow: 0 0 0 1px var(--hot); }
+.crop .bar { display: flex; gap: 12px; align-items: baseline; padding: 4px 8px; background: var(--panel-2); font: 12px var(--mono); color: var(--muted); }
+.crop .bar .n { color: var(--ink); font-weight: 600; }
+.crop img { display: block; max-width: 100%; height: auto; }
+.busy { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--muted); border-top-color: transparent; border-radius: 50%; vertical-align: -1px; }
+@media (prefers-reduced-motion: no-preference) { .busy { animation: spin .8s linear infinite; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 1000px) { .app { grid-template-columns: 1fr; height: auto; } main { grid-template-columns: 1fr; } .pane { max-height: 80vh; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Line Splitter</h1>
+    <span class="sub">Upload a tablet photograph, pick its faces, split them into single-line crops.</span>
+    <span class="status" id="status">connecting…</span>
+  </header>
+
+  <aside>
+    <section>
+      <h2>1 · Photograph</h2>
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept="image/*">
+        <strong>Drop an image here</strong><br>or click to choose a file
+      </label>
+      <div class="fname" id="fname"></div>
+    </section>
+
+    <section>
+      <h2>2 · Faces to split</h2>
+      <div class="views" id="views"><div class="help">Detected tablet views appear here after upload. Click a view on the image or in this list to select it.</div></div>
+      <div class="opt" style="margin-top:10px">
+        <input type="checkbox" id="whole">
+        <label for="whole">Treat the whole image as one face</label>
+      </div>
+      <div class="help">Use this when the upload is already a single face.</div>
+    </section>
+
+    <section>
+      <h2>3 · Options</h2>
+      <div class="opt">
+        <input type="checkbox" id="rotate" checked>
+        <label for="rotate">Straighten each line on its own</label>
+      </div>
+      <div class="help">Cuts every line along its own angle instead of one angle for the whole face.</div>
+      <div class="opt" style="margin-top:12px">
+        <label for="kthr">Line detection threshold</label>
+        <output id="kthrOut">0.50</output>
+      </div>
+      <input type="range" id="kthr" min="0.3" max="0.7" step="0.05" value="0.5">
+      <div class="help">Lower finds fainter lines but also more false ones.</div>
+    </section>
+
+    <section>
+      <button class="primary" id="split" disabled>Split into lines</button>
+      <div id="msg" style="margin-top:10px"></div>
+      <div class="summary" id="summary" style="margin-top:10px"></div>
+    </section>
+  </aside>
+
+  <main>
+    <div class="pane">
+      <div class="pane-head">
+        <span class="title">Tablet</span><span id="imgInfo"></span>
+        <div class="tools">
+          <button id="zoomOut" title="Zoom out">−</button>
+          <button id="zoomFit" title="Fit to pane">Fit</button>
+          <button id="zoomIn" title="Zoom in">+</button>
+        </div>
+      </div>
+      <div class="scroll" id="tabletScroll">
+        <div class="empty" id="tabletEmpty">No photograph loaded.</div>
+        <div class="stage" id="stage" hidden>
+          <img id="photo" alt="Uploaded tablet photograph">
+          <svg id="overlay" aria-hidden="true"></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="pane">
+      <div class="pane-head">
+        <span class="title">Line crops</span><span id="cropInfo"></span>
+      </div>
+      <div class="scroll" id="cropScroll">
+        <div class="empty" id="cropEmpty">Crops appear here after splitting. Hover a crop to see where it sits on the tablet.</div>
+        <div class="crops" id="crops"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+const state = { session: null, image: null, views: [], selected: new Set(), result: null, zoom: 1, fit: 1 };
+
+function svgEl(tag, attrs, parent) {
+  const el = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  parent.appendChild(el);
+  return el;
+}
+
+function showError(text) { $('msg').innerHTML = text ? `<div class="msg">${text}</div>` : ''; }
+
+async function api(path, opts) {
+  const r = await fetch(path, opts);
+  const j = await r.json().catch(() => ({ error: `Server returned ${r.status}` }));
+  if (!r.ok) throw new Error(j.error || `Server returned ${r.status}`);
+  return j;
+}
+
+fetch('/api/status').then((r) => r.json()).then((s) => {
+  $('status').textContent = `${s.weights.split('/').slice(-2, -1)[0]} · ${s.device}`;
+  $('kthr').value = s.readout.kernel_thr;
+  $('kthrOut').textContent = Number(s.readout.kernel_thr).toFixed(2);
+}).catch(() => { $('status').textContent = 'server not reachable'; });
+
+$('kthr').addEventListener('input', () => { $('kthrOut').textContent = Number($('kthr').value).toFixed(2); });
+
+// ---- upload ----
+const drop = $('drop');
+['dragenter', 'dragover'].forEach((e) => drop.addEventListener(e, (ev) => { ev.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach((e) => drop.addEventListener(e, (ev) => { ev.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', (ev) => { if (ev.dataTransfer.files[0]) upload(ev.dataTransfer.files[0]); });
+$('file').addEventListener('change', () => { if ($('file').files[0]) upload($('file').files[0]); });
+
+function applySession(res, name) {
+  state.session = res.session;
+  state.image = res.image;
+  state.views = res.views;
+  state.selected = new Set(res.views.length ? [res.views[0].id] : []);
+  state.result = res.result || null;
+  $('fname').textContent = `${name} · ${res.original.width} × ${res.original.height} px`;
+  $('whole').checked = res.views.length <= 1;
+  if (state.result) {
+    const ids = state.result.views.map((v) => v.view);
+    if (ids.includes('whole')) $('whole').checked = true; else state.selected = new Set(ids);
+  }
+  history.replaceState(null, '', `?session=${res.session}`);
+  loadPhoto();
+  renderViewList();
+  renderCrops();
+  renderSummary();
+}
+
+function renderSummary() {
+  const r = state.result;
+  if (!r) { $('summary').textContent = ''; return; }
+  const n = r.views.reduce((s, v) => s + v.lines.length, 0);
+  $('summary').innerHTML = `<b>${n}</b> lines from <b>${r.views.length}</b> face${r.views.length > 1 ? 's' : ''} in <b>${r.seconds}</b> s · <a class="dl" href="${r.zip_url}">download crops (zip)</a>`;
+}
+
+const reopen = new URLSearchParams(location.search).get('session');
+if (reopen) api(`/api/session/${reopen}`).then((res) => applySession(res, res.filename)).catch((e) => showError(e.message));
+
+async function upload(file) {
+  showError('');
+  $('fname').innerHTML = `<span class="busy"></span> uploading ${file.name}…`;
+  $('split').disabled = true;
+  try {
+    const res = await api('/api/upload', { method: 'POST', body: file, headers: { 'X-Filename': encodeURIComponent(file.name) } });
+    applySession(res, file.name);
+  } catch (e) {
+    $('fname').textContent = '';
+    showError(e.message);
+  }
+}
+
+function loadPhoto() {
+  const img = $('photo');
+  img.onload = () => { fitZoom(); };
+  img.src = `${state.image.url}?t=${Date.now()}`;
+  $('tabletEmpty').hidden = true;
+  $('stage').hidden = false;
+  $('imgInfo').textContent = '';
+}
+
+// ---- zoom ----
+function fitZoom() {
+  const pane = $('tabletScroll');
+  const w = pane.clientWidth - 24, h = pane.clientHeight - 24;
+  state.fit = Math.min(w / state.image.width, h / state.image.height, 1);
+  state.zoom = state.fit;
+  applyZoom();
+}
+function applyZoom() {
+  const w = Math.round(state.image.width * state.zoom), h = Math.round(state.image.height * state.zoom);
+  $('photo').style.width = `${w}px`;
+  $('photo').style.height = `${h}px`;
+  const svg = $('overlay');
+  svg.setAttribute('width', w);
+  svg.setAttribute('height', h);
+  svg.setAttribute('viewBox', `0 0 ${state.image.width} ${state.image.height}`);
+  svg.style.setProperty('--z', state.zoom);
+  $('imgInfo').textContent = `· ${Math.round(state.zoom * 100)}%`;
+  render();
+}
+$('zoomFit').onclick = () => { if (state.image) fitZoom(); };
+$('zoomIn').onclick = () => { if (state.image) { state.zoom = Math.min(state.zoom * 1.4, 4); applyZoom(); } };
+$('zoomOut').onclick = () => { if (state.image) { state.zoom = Math.max(state.zoom / 1.4, 0.1); applyZoom(); } };
+window.addEventListener('resize', () => { if (state.image && Math.abs(state.zoom - state.fit) < 1e-6) fitZoom(); });
+
+// ---- views ----
+function toggleView(id) {
+  if (state.selected.has(id)) state.selected.delete(id); else state.selected.add(id);
+  $('whole').checked = false;
+  renderViewList();
+  render();
+}
+function renderViewList() {
+  const box = $('views');
+  box.innerHTML = '';
+  if (!state.views.length) { box.innerHTML = '<div class="help">No separate views found; the whole image will be used.</div>'; }
+  state.views.forEach((v, k) => {
+    const row = document.createElement('div');
+    row.className = 'vrow';
+    row.tabIndex = 0;
+    const [x0, y0, x1, y1] = v.box;
+    row.innerHTML = `<input type="checkbox" ${state.selected.has(v.id) ? 'checked' : ''} tabindex="-1"><span class="sw"></span><span>View ${k + 1}</span><span class="meta">${Math.round(x1 - x0)}×${Math.round(y1 - y0)}</span>`;
+    row.onclick = () => toggleView(v.id);
+    row.onkeydown = (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleView(v.id); } };
+    box.appendChild(row);
+  });
+  $('split').disabled = !state.session || (!$('whole').checked && state.selected.size === 0);
+}
+$('whole').addEventListener('change', () => { renderViewList(); render(); });
+
+// ---- overlay ----
+function render() {
+  const svg = $('overlay');
+  svg.innerHTML = '';
+  if (!state.image) return;
+  const wholeMode = $('whole').checked;
+  if (!state.result) {
+    if (wholeMode) return;
+    state.views.forEach((v, k) => {
+      const [x0, y0, x1, y1] = v.box;
+      const r = svgEl('rect', { x: x0, y: y0, width: x1 - x0, height: y1 - y0, class: `vbox${state.selected.has(v.id) ? ' on' : ''}` }, svg);
+      r.addEventListener('click', () => toggleView(v.id));
+      svgEl('text', { x: x0, y: y0 - 6 / state.zoom, class: 'vlabel' }, svg).textContent = `View ${k + 1}`;
+    });
+    return;
+  }
+  state.result.views.forEach((rv) => {
+    if (rv.view !== 'whole') {
+      const k = state.views.findIndex((v) => v.id === rv.view), [x0, y0, x1, y1] = rv.box;
+      svgEl('rect', { x: x0, y: y0, width: x1 - x0, height: y1 - y0, class: 'vbox done' }, svg);
+      svgEl('text', { x: x0, y: y0 - 6 / state.zoom, class: 'vlabel' }, svg).textContent = `View ${k + 1}`;
+    }
+    rv.lines.forEach((ln) => {
+      const key = `${rv.view}-${ln.n}`;
+      const pts = ln.poly.map((p) => p.join(',')).join(' ');
+      const poly = svgEl('polygon', { points: pts, class: 'lpoly', 'data-key': key }, svg);
+      poly.addEventListener('mouseenter', () => highlight(key, true));
+      poly.addEventListener('mouseleave', () => highlight(key, false));
+      poly.addEventListener('click', () => { const c = document.querySelector(`.crop[data-key="${key}"]`); if (c) c.scrollIntoView({ block: 'center', behavior: 'smooth' }); });
+      const lx = Math.min(...ln.poly.map((p) => p[0])) - 4 / state.zoom, ly = ln.poly.reduce((s, p) => s + p[1], 0) / ln.poly.length + 4;
+      svgEl('text', { x: lx, y: ly, 'text-anchor': 'end', class: 'lnum', 'data-key': key }, svg).textContent = ln.n;
+    });
+  });
+}
+
+function highlight(key, on) {
+  document.querySelectorAll(`[data-key="${key}"]`).forEach((el) => el.classList.toggle('hot', on));
+  if (on) {
+    const c = document.querySelector(`.crop[data-key="${key}"]`);
+    if (c) {
+      const pane = $('cropScroll'), r = c.getBoundingClientRect(), pr = pane.getBoundingClientRect();
+      if (r.top < pr.top || r.bottom > pr.bottom) c.scrollIntoView({ block: 'nearest' });
+    }
+  }
+}
+
+function focusPoly(key) {
+  const p = document.querySelector(`polygon[data-key="${key}"]`);
+  if (!p) return;
+  const b = p.getBBox(), pane = $('tabletScroll'), stage = $('stage');
+  const cx = stage.offsetLeft + (b.x + b.width / 2) * state.zoom, cy = stage.offsetTop + (b.y + b.height / 2) * state.zoom;
+  pane.scrollTo({ left: cx - pane.clientWidth / 2, top: cy - pane.clientHeight / 2, behavior: 'smooth' });
+}
+
+// ---- split ----
+$('split').onclick = async () => {
+  showError('');
+  $('split').disabled = true;
+  $('summary').innerHTML = '<span class="busy"></span> running the line model…';
+  try {
+    const body = { session: state.session, views: [...state.selected], whole: $('whole').checked, rotate: $('rotate').checked, kernel_thr: Number($('kthr').value) };
+    state.result = await api('/api/split', { method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json' } });
+    renderSummary();
+    render();
+    renderCrops();
+  } catch (e) {
+    $('summary').textContent = '';
+    showError(e.message);
+  } finally {
+    renderViewList();
+  }
+};
+
+function renderCrops() {
+  const box = $('crops');
+  box.innerHTML = '';
+  const res = state.result;
+  $('cropEmpty').hidden = !!(res && res.views.some((v) => v.lines.length));
+  $('cropInfo').textContent = '';
+  if (!res) return;
+  const total = res.views.reduce((s, v) => s + v.lines.length, 0);
+  $('cropInfo').textContent = `· ${total}`;
+  res.views.forEach((rv) => {
+    if (res.views.length > 1 || rv.view !== 'whole') {
+      const k = state.views.findIndex((v) => v.id === rv.view);
+      const h = document.createElement('div');
+      h.className = 'vhead';
+      h.textContent = `${rv.view === 'whole' ? 'Whole image' : `View ${k + 1}`} · ${rv.lines.length} lines · face angle ${rv.angle}° · pitch ${rv.pitch} px`;
+      box.appendChild(h);
+    }
+    if (!rv.lines.length) {
+      const e = document.createElement('div');
+      e.className = 'help';
+      e.textContent = 'No lines found on this face. Try a lower detection threshold.';
+      box.appendChild(e);
+    }
+    rv.lines.forEach((ln) => {
+      const key = `${rv.view}-${ln.n}`;
+      const c = document.createElement('div');
+      c.className = 'crop';
+      c.tabIndex = 0;
+      c.dataset.key = key;
+      c.innerHTML = `<div class="bar"><span class="n">line ${ln.n}</span><span>${ln.width}×${ln.height} px</span><span>${ln.rotated ? 'own angle' : 'face angle'} ${ln.angle > 0 ? '+' : ''}${ln.angle}°</span></div><img loading="lazy" src="${ln.crop_url}" alt="Line ${ln.n}">`;
+      c.addEventListener('mouseenter', () => highlight(key, true));
+      c.addEventListener('mouseleave', () => highlight(key, false));
+      c.addEventListener('focus', () => { highlight(key, true); focusPoly(key); });
+      c.addEventListener('blur', () => highlight(key, false));
+      c.addEventListener('click', () => focusPoly(key));
+      box.appendChild(c);
+    });
+  });
+}
+</script>
+</body>
+</html>

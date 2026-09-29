@@ -243,3 +243,106 @@ between lines, found from the detected sign boxes, so each crop holds one line: 
 centres fall in exactly one crop, none in two, and only 2 percent of crops contain the centre of a second line.
 The sign-level ProtoSnap trial that followed is kept as groundwork for aligning transliterated signs to detected
 boxes, but the deliverable of Phase 6 is the clean line crop itself.
+
+## 14. Phase 7: a learned line model, so the segmenter works without a transliteration
+
+### Why this phase exists
+
+The pipeline of sections 3 to 8 meets its targets on eBL photographs when a transliteration supplies the line
+count and the face has one column. A tablet outside those conditions, which is most tablets a user will bring,
+loses either the count or the detector's coverage: without the count the detector route still finds 87 percent
+of lines but agrees with the true count on a quarter of faces, and on the low-resolution Old Assyrian photographs
+the detector finds too few signs for the route to work at all. Both weaknesses come from the same design choice,
+that lines are inferred from detected signs. This phase replaces that inference with a model that predicts lines
+directly from the face image. The transliteration and the sign detector remain useful, but as optional refinements
+rather than requirements. The plan anticipated this in section 8 as the fallback to take if the released detectors
+fell short for the general case; they have.
+
+### What the model sees and what it must produce
+
+The input is a single face image, resized so that its longer side is 1,024 pixels, and not deskewed, so that the
+model learns tilt itself. The output is three maps at one quarter of the input resolution. The **kernel map**
+marks the core of every line, drawn as each truth line's band shrunk to 40 percent of its thickness, so that
+neighbouring lines never touch and each line becomes one connected region. The **band map** marks each line's full
+thickness, which later fixes the vertical extent of its crop. The **orientation map** holds, at every pixel inside a
+band, the local direction of the line encoded as the sine and cosine of twice its angle, which lets the read-out
+follow tilt and curvature without a global rotation.
+
+All three targets are painted from the oriented segments of the Phase 1 ground truth, which is already in the
+right form: 9,296 lines on the eBL faces, plus the 785 hand-marked Old Assyrian lines from the Line Marker page,
+and the Neo-Babylonian lines once that script's tablets are downloaded. Partial annotation is the one hazard. eBL
+annotators covered a median of 86 percent of a face's lines, and an unannotated line painted as background would
+teach the model to miss real lines. Two rules remove the hazard: only faces with annotation coverage of at least
+0.9 are used for training, about 494 eBL faces and the 88 labelled Old Assyrian faces, and any vertical gap between
+consecutive annotated lines wider than one and a half pitches is marked as **ignore**, meaning those pixels
+contribute nothing to the loss, since a missing line almost certainly sits there.
+
+### The network
+
+The architecture is a **U-Net**: an encoder that reduces the image stage by stage into coarse maps carrying context,
+and a decoder that upsamples them back, concatenating at each step the encoder's maps of the same resolution through
+skip connections so that fine position is recovered alongside wide context. The encoder is a **ResNet-34**, a
+34-layer convolutional network built from residual blocks whose weights are initialised from ImageNet training and
+then fine-tuned here, which matters when there are only a few hundred training faces. The decoder ends with a
+one-by-one convolution producing the three output maps. The whole model is about 24 million weights. The loss is
+Dice plus binary cross-entropy on the kernel and band maps and an L1 error on the orientation map inside bands,
+with ignore pixels excluded. This is the established recipe for text-line segmentation in document analysis, in the
+family of DBNet and PSENet, chosen over a rotated-box line detector because it handles curved and tilted lines and
+dense spacing, and over a fine-tuned Deformable DETR because the latter would need axis-aligned line boxes, the
+representation section 3 showed to be wrong for this material.
+
+### Training
+
+Training windows are random 768-pixel squares cut from the resized faces, with scale augmentation between one half
+and two times so that a line may appear anywhere from about 15 to 100 pixels tall, a few degrees of extra rotation,
+brightness and contrast jitter, JPEG re-encoding, and a background polarity swap to cover the light-background
+museum photographs. Horizontal flips are not used, since they mirror the script. Training runs on the tune half of
+the Phase 5 split only, mixing all scripts in one model, with an AdamW optimiser and a cosine learning-rate
+schedule for roughly 40 epochs, and keeps the checkpoint with the best validation line recall. On the RTX 4060 one
+run takes one to two hours and inference on a face well under a second.
+
+### From maps to lines to crops
+
+At inference the full face goes through the model once. Connected components of the thresholded kernel map give
+line instances; each instance grows into the band map to recover its extent; a polyline fitted through the band's
+centre, guided by the orientation map, gives the line and its local tilt. Lines are ordered top to bottom, and where
+a transliteration exists its count is reconciled by the existing split and merge rules; where none exists the
+model's count stands. The gap-bounded crop of section 6 then applies unchanged, except that it may follow a curved
+band rather than a horizontal strip, which addresses the last known crop failure. Predictions are written in the
+same table format as the detector route, so the Phase 5 evaluator and the crop evaluator score them without
+modification.
+
+### Evaluation
+
+The model is scored on the test half of the Phase 5 split against the detector route's figures on the same faces,
+0.91 recall with the count and 0.87 without, per script and per resolution bucket, and separately on the labelled
+Old Assyrian faces, where the current best is the profile method's 0.89 recall at 0.76 precision. The acceptance
+criteria are the plan's original ones, recall at least 0.90 and the first line within half a pitch on at least 90
+percent of faces, now required without any transliteration, plus count agreement with the truth of at least 80
+percent on faces with coverage above 0.9. A transfer test trains on eBL faces alone and evaluates on Old Assyrian
+faces, to measure how much the model generalises across photograph quality before any Old Assyrian labels are
+added.
+
+### Order of work
+
+1. Render the targets and inspect them: paint kernel, band, orientation and ignore maps for a dozen faces across
+   scripts and overlay them on the photographs, so that band widths, shrink factor and ignore gaps are checked by
+   eye before any training.
+2. Download and process the Neo-Babylonian eBL tablets through Phases 1 and 2, so all three supported scripts are
+   present in training and evaluation.
+3. Train the first model on the tune split and score it; compare with the detector route on the test split.
+4. Add column detection ahead of line read-out, using the kernel map's horizontal gaps, so multi-column faces stop
+   being excluded.
+5. Wire the model in as the default line finder, keep the detector route as an option, make the transliteration an
+   optional refinement, and attach the per-face confidence signals of the Old Assyrian experiment to every face.
+6. Regenerate the sample and metrics with the compiler and update this plan with the results.
+
+### Risks
+
+The training set is small by deep-learning standards, a few hundred faces, so the pretrained encoder and heavy
+augmentation are doing real work, and the transfer test will show whether one model covers all photograph
+qualities or whether Old Assyrian needs its own fine-tuning pass. Curved lines on strongly warped faces are
+represented in the truth only as straight segments, so the model may learn straight bands there; the labelled
+Old Assyrian faces, marked as centres, are the check. Finally, the ignore rule hides likely-missing lines but not
+unannotated lines that sit inside a normal gap, so a small amount of label noise remains and precision numbers on
+low-coverage faces should keep being treated with care.

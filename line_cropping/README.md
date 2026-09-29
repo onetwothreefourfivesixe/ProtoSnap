@@ -15,6 +15,7 @@ New to the project? Read `docs/pipeline_overview.md` first: it explains the whol
 | `signs/` | sign classifier | `build_dataset.py` (per-script datasets from `signs_snippets_metadata.json`, face-level hold-out), `train_classifier.py` (ResNet-34), `classify.py` (inference) |
 | `crops/` | Phase 4 | `make_crops.py` (gap-bounded single-line crops) |
 | `eval/` | Phase 5 | `evaluate_lines.py`, `evaluate_crops.py`, `evaluate_oa.py`, `phase5_eval.py`, `render_lines.py` |
+| `app/` | local web app | `server.py`, `pipeline.py`, `static/index.html`: upload a photograph, split it into line crops, compare with the original |
 | `protosnap/` | Phase 6 | `protosnap_prep.py`, `phase6_summary.py` |
 | `report/` | reporting | `aggregate_metrics.py` (every metric table of both sets -> `docs/metrics_comparison.md`, per-set `metrics/`), `compile_sample.py` (tracked `samples/`: metrics tables + 20 tablets per set with all outputs) |
 | `experiments/` | early trials | `profile_lines_oa.py`, `comb_fit_oa.py` (the first Old Assyrian profile experiments) |
@@ -323,6 +324,61 @@ about 55% of the signs a transliteration lists, so the sequence alignment has ga
 detection recall, not classification. `--classifier` therefore stays off by default. Where a snippet-trained
 classifier could still matter is a script the detector handles badly, such as Old Assyrian (9,175 OA snippets exist).
 
+## Phase 7 — learned line model (first run trained and evaluated; see `docs/line_model.md` for the full write-up)
+
+`linemodel/` implements section 14 of the plan. Run from the repo root with the ProtoSnap venv.
+
+| step | command | what to inspect |
+|---|---|---|
+| 1. targets | `python -m line_cropping.linemodel.targets --preview 12` | `ebl_tablets/linemodel/target_previews/`: green = band (<= 0.7 pitch wide), yellow = kernel, red hatch = ignore (gaps > 1.5 pitch, one pitch beyond first/last line). Bands must sit on lines and never merge. |
+| 2. index | `python -c "from line_cropping.linemodel.dataset import build_index as b; i=b(); print(len(i['train']), len(i['val']))"` | training faces = tune-split eBL faces with coverage >= 0.9 + labelled Old Assyrian faces (302 train / 38 val at the time of writing; only 16 NA faces pass 0.9, use `--min-cov 0.8` in train.py to admit more) |
+| 3. dry run | `MPLBACKEND=Agg .venv/bin/python -m line_cropping.linemodel.train --dry-run --out weights/linemodel/dryrun` | three steps and a 3-face validation; proves the loop, ~10 s |
+| 4. train | `MPLBACKEND=Agg .venv/bin/python -m line_cropping.linemodel.train --epochs 40 --out weights/linemodel/run1` | `history.csv` (loss parts, val line recall/precision per epoch) and `plots/` (loss, loss components, validation recall/precision, checkpoint-selection score, `dashboard.png`), drawn over the whole run when training ends, or every N epochs with `--plot-every N`; `model.pt` = best val recall+precision. About 30 min for 40 epochs on the RTX 4060. `--no-oa` trains on eBL only for the transfer test; `--resume` continues a run. Read-out options `--kernel-thr`, `--band-thr`, `--min-area` change only validation scoring and checkpoint choice (saved in `config.json`, reused by `infer.py` unless overridden); target options `--kernel-shrink`, `--band-frac`, `--ignore-gap` change what the network learns. `python -m line_cropping.linemodel.visualize --run <dir>` regenerates the plots. |
+| 5. infer | `.venv/bin/python -m line_cropping.linemodel.infer --weights weights/linemodel/run1/model.pt --faces ebl_tablets/faces/faces.csv --out ebl_tablets/predictions --method unet --split test` | writes `predictions/unet/` in the detector route's format and `predictions/unet_segments/` (raw segments) |
+| 5b. look | add `--viz 8` to the infer command | `<out>/unet_viz/`: green = predicted band, lime = predicted kernel, red = read-out segments (the target previews of step 1 use the same colours for the truth) |
+| 5c. on the tablet | `python -m line_cropping.linemodel.render_predictions --n 10` | `ebl_tablets/linemodel/prediction_overlays/`: predicted segments (red) and eBL truth (green) on each face and on the original composite photograph (`photos/`, face outlined in orange), plus a contact sheet |
+| 6. score | `python -m line_cropping.eval.evaluate_lines --faces ebl_tablets/faces/faces.csv --pred ebl_tablets/predictions` | `unet` appears beside `det`/`det_n`; compare on the same test faces. For Old Assyrian: `infer` on `fat-cross_processed/prepared/faces_accepted.csv` with `--out fat-cross_processed/predictions_unet --n-col atf_lines`, then `evaluate_oa.py` (add the method there). |
+
+**First run through the whole pipeline (run1, 40 epochs, test split, 27 Sep 2026).** `infer.py --use-n` adds the
+plan's optional refinement: where a transliteration exists its line count is reconciled with the model's lines
+(`reconcile_count`, same split/fill/merge rules as the detector route), written as method `unet_n`. Crops use
+`make_crops --bounds segments` (boundaries from the predicted bands) or `midpoint`; `protosnap_prep --crops` runs the
+ATF-to-box alignment on any crop table.
+
+| test split | recall | precision | first line < 0.5 pitch | count = ATF | crops: truth centre in exactly one crop / two-line crops | crops with ATF label | ATF signs matched to a box / box is the truth box |
+|---|---|---|---|---|---|---|---|
+| `unet` (no transliteration) | 0.86 | 0.83 | 81% | 23% | 97% / 3% | 14% | (only 902 labelled lines) |
+| `unet_n` (count reconciled) | 0.83 | 0.84 | 82% | 85% | 97% / 3% | 72% | 54% / 67% (OB) |
+| `det_n` (detector route) | 0.91 | 0.91 | 90% | 85% | 99% / 3% | 73% | 53% / 66% (OB) |
+
+So the line model already carries the downstream stages at parity with the detector route, without any sign detector
+at line-finding time, and trails it by a few points on line recall, mostly on Neo-Assyrian faces (16 in training).
+Note that `evaluate_lines` "all faces" rows for `unet` include tune faces the model trained on; quote test-split numbers.
+
+Model: `model.py` (U-Net, ResNet-34 encoder from ImageNet weights, outputs at stride 4: kernel logit, band logit,
+sin 2θ, cos 2θ; 24.4 M weights). Loss: BCE + Dice on kernel and band with ignore pixels excluded, L1 on orientation
+inside bands. Read-out (`infer.read_lines`): kernel components -> nearest-component assignment of band pixels -> PCA
+segment per component. Knobs to tune on the val split: `--kernel-thr`, `--band-thr`, `min_area`, and in training
+`--win`, `--long-side`, `--per-face`, scale range in `dataset.py`.
+
+## Line Splitter app (`app/`)
+
+A local web page for trying the line model on any photograph:
+
+```
+MPLBACKEND=Agg .venv/bin/python -m line_cropping.app.server [--weights weights/linemodel/run1/model.pt] [--port 8770]
+```
+
+then open http://localhost:8770. Upload a tablet photograph (drag and drop or file picker); the app finds the tablet's
+views without any annotations (threshold against the background, split touching regions at empty gaps, keep regions
+over 1% of the image) and lists them, largest first. Select one or more views, or treat the whole image as one face
+when the upload is already a single face, choose whether each line is straightened on its own and the detection
+threshold, and split. The photograph then shows every crop's outline, and the crops are listed beside it; hovering a
+crop highlights its outline and clicking it scrolls the photograph to it, and the reverse. Crops and `result.json` can
+be downloaded as a zip. Sessions are kept in `tablet_data/app_sessions/<id>/` and can be reopened with
+`?session=<id>`. Standard library only: `server.py` (HTTP), `pipeline.py` (view detection, line splitting),
+`static/index.html` (page).
+
 ## Old Assyrian set without ground truth (experiment, 15 Sep 2026)
 
 To work on the parked Old Assyrian set without labels, three additions stay inside the existing layout:
@@ -343,4 +399,6 @@ To work on the parked Old Assyrian set without labels, three additions stay insi
 The ranking is a review queue, not a metric: look at the bottom of it first.
 
 ## Later phases
-None: all six phases have a first implementation; see the status notes in `docs/line_cropping_plan.md`.
+Phase 7, a learned line model that removes the dependence on the transliteration count and on sign-detector
+recall, is planned in section 14 of `docs/line_cropping_plan.md` (U-Net with a ResNet-34 encoder trained on the
+Phase 1 line segments; kernel, band and orientation maps; same evaluation harness). Not started.
