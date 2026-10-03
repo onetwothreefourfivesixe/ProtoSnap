@@ -10,6 +10,7 @@ known, split or merge clusters until N lines remain (largest gaps split, closest
   python -m line_cropping.lines.lines_from_boxes --faces <faces.csv> --det <detections dir> --out <pred dir> [--use-n]
 Output is in the same format as find_lines.py so evaluate_lines.py can score it.
 """
+from line_cropping.paths import EBL
 import argparse, csv, os, collections
 import numpy as np, cv2
 
@@ -95,7 +96,7 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--faces', required=True); ap.add_argument('--det', required=True); ap.add_argument('--out', required=True)
     ap.add_argument('--use-n', action='store_true'); ap.add_argument('--n-col', default='atf_lines_side'); ap.add_argument('--score-thr', type=float, default=None)
     ap.add_argument('--gap-frac', type=float, default=None); ap.add_argument('--merge-frac', type=float, default=None)
-    ap.add_argument('--params', default='ebl_tablets/det_params.json', help='JSON with gap_frac/merge_frac/score_thr tuned by phase5_eval (CLI values override)')
+    ap.add_argument('--params', default=f'{EBL}/det_params.json', help='JSON with gap_frac/merge_frac/score_thr tuned by phase5_eval (CLI values override)')
     a = ap.parse_args()
     import json; P = json.load(open(a.params)) if os.path.exists(a.params) else {}
     gap = a.gap_frac if a.gap_frac is not None else P.get('gap_frac', 0.6); merge = a.merge_frac if a.merge_frac is not None else P.get('merge_frac', 0.45)

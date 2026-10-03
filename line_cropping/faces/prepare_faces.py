@@ -3,21 +3,22 @@
   python -m line_cropping.faces.prepare_faces ebl   -> cut each annotated side out of the eBL composite photos
   python -m line_cropping.faces.prepare_faces oa    -> accepted-face list for the Old Assyrian set, edges rotated
 
-eBL output (ebl_tablets/faces/):
+eBL output (tablet_data/ebl_tablets/faces/):
   <tablet>__<side>[__<object>].jpg      face crop (block union + margin), unrotated
   lines/<tablet>__<side>[__<object>].csv  Phase 1 line truth in face-crop pixel coordinates
   faces.csv                             one row per face: crop box in the photo, skew (= -median block tilt),
                                         pitch, n_lines, atf lines for that side, coverage, n_columns
-OA output (fat-cross_processed/prepared/):
+OA output (tablet_data/fat-cross_processed/prepared/):
   faces.csv                             accepted faces with path, rotation applied, ATF line count, px/line
   edges/<P>_<left|right>.png            edge strips rotated so text lines run horizontally
 """
+from line_cropping.paths import EBL, OA
 import argparse, csv, json, os, re, collections
 import numpy as np
 from PIL import Image
 Image.MAX_IMAGE_PIXELS = None
 
-EBL = 'ebl_tablets'
+EBL = EBL
 SIDE_ATF = {'obverse': 'obverse', 'reverse': 'reverse', 'top': 'top', 'bottom': 'bottom', 'left': 'left', 'right': 'right', 'edge': 'edge'}
 
 
@@ -186,9 +187,9 @@ def ebl():
 
 def oa(rot_left, rot_right):
     import cv2
-    FACES = 'fat-cross_processed/fat-cross_processed'; out = 'fat-cross_processed/prepared'; os.makedirs(os.path.join(out, 'edges'), exist_ok=True)
-    qc = {(r['p_number'], r['face']): r for r in csv.DictReader(open('fat-cross_processed/experiments/face_qc.csv'))}
-    inv = {r['p_number']: r for r in csv.DictReader(open('fat-cross_processed/inventory.csv'))}
+    FACES = f'{OA}/fat-cross_processed'; out = f'{OA}/prepared'; os.makedirs(os.path.join(out, 'edges'), exist_ok=True)
+    qc = {(r['p_number'], r['face']): r for r in csv.DictReader(open(f'{OA}/experiments/face_qc.csv'))}
+    inv = {r['p_number']: r for r in csv.DictReader(open(f'{OA}/inventory.csv'))}
     atf = {}
     for l in open('artifacts_json/transliterations.jsonl', encoding='utf-8'):
         r = json.loads(l)

@@ -1,4 +1,4 @@
-"""Phase 3 evaluation on eBL faces: predicted lines (find_lines.py) vs Phase 1 truth (ebl_tablets/faces/lines).
+"""Phase 3 evaluation on eBL faces: predicted lines (find_lines.py) vs Phase 1 truth (tablet_data/ebl_tablets/faces/lines).
 
 Truth segments are mapped into the same deskewed frame as the predictions (rotation about the face centre by
 the run's skew angle). A predicted line matches a truth line if their centre heights differ by less than
@@ -6,7 +6,7 @@ the run's skew angle). A predicted line matches a truth line if their centre hei
 would otherwise count as false positives), first-line error in pitch units (only where the topmost truth line
 is line 1 or 1'), and count agreement, split by script, method and resolution.
 
-  python -m line_cropping.eval.evaluate_lines --faces ebl_tablets/faces/faces.csv --pred ebl_tablets/predictions
+  python -m line_cropping.eval.evaluate_lines --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions
 """
 import argparse, csv, os, collections
 import numpy as np, cv2

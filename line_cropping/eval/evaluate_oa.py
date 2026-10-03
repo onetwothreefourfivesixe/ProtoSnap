@@ -7,6 +7,7 @@ matches a label if within `tol` x label pitch (median label gap). Reports recall
 count match, by method, split and resolution.
   python -m line_cropping.eval.evaluate_oa
 """
+from line_cropping.paths import OA
 import csv, os, collections, argparse
 import numpy as np, cv2
 
@@ -19,14 +20,14 @@ def to_frame(y, W, H, skew_from, skew_to):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--tol', type=float, default=0.35); ap.add_argument('--only-done', action='store_true', default=True)
     a = ap.parse_args()
-    faces = {f['face']: f for f in csv.DictReader(open('fat-cross_processed/prepared/faces_accepted.csv'))}
+    faces = {f['face']: f for f in csv.DictReader(open(f'{OA}/prepared/faces_accepted.csv'))}
     sizes = {}
     labels = collections.defaultdict(list); meta = {}
-    for r in csv.DictReader(open('fat-cross_processed/ground_truth/labels.csv')):
+    for r in csv.DictReader(open(f'{OA}/ground_truth/labels.csv')):
         if a.only_done and r['status'] != 'done': continue
         labels[r['face_id']].append(float(r['y_face_deskewed'])); meta[r['face_id']] = r
-    preds = {'dp': ('fat-cross_processed/predictions_profile', 'dp'), 'comb': ('fat-cross_processed/predictions_profile', 'comb'),
-             'det_n': ('fat-cross_processed/predictions', 'det_n'), 'det': ('fat-cross_processed/predictions', 'det')}
+    preds = {'dp': (f'{OA}/predictions_profile', 'dp'), 'comb': (f'{OA}/predictions_profile', 'comb'),
+             'det_n': (f'{OA}/predictions', 'det_n'), 'det': (f'{OA}/predictions', 'det')}
     runs = {}
     for name, (d, m) in preds.items():
         for r in csv.DictReader(open(os.path.join(d, 'faces_run.csv'))):
@@ -52,7 +53,7 @@ def main():
                 if dd[j] < tol and j not in used: used.add(j); hit += 1
             rows.append(dict(face=fid, method=name, split=meta[fid]['split'], n_truth=len(ty), n_pred=len(py), recall=hit / len(ty), precision=len(used) / len(py),
                              first_err=abs(py[0] - ty[0]) / pitch, count_ok=len(py) == len(ty), px_per_line=pitch))
-    with open('fat-cross_processed/ground_truth/evaluation_oa.csv', 'w', newline='') as fh:
+    with open(f'{OA}/ground_truth/evaluation_oa.csv', 'w', newline='') as fh:
         w = csv.DictWriter(fh, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
     def report(sel, label):
         for m in ('dp', 'comb', 'det_n', 'det'):

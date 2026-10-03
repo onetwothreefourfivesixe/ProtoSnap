@@ -9,6 +9,7 @@ Windows: the face is resized so its long side is `long_side` x a random scale in
 cut (biased to contain lines), photometric jitter and background polarity swap are applied, and the five target maps
 are painted from the transformed segments at stride 4.
 """
+from line_cropping.paths import EBL, OA
 import csv, os, random, collections
 import numpy as np, cv2, torch
 from line_cropping.linemodel.targets import render_targets, read_segments, oa_segments, STRIDE
@@ -16,17 +17,17 @@ from line_cropping.linemodel.targets import render_targets, read_segments, oa_se
 
 def build_index(min_cov=0.9, val_frac=0.1, seed=0, include_oa=True):
     items = []
-    faces = {f['face']: f for f in csv.DictReader(open('ebl_tablets/faces/faces.csv'))} if os.path.exists('ebl_tablets/faces/faces.csv') else {}
-    split = {r['face']: r['split'] for r in csv.DictReader(open('ebl_tablets/split.csv'))} if os.path.exists('ebl_tablets/split.csv') else {}
+    faces = {f['face']: f for f in csv.DictReader(open(f'{EBL}/faces/faces.csv'))} if os.path.exists(f'{EBL}/faces/faces.csv') else {}
+    split = {r['face']: r['split'] for r in csv.DictReader(open(f'{EBL}/split.csv'))} if os.path.exists(f'{EBL}/split.csv') else {}
     for fid, f in faces.items():
         if split.get(fid) != 'tune' or not f['coverage'] or float(f['coverage']) < min_cov: continue
-        lp = os.path.join('ebl_tablets/faces/lines', fid + '.csv')
+        lp = os.path.join(f'{EBL}/faces/lines', fid + '.csv')
         if not os.path.exists(lp): continue
         items.append(dict(face=fid, tablet=f['tablet'], file=f['file'], source='ebl-' + f['script'], segments=read_segments(lp)))
-    if include_oa and os.path.exists('fat-cross_processed/ground_truth/labels.csv'):
-        acc = {f['face']: f for f in csv.DictReader(open('fat-cross_processed/prepared/faces_accepted.csv'))}
+    if include_oa and os.path.exists(f'{OA}/ground_truth/labels.csv'):
+        acc = {f['face']: f for f in csv.DictReader(open(f'{OA}/prepared/faces_accepted.csv'))}
         by = collections.defaultdict(list)
-        for r in csv.DictReader(open('fat-cross_processed/ground_truth/labels.csv')):
+        for r in csv.DictReader(open(f'{OA}/ground_truth/labels.csv')):
             if r['status'] == 'done': by[r['face_id']].append(r)
         for fid, rows in by.items():
             f = acc.get(fid)

@@ -10,9 +10,10 @@ For every accepted face with predictions from both methods:
               predictions enforce the ATF count (dp, det_n) and is then left out of the combined score
   spacing_cv  coefficient of variation of the gaps between predicted lines (regular spacing expected)
 A combined score (mean of agreement, proximity, and 1 - min(1, spacing_cv)) ranks faces from
-least to most confident. Writes fat-cross_processed/confidence.csv.
-  python -m line_cropping.eval.confidence_oa [--crops fat-cross_processed/line_crops/crops.csv]
+least to most confident. Writes tablet_data/fat-cross_processed/confidence.csv.
+  python -m line_cropping.eval.confidence_oa [--crops tablet_data/fat-cross_processed/line_crops/crops.csv]
 """
+from line_cropping.paths import OA
 import argparse, csv, os, collections
 import numpy as np, cv2
 from line_cropping.eval.evaluate_oa import to_frame
@@ -20,9 +21,9 @@ from line_cropping.eval.evaluate_oa import to_frame
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--faces', default='fat-cross_processed/prepared/faces_accepted.csv'); ap.add_argument('--profile', default='fat-cross_processed/predictions_profile')
-    ap.add_argument('--det-pred', default='fat-cross_processed/predictions'); ap.add_argument('--det', default='fat-cross_processed/detections')
-    ap.add_argument('--crops', default='fat-cross_processed/line_crops/crops.csv'); ap.add_argument('--out', default='fat-cross_processed/confidence.csv'); ap.add_argument('--tol', type=float, default=0.35)
+    ap.add_argument('--faces', default=f'{OA}/prepared/faces_accepted.csv'); ap.add_argument('--profile', default=f'{OA}/predictions_profile')
+    ap.add_argument('--det-pred', default=f'{OA}/predictions'); ap.add_argument('--det', default=f'{OA}/detections')
+    ap.add_argument('--crops', default=f'{OA}/line_crops/crops.csv'); ap.add_argument('--out', default=f'{OA}/confidence.csv'); ap.add_argument('--tol', type=float, default=0.35)
     a = ap.parse_args()
     faces = {f['face']: f for f in csv.DictReader(open(a.faces))}
     run_dp = {r['face']: r for r in csv.DictReader(open(os.path.join(a.profile, 'faces_run.csv'))) if r['method'] == 'dp'}

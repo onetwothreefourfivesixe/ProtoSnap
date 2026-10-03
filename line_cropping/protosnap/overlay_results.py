@@ -9,6 +9,7 @@ frame of the face's line crops, and draws them.
       --alignment protosnap_inputs/OB/alignment.csv --out output/phase6_OB/overlays
 Writes <out>/faces/<face>.jpg, <out>/lines/<face>__L<nn>.jpg, <out>/line_contact_sheet.jpg, <out>/index.csv.
 """
+from line_cropping.paths import EBL
 import argparse, csv, os, collections
 import numpy as np, cv2, torch
 from line_cropping.lines.profile_lines import rotate
@@ -34,7 +35,7 @@ def draw_skeleton(img, pts, con, labels, thickness=2):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--run', required=True); ap.add_argument('--samples', required=True); ap.add_argument('--alignment', required=True)
-    ap.add_argument('--faces', default='ebl_tablets/faces/faces.csv'); ap.add_argument('--crops', default='ebl_tablets/line_crops/crops.csv'); ap.add_argument('--out', required=True)
+    ap.add_argument('--faces', default=f'{EBL}/faces/faces.csv'); ap.add_argument('--crops', default=f'{EBL}/line_crops/crops.csv'); ap.add_argument('--out', required=True)
     ap.add_argument('--pad', type=float, default=0.15); ap.add_argument('--itr', type=int, default=100)
     a = ap.parse_args(); os.makedirs(os.path.join(a.out, 'faces'), exist_ok=True); os.makedirs(os.path.join(a.out, 'lines'), exist_ok=True)
     faces = {f['face']: f for f in csv.DictReader(open(a.faces))}

@@ -4,6 +4,10 @@ Run everything from the repo root with `python -m line_cropping.<stage>.<module>
 
 New to the project? Read `docs/pipeline_overview.md` first: it explains the whole pipeline in plain language.
 
+**Data location.** All data lives under `tablet_data/` (`tablet_data/ebl_tablets/`, `tablet_data/fat-cross_processed/`,
+`tablet_data/app_sessions/`), defined once in `line_cropping/paths.py`. Set `LINECROP_DATA_ROOT` to use another folder; after
+moving the data, `python -m line_cropping.paths --rewrite <old-prefix>/` re-roots the image paths stored in the tables.
+
 ## Layout
 
 | folder | stage | modules |
@@ -14,14 +18,14 @@ New to the project? Read `docs/pipeline_overview.md` first: it explains the whol
 | `lines/` | Phase 3 | `profile_lines.py`, `find_lines.py` (profile methods), `detect_signs.py` (eBL detector, mmdet env), `lines_from_boxes.py` (boxes -> lines) |
 | `signs/` | sign classifier | `build_dataset.py` (per-script datasets from `signs_snippets_metadata.json`, face-level hold-out), `train_classifier.py` (ResNet-34), `classify.py` (inference) |
 | `crops/` | Phase 4 | `make_crops.py` (gap-bounded single-line crops) |
-| `eval/` | Phase 5 | `evaluate_lines.py`, `evaluate_crops.py`, `evaluate_oa.py`, `phase5_eval.py`, `render_lines.py` |
+| `eval/` | Phase 5 | `evaluate_lines.py`, `evaluate_crops.py`, `crop_width.py`, `evaluate_oa.py`, `phase5_eval.py`, `render_lines.py` |
 | `app/` | local web app | `server.py`, `pipeline.py`, `static/index.html`: upload a photograph, split it into line crops, compare with the original |
 | `protosnap/` | Phase 6 | `protosnap_prep.py`, `phase6_summary.py` |
 | `report/` | reporting | `aggregate_metrics.py` (every metric table of both sets -> `docs/metrics_comparison.md`, per-set `metrics/`), `compile_sample.py` (tracked `samples/`: metrics tables + 20 tablets per set with all outputs) |
 | `experiments/` | early trials | `profile_lines_oa.py`, `comb_fit_oa.py` (the first Old Assyrian profile experiments) |
 
-Data lives outside the package and is gitignored: `artifacts_json/` (CDLI dump and derived tables), `ebl_tablets/`
-(eBL downloads, ground truth, faces, detections, predictions, line crops, `logs/`), `fat-cross_processed/`
+Data lives outside the package and is gitignored: `artifacts_json/` (CDLI dump and derived tables), `tablet_data/ebl_tablets/`
+(eBL downloads, ground truth, faces, detections, predictions, line crops, `logs/`), `tablet_data/fat-cross_processed/`
 (Old Assyrian faces and everything derived from them), `ebl_detection_2024/` (Zenodo archive), `protosnap_inputs/`
 (sign targets), `external/cuneiform-ocr` (eBL detector code), `weights/ebl_detr/`. Notes on the external data sets
 are in `docs/`. Runs of ProtoSnap itself land in `output/` as before.
@@ -30,12 +34,12 @@ are in `docs/`. Runs of ProtoSnap itself land in `output/` as before.
 
 **1a. eBL tablets (Neo-Assyrian, Old Babylonian)** — `truth/ebl_ground_truth.py`
 
-Turns the eBL sign boxes in `ebl_tablets/<NA|OB>/<tablet>/annotations.json` into line-level truth.
+Turns the eBL sign boxes in `tablet_data/ebl_tablets/<NA|OB>/<tablet>/annotations.json` into line-level truth.
 Signs are grouped by side, object (tablet/envelope), column and eBL text-line index. Side comes from the
 eBL crop label (`o`, `r`, `t.e.`, `b.e.`), else from the eBL surface box containing the sign, else it is
 inferred from text order (an unlabelled line takes the side whose line-index range contains it).
 
-Outputs in `ebl_tablets/ground_truth/`:
+Outputs in `tablet_data/ebl_tablets/ground_truth/`:
 
 | file | content |
 |---|---|
@@ -55,7 +59,7 @@ most (`column_inferred`). Line boxes are the union of the line's annotated sign 
 extent of the whole block and is only an auxiliary.
 
 Re-run as more tablets download: `python -m line_cropping.truth.ebl_ground_truth --preview 10` (it re-reads
-`ebl_tablets/manifest.csv`). Use the oriented segment, not the axis-aligned box, as the line truth: 56% of lines tilt more than 3 degrees
+`tablet_data/ebl_tablets/manifest.csv`). Use the oriented segment, not the axis-aligned box, as the line truth: 56% of lines tilt more than 3 degrees
 and axis-aligned boxes of neighbouring lines overlapped in 69% of cases versus 24% for the oriented bands.
 Coverage is partial: eBL annotators did not box every line, so compare `n_lines` with `atf_lines` per tablet
 (`tablets.csv`) and evaluate only on tablets or blocks with high coverage. Known limits: 14 tablets have no side information at all and stay
@@ -64,11 +68,11 @@ Coverage is partial: eBL annotators did not box every line, so compare `n_lines`
 
 **1b. Old Assyrian faces** — `truth/oa_sample.py` (uses `lines/profile_lines.py`)
 
-Picks 100 faces from `fat-cross_processed/experiments/face_qc.csv` (unflagged, with ATF), stratified by
+Picks 100 faces from `tablet_data/fat-cross_processed/experiments/face_qc.csv` (unflagged, with ATF), stratified by
 resolution (px per line: low <25, mid <40, high), ATF line-count bucket and face, split alternately into
 `tune` and `test`. For each face it writes automatic pre-labels from the ATF-constrained comb fit.
 
-Outputs in `fat-cross_processed/ground_truth/`:
+Outputs in `tablet_data/fat-cross_processed/ground_truth/`:
 
 | file | content |
 |---|---|
@@ -80,8 +84,8 @@ Labelling is done in the published page **Old Assyrian Line Marker** (source in 
 faces deskewed and downscaled to 900 px wide). Click adds a line, drag moves, Delete removes, D marks a face done;
 the ATF count is shown next to the marked count. Marks save to the page's database as `labels/<face>` documents.
 To use them: pull the `labels` collection with the Artifact tool's `read_db` into
-`fat-cross_processed/ground_truth/db/`, then run `python -m line_cropping.truth.labels_from_db` to write
-`fat-cross_processed/ground_truth/labels.csv` in face coordinates.
+`tablet_data/fat-cross_processed/ground_truth/db/`, then run `python -m line_cropping.truth.labels_from_db` to write
+`tablet_data/fat-cross_processed/ground_truth/labels.csv` in face coordinates.
 
 The older path, hand-editing `prelabels.csv`, still works: correcting `y_deskewed` per line (and deleting or adding rows) so that each row is a
 real line centre; set `source` to `manual` on corrected rows. The pre-labels are rough on broken
@@ -98,12 +102,12 @@ stays whole). `crop_method` in `faces.csv` says `blob` or, where no blob held th
 line segments plus one pitch of margin). It does not rotate the crop; `skew_deg` (minus the median block tilt) is recorded
 for the line finder, which deskews itself.
 
-Outputs in `ebl_tablets/faces/`: `<tablet>__<side>[__<object>].jpg`, `lines/<same>.csv` (oriented segments in
+Outputs in `tablet_data/ebl_tablets/faces/`: `<tablet>__<side>[__<object>].jpg`, `lines/<same>.csv` (oriented segments in
 crop coordinates), `faces.csv` (crop box in the photo, size, `n_columns`, `n_lines`, `atf_lines_side` from
 eBL's own ATF, `coverage`, `pitch_px`, `skew_deg`). 1,367 faces from 872 tablets (536 obverse, 460 reverse, 248 unspecified `face`, 123 edges); median
 122 px per line; 53% of faces have >= 0.8 coverage; 33 faces have more than one column.
 
-`prepare_faces.py oa --rot-left cw --rot-right ccw` writes `fat-cross_processed/prepared/faces.csv`: every
+`prepare_faces.py oa --rot-left cw --rot-right ccw` writes `tablet_data/fat-cross_processed/prepared/faces.csv`: every
 obverse/reverse that passed `face_qc.csv` (accepted=True) plus rejected ones with the reason, and every left or
 right edge whose ATF has text on that edge, rotated so lines run horizontally and saved under `prepared/edges/`.
 Rotation direction was chosen by eye on P357359 (clockwise for the left edge gives wedge heads at left/top);
@@ -136,9 +140,9 @@ its line count without the ATF agrees with the ATF within one line on only 18% o
 which carry few lines); tiling the face into 2 or 3 bands to raise the effective resolution did not add boxes.
 `det_n` therefore leans on the ATF count and on gap filling (missing lines are inserted where clusters are more
 than 1.5 pitches apart), and the profile `dp` was also run on all 3,290 accepted faces
-(`fat-cross_processed/predictions_profile/`). Which of the two is better on this set cannot be measured until the
-Phase 1b sample is hand-labelled; side-by-side overlays for review are in `fat-cross_processed/predictions/previews_det_n/`
-and `fat-cross_processed/predictions_profile/previews_dp/`.
+(`tablet_data/fat-cross_processed/predictions_profile/`). Which of the two is better on this set cannot be measured until the
+Phase 1b sample is hand-labelled; side-by-side overlays for review are in `tablet_data/fat-cross_processed/predictions/previews_det_n/`
+and `tablet_data/fat-cross_processed/predictions_profile/previews_dp/`.
 
 **Old Assyrian faces, scored against 88 hand-labelled faces** (`eval/evaluate_oa.py`, labels from the Line Marker page;
 785 lines, 49% of them moved or added by hand, the rest left where the profile fit had put them):
@@ -168,8 +172,8 @@ than the exact number of lines.
 
 Files: `lines/find_lines.py` (profile methods), `lines/detect_signs.py` (run in `~/venvs/mmdet`; weights in
 `weights/ebl_detr/`, config from `external/cuneiform-ocr/configs/detr.py`), `lines/lines_from_boxes.py` (boxes ->
-lines), `eval/evaluate_lines.py`. Predictions: `ebl_tablets/predictions/<method>/<face>.csv`, detections:
-`ebl_tablets/detections/<face>.csv`. The detector processes ~6 faces/s on the RTX 4060.
+lines), `eval/evaluate_lines.py`. Predictions: `tablet_data/ebl_tablets/predictions/<method>/<face>.csv`, detections:
+`tablet_data/ebl_tablets/detections/<face>.csv`. The detector processes ~6 faces/s on the RTX 4060.
 
 ## Scope note (12 Sep 2026)
 The Old Assyrian set is parked by decision of the project owner; Phases 4 onward proceed on the eBL set with the
@@ -182,7 +186,7 @@ and below. `crops/make_crops.py` (default `--bounds gap`) therefore sets each li
 boxes assigned to it (10th to 90th percentile of box tops and bottoms in the deskewed frame) and cuts from the
 midpoint of the gap to the line above to the midpoint of the gap to the line below; where two lines' boxes overlap
 the boundary is the midpoint of their centres, and the first and last lines get 6% of a pitch of margin. Columns
-span the line's detected extent plus half a pitch each side. Crops go to `ebl_tablets/line_crops/<face>/<face>__L<nn>.jpg`;
+span the line's detected extent plus half a pitch each side. Crops go to `tablet_data/ebl_tablets/line_crops/<face>/<face>__L<nn>.jpg`;
 `crops.csv` records the rectangle in the deskewed face, the skew, the face's offset in the photo, and the ATF line
 label when the predicted count equals the ATF count for a single-column side (`atf_aligned`).
 
@@ -200,15 +204,15 @@ The older "truth band fully inside one crop" metric (83% for the band crops, 5% 
 yardstick here: eBL sign boxes are about as tall as the line pitch and overhang into the neighbouring rows, so a crop
 that contains a whole eBL band must contain parts of the neighbours by construction. The gap crops keep wedge tops
 and bottoms up to the detected box extents, which is what a single-line crop can do without admitting the next line.
-Evaluate with `python -m line_cropping.eval.evaluate_crops --faces ebl_tablets/faces/faces.csv --crops ebl_tablets/line_crops/crops.csv`.
+Evaluate with `python -m line_cropping.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops/crops.csv [--split test]`. Besides the vertical metrics it reports horizontal fit (crop width: lines kept whole on clay, cut ends, overhang past the tablet), from `eval/crop_width.py`, which also writes per-line detail and renders of the worst lines; see docs/line_model.md section 10.
 The band set can be deleted once nothing needs it (2.3 GB).
 
 ## Phase 5 — evaluation (status: done on the eBL set)
 
 `eval/phase5_eval.py` splits the 1,334 single-column eBL faces with detections into tune and test halves, stratified
-by script and pixels-per-line bucket (`ebl_tablets/split.csv`, seed 7), grid-searches the clustering thresholds
+by script and pixels-per-line bucket (`tablet_data/ebl_tablets/split.csv`, seed 7), grid-searches the clustering thresholds
 on the tune half only (chosen: `gap_frac 0.5`, `merge_frac 0.35`, `score_thr 0.3`, saved to
-`ebl_tablets/det_params.json`, which `lines/lines_from_boxes.py` now reads by default), and reports the test half.
+`tablet_data/ebl_tablets/det_params.json`, which `lines/lines_from_boxes.py` now reads by default), and reports the test half.
 Faces with fewer than two truth lines are not scored (487 of 666 test faces are).
 
 Test half, `det_n` (detector boxes + ATF count):
@@ -231,7 +235,7 @@ Below 60 px/line the method is reported but not gated, as the plan allows.
 Failure categories among the 51 test faces with recall < 0.7: 18 placement errors with no single cause,
 10 sparsely annotated faces (< 50% coverage, so the truth itself is thin), 9 count far off, 5 with too few
 detections, 5 with an undeclared second column (truth lines interleave), 4 low resolution. Multi-column faces
-(33) were excluded from the run and remain out of scope. Per-face results: `ebl_tablets/phase5_test_results.csv`.
+(33) were excluded from the run and remain out of scope. Per-face results: `tablet_data/ebl_tablets/phase5_test_results.csv`.
 
 ## Phase 6 — ProtoSnap connection (status: sign-level trial done; see note)
 
@@ -330,14 +334,14 @@ classifier could still matter is a script the detector handles badly, such as Ol
 
 | step | command | what to inspect |
 |---|---|---|
-| 1. targets | `python -m line_cropping.linemodel.targets --preview 12` | `ebl_tablets/linemodel/target_previews/`: green = band (<= 0.7 pitch wide), yellow = kernel, red hatch = ignore (gaps > 1.5 pitch, one pitch beyond first/last line). Bands must sit on lines and never merge. |
+| 1. targets | `python -m line_cropping.linemodel.targets --preview 12` | `tablet_data/ebl_tablets/linemodel/target_previews/`: green = band (<= 0.7 pitch wide), yellow = kernel, red hatch = ignore (gaps > 1.5 pitch, one pitch beyond first/last line). Bands must sit on lines and never merge. |
 | 2. index | `python -c "from line_cropping.linemodel.dataset import build_index as b; i=b(); print(len(i['train']), len(i['val']))"` | training faces = tune-split eBL faces with coverage >= 0.9 + labelled Old Assyrian faces (302 train / 38 val at the time of writing; only 16 NA faces pass 0.9, use `--min-cov 0.8` in train.py to admit more) |
 | 3. dry run | `MPLBACKEND=Agg .venv/bin/python -m line_cropping.linemodel.train --dry-run --out weights/linemodel/dryrun` | three steps and a 3-face validation; proves the loop, ~10 s |
 | 4. train | `MPLBACKEND=Agg .venv/bin/python -m line_cropping.linemodel.train --epochs 40 --out weights/linemodel/run1` | `history.csv` (loss parts, val line recall/precision per epoch) and `plots/` (loss, loss components, validation recall/precision, checkpoint-selection score, `dashboard.png`), drawn over the whole run when training ends, or every N epochs with `--plot-every N`; `model.pt` = best val recall+precision. About 30 min for 40 epochs on the RTX 4060. `--no-oa` trains on eBL only for the transfer test; `--resume` continues a run. Read-out options `--kernel-thr`, `--band-thr`, `--min-area` change only validation scoring and checkpoint choice (saved in `config.json`, reused by `infer.py` unless overridden); target options `--kernel-shrink`, `--band-frac`, `--ignore-gap` change what the network learns. `python -m line_cropping.linemodel.visualize --run <dir>` regenerates the plots. |
-| 5. infer | `.venv/bin/python -m line_cropping.linemodel.infer --weights weights/linemodel/run1/model.pt --faces ebl_tablets/faces/faces.csv --out ebl_tablets/predictions --method unet --split test` | writes `predictions/unet/` in the detector route's format and `predictions/unet_segments/` (raw segments) |
+| 5. infer | `.venv/bin/python -m line_cropping.linemodel.infer --weights weights/linemodel/run1/model.pt --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions --method unet --split test` | writes `predictions/unet/` in the detector route's format and `predictions/unet_segments/` (raw segments) |
 | 5b. look | add `--viz 8` to the infer command | `<out>/unet_viz/`: green = predicted band, lime = predicted kernel, red = read-out segments (the target previews of step 1 use the same colours for the truth) |
-| 5c. on the tablet | `python -m line_cropping.linemodel.render_predictions --n 10` | `ebl_tablets/linemodel/prediction_overlays/`: predicted segments (red) and eBL truth (green) on each face and on the original composite photograph (`photos/`, face outlined in orange), plus a contact sheet |
-| 6. score | `python -m line_cropping.eval.evaluate_lines --faces ebl_tablets/faces/faces.csv --pred ebl_tablets/predictions` | `unet` appears beside `det`/`det_n`; compare on the same test faces. For Old Assyrian: `infer` on `fat-cross_processed/prepared/faces_accepted.csv` with `--out fat-cross_processed/predictions_unet --n-col atf_lines`, then `evaluate_oa.py` (add the method there). |
+| 5c. on the tablet | `python -m line_cropping.linemodel.render_predictions --n 10` | `tablet_data/ebl_tablets/linemodel/prediction_overlays/`: predicted segments (red) and eBL truth (green) on each face and on the original composite photograph (`photos/`, face outlined in orange), plus a contact sheet |
+| 6. score | `python -m line_cropping.eval.evaluate_lines --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions` | `unet` appears beside `det`/`det_n`; compare on the same test faces. For Old Assyrian: `infer` on `tablet_data/fat-cross_processed/prepared/faces_accepted.csv` with `--out tablet_data/fat-cross_processed/predictions_unet --n-col atf_lines`, then `evaluate_oa.py` (add the method there). |
 
 **First run through the whole pipeline (run1, 40 epochs, test split, 27 Sep 2026).** `infer.py --use-n` adds the
 plan's optional refinement: where a transliteration exists its line count is reconciled with the model's lines
@@ -386,15 +390,15 @@ To work on the parked Old Assyrian set without labels, three additions stay insi
 - `crops/make_crops.py --bounds midpoint --atf-source cdli`: single-line crops cut halfway between consecutive
   predicted line centres, so no detector boxes are needed; ATF line labels come from the CDLI dump via the face's
   P-number. Run on the profile `dp` predictions: 30,472 crops from 3,289 faces, 88% with an ATF line label, median
-  601 x 48 px, in `fat-cross_processed/line_crops/`.
+  601 x 48 px, in `tablet_data/fat-cross_processed/line_crops/`.
 - `eval/confidence_oa.py`: per-face confidence without truth from (a) agreement between the two independent line
   finders (`dp` vs `det_n`, within 0.35 pitch), (b) the share of detector boxes within 0.3 pitch of a predicted line
   centre, (c) spacing regularity. Two tempting signals are uninformative here and are reported but not scored: the
   ATF count (enforced, so always matched) and crop containment (midpoint crops tile the face). Result:
-  `fat-cross_processed/confidence.csv`, 3,172 faces; median agreement 0.50, median box proximity 0.44, median
+  `tablet_data/fat-cross_processed/confidence.csv`, 3,172 faces; median agreement 0.50, median box proximity 0.44, median
   confidence 0.64, lowest decile below 0.45; the two signals correlate at 0.50.
 - `eval/render_lines.py --sheet`: contact sheets of any ranked list of faces; the eight least and eight most
-  confident faces are in `fat-cross_processed/review/`.
+  confident faces are in `tablet_data/fat-cross_processed/review/`.
 
 The ranking is a review queue, not a metric: look at the bottom of it first.
 

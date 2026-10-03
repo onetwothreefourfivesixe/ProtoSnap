@@ -13,7 +13,7 @@ from PIL import Image
 
 from line_cropping.crops.make_crops import crop_along_segment
 from line_cropping.faces.prepare_faces import tablet_components
-from line_cropping.linemodel.infer import predict_face, read_lines, segments_to_lines
+from line_cropping.linemodel.infer import predict_face, read_lines, segments_to_lines, tablet_mask_for
 
 Image.MAX_IMAGE_PIXELS = None
 
@@ -119,8 +119,10 @@ def split_view(model, dev, face_bgr, out_dir, prefix, rotate_per_line=True, read
     readout = readout or {}
     H, W = face_bgr.shape[:2]
     maps, s = predict_face(model, face_bgr, dev, readout.get('long_side', 1024))
+    tab = tablet_mask_for(face_bgr, maps.shape, s) if readout.get('clip_tablet', 1) else None
     segs = read_lines(maps, s, readout.get('kernel_thr', 0.5), readout.get('band_thr', 0.4), readout.get('min_area', 12),
-                      readout.get('max_reach', 1.5), readout.get('max_dev', 45.0), readout.get('merge_dy', 0.5))
+                      readout.get('max_reach', 1.5), readout.get('max_dev', 45.0), readout.get('merge_dy', 0.5),
+                      readout.get('end_thr', 0.2), readout.get('max_ext', 3.0), tab)
     if not segs:
         return [], dict(angle=0.0, pitch=0.0)
     ang, rows = segments_to_lines(segs, W, H)

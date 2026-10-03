@@ -8,13 +8,14 @@ epoch is the bottleneck. Class-balanced sampling (weight 1/sqrt(class count)), l
 augmentation, label smoothing, AdamW with cosine decay, mixed precision. The checkpoint with the best validation
 top-1 is kept. Writes weights/sign_classifier/<script>/{model.pt, classes.json, metrics.json}.
 """
+from line_cropping.paths import EBL
 import argparse, csv, json, os, time
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np, cv2, torch, torch.nn as nn, torch.nn.functional as F
 import torchvision
 from torchvision.transforms import v2
 
-DATA = 'ebl_tablets/sign_classifier'; WEIGHTS = 'weights/sign_classifier'
+DATA = f'{EBL}/sign_classifier'; WEIGHTS = 'weights/sign_classifier'
 MEAN = torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1); STD = torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1)
 
 

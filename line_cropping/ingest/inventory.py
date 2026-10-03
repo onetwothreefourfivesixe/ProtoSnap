@@ -1,8 +1,9 @@
-"""Rebuild fat-cross_processed/inventory.csv: one row per tablet with its faces, CDLI metadata and ATF flag."""
+"""Rebuild tablet_data/fat-cross_processed/inventory.csv: one row per tablet with its faces, CDLI metadata and ATF flag."""
+from line_cropping.paths import OA
 import os, re, csv, json, collections
 
 def main():
-    ROOT = 'fat-cross_processed/fat-cross_processed'
+    ROOT = f'{OA}/fat-cross_processed'
     faces = collections.defaultdict(dict); sub = collections.defaultdict(list); other = []
     for dp, dn, fn in os.walk(ROOT):
         rel = os.path.relpath(dp, ROOT)
@@ -16,7 +17,7 @@ def main():
     for r in csv.DictReader(open('artifacts_json/protosnap_tablets_to_cdli.csv', encoding='utf-8')):
         if r['p_number']: m2p[r['p_number']].add(r['tabletNumber'])
     lab = {x['tabletNumber'] for x in json.load(open('signs_snippets_metadata.json')) if x['label'] != '[]'}
-    with open('fat-cross_processed/inventory.csv', 'w', newline='', encoding='utf-8') as f:
+    with open(f'{OA}/inventory.csv', 'w', newline='', encoding='utf-8') as f:
         w = csv.writer(f)
         w.writerow(['p_number', 'faces', 'has_obverse', 'has_reverse', 'in_cdli', 'has_atf', 'period', 'genre', 'museum_no', 'accession_no', 'ebl_tablet'])
         for p in sorted(faces):

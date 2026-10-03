@@ -88,7 +88,7 @@ The first run, `weights/linemodel/run1`, trained 40 epochs in 32 minutes on an R
 
 ## 6. Read-out: from maps to lines
 
-The face goes through the network once at 1,024 pixels. Kernel probabilities above 0.5 are thresholded and split into connected components; components under 12 pixels (at stride 4) are dropped. Every band pixel above 0.4 joins its nearest kernel component, but only within 1.5 kernel heights of it, a limit added after a stray speck of band far from any kernel was assigned to one and stretched a segment across a whole face. A principal-component line through each component's band pixels gives the segment's endpoints, and twice the mean perpendicular spread gives its thickness. Because text lines on one face share a direction, segments more than 45 degrees off the face's median angle are dropped; this removed the near-vertical false detections seen on worn faces. Finally, segments that are fragments of one line, at the same height and side by side, are merged into a single segment (see section 9).
+The face goes through the network once at 1,024 pixels. Kernel probabilities above 0.5 are thresholded and split into connected components; components under 12 pixels (at stride 4) are dropped. Every band pixel above 0.4 joins its nearest kernel component, but only within 1.5 kernel heights of it, a limit added after a stray speck of band far from any kernel was assigned to one and stretched a segment across a whole face. A principal-component line through each component's band pixels gives the segment's endpoints, and twice the mean perpendicular spread gives its thickness. Because text lines on one face share a direction, segments more than 45 degrees off the face's median angle are dropped; this removed the near-vertical false detections seen on worn faces. Finally, segments that are fragments of one line, at the same height and side by side, are merged into a single segment (see section 9). Last, each line's ends are refined: they are pushed outward along the line while the band probability stays above 0.2 (at most three kernel heights per end), then pulled back off any stretch where the line lies over the studio background rather than clay. This runs after the merge, because extended fragments overlap and would no longer be recognised as pieces of one line. Both settings were chosen in crop width Test 2 (section 10) and can be turned off with `--end-thr 0 --clip-tablet 0`.
 
 Segments are written both raw (`unet_segments/<face>.csv`) and in the pipeline's line format (`unet/<face>.csv`: centre height in a frame rotated by the face's median line angle), so every downstream tool and evaluator accepts them unchanged.
 
@@ -126,7 +126,7 @@ By script, `unet` reaches 0.87 recall at 0.87 precision on Old Babylonian, three
 
 *Figure 7. K.13419: the model finds twelve lines on a face whose eBL annotation covers one, which is why every score here is conditioned on coverage.*
 
-**Files.** Per run: `weights/linemodel/<run>/{model.pt, last.pt, history.csv, config.json, plots/}`. Per inference: `ebl_tablets/predictions/{unet, unet_n}/<face>.csv`, `unet_segments/<face>.csv`, and rows in `faces_run.csv`; optional overlays in `unet_viz/`. Crops: `ebl_tablets/line_crops_unet*/` with `crops.csv` (rectangle, skew, per-line angle, ATF label). Whole-tablet overlays: `ebl_tablets/linemodel/prediction_overlays/`.
+**Files.** Per run: `weights/linemodel/<run>/{model.pt, last.pt, history.csv, config.json, plots/}`. Per inference: `tablet_data/ebl_tablets/predictions/{unet, unet_n}/<face>.csv`, `unet_segments/<face>.csv`, and rows in `faces_run.csv`; optional overlays in `unet_viz/`. Crops: `tablet_data/ebl_tablets/line_crops_unet*/` with `crops.csv` (rectangle, skew, per-line angle, ATF label). Whole-tablet overlays: `tablet_data/ebl_tablets/linemodel/prediction_overlays/`.
 
 ## 9. Known failure modes and next steps
 
@@ -141,18 +141,185 @@ By script, `unet` reaches 0.87 recall at 0.87 precision on Old Babylonian, three
 
 *Figure 8. HS.2050 obverse before the angle guard: near-vertical false segments on a worn face with a single annotated line.*
 
-## 10. How to run
+## 10. Crop width tests
+
+Crops looked too wide by eye, so their horizontal fit is being examined one step at a time: first find what the
+over-wide crops are, then change how line ends are set, then keep the resulting measures as standing metrics. Each
+test below records the question, the method, the numbers and what they mean for the next step. The diagnostic is
+`line_cropping/eval/crop_width.py`; its outputs are in `tablet_data/ebl_tablets/linemodel/crop_width/<test>/`.
+
+**Measures.** For every truth line on a test face with annotation coverage of at least 0.9 whose centre falls inside
+exactly one crop, the crop and the line are compared in the crop's frame. The line's true extent runs between its
+outermost annotated sign centres, widened by half a sign on each side to reach the sign edges. **Inside** is the
+share of that extent within the crop (1.0 means nothing is cut off); **excess** is the crop width outside the
+extent, as a share of the line's width. Because annotators sometimes box only part of a line, both are also given
+for **fully annotated lines**, those with at least five annotated signs. **Background overhang** needs no truth at
+all: it is how far the crop runs past the edge of the clay into the studio background, in pitches.
+
+### Test 1: what are the over-wide crops? (29 Sep 2026)
+
+Crops from the `unet` read-out on the test split (face-frame crops, `line_crops_unet`), 2,282 lines on 245 faces.
+
+| measure | all lines | fully annotated lines (1,348) |
+|---|---|---|
+| true width inside the crop, median | 96% | 94% |
+| lines keeping at least 95% of their width | 52% | 47% |
+| extra width, median | 3% | 1% |
+| extra width, 90th percentile | 65% | 16% |
+| lines more than 50% too wide | 10% | 1% |
+
+| background overhang, no truth needed | value |
+|---|---|
+| median | 0.33 pitch |
+| 90th percentile | 0.75 pitch |
+| lines overhanging by at least 1 pitch | 3% |
+
+The worst tenth by extra width (229 lines, at least 65% too wide) was sorted into causes, first match wins:
+
+| cause | lines | what it is |
+|---|---|---|
+| truth line barely annotated (two signs or fewer) | 116 | on inspection the crop covers the whole written line and the truth only the few signs that were boxed: the crop is right |
+| runs into the background | 52 | the crop extends at least half a pitch past the clay: a real error |
+| one-sided overhang | 27 | mostly partial annotation again, with some real overhang at broken edges |
+| fragments merged | 23 | a line built by joining side-by-side pieces; usually right, occasionally two separate lines joined |
+| wide on both sides | 11 | mixed |
+
+![The two worst lines of each cause](img/linemodel/width_test1_cases.jpg)
+
+*Figure 9. The two worst lines of each cause: crop in red, annotated extent of the line in green. K.1808 line 3 and
+K.4063 line 4 have one annotated sign each on a fully written line, so the crop is right and the truth short.
+BM.141781 line 18 runs off the tablet into the background, and YBC.4599 line 1 misses the left half of its line
+along a crack: those are genuine errors.*
+
+**What this means.** On fully annotated lines the crops are not too wide: extra width has a median of 1 percent and
+exceeds half the line's width on only 1 percent of lines. Most of the apparent over-width came from comparing against
+lines the annotators boxed only in part. Two genuine problems remain. The larger is the opposite of the original
+concern: fewer than half of fully annotated lines keep 95 percent of their width, with the right end cut most often
+(median cut 0.15 pitch against 0.03 on the left), so crops are more often slightly too narrow at one end. The smaller
+is overhang into the background, at least one pitch on 3 percent of lines, part of which is simply the fixed half-pitch
+margin added where a line meets the tablet edge. Step 2, setting line ends from where the predicted band actually fades
+instead of the segment ends plus a fixed margin, therefore has to be judged on both counts: it should raise the share
+of lines kept whole, especially at the right end, while trimming the background overhang, and not by narrowing crops
+in general.
+
+### Test 2: line ends from the predicted band (2 Oct 2026)
+
+**Question.** Can the crop ends be set from where the model's band actually fades, rather than from the segment's
+ends plus a fixed half-pitch margin, so that fewer lines lose their right end without more crops running into the
+background?
+
+**Changes tried.** Three levers, all in the read-out or the crop step, none needing retraining:
+
+- *Extend* (`infer.py --end-thr`): walk each end outward along the line while the mean band probability across the
+  line's thickness stays above the threshold, up to three kernel heights per end. The segment's own ends come from
+  the band pixels above 0.4 nearest its kernel, so a faint end of a line is often left out.
+- *Clip* (`infer.py --clip-tablet 1`): pull each end back while it lies over the studio background (less than 30
+  percent of the line's thickness is clay), using the same background polarity test as the face cutter.
+- *Margin and trim* (`make_crops.py --margin`, `--trim-background`): the margin added beyond each end (0.5 pitch so
+  far), and an option that, after adding it, trims each crop's left and right edges back to the edge of the clay.
+
+**Measure, revised.** The first runs showed trimming apparently cutting many lines. Inspection showed a measurement
+artefact: the truth extent is widened by half a sign beyond the outermost sign centres, and where writing runs onto
+the tablet's rounded edge that widening lands on background (Figure 10, HS.2072 and YBC.5710). A crop that stops at
+the clay was scored as cut. `crop_width.py` therefore also reports **kept whole on clay**: the share of fully
+annotated lines whose part on clay lies at least 95 percent inside the crop. It is the headline measure from here on;
+the old one is kept beside it.
+
+![Lines the trimmed crop appeared to cut](img/linemodel/width_test2_trim.jpg)
+
+*Figure 10. Lines that lost width after trimming to clay: crop before trimming in blue, after in red, annotated
+extent in green. In HS.2072, YBC.7081, YBC.5710 and HS.2077 the green line runs past the clay, so part of the "cut"
+is background that no crop should include. YBC.4603 line 3 is a genuine short read-out, not a trimming effect.*
+
+**Method.** Sweep on the 292 tune-split faces with annotation coverage below 0.9, which the model never trained on
+(612 fully annotated lines), then one run of the chosen settings on the test split. One bug surfaced on the way: the
+first implementation refined ends before merging side-by-side fragments, so extended fragments overlapped and stayed
+separate lines, and test precision fell from 0.88 to 0.86. Refinement now runs after the merge; the numbers below
+are all from the corrected code.
+
+| variant (tune faces) | extend | clip | margin | trim to clay | kept whole on clay | past clay >= 1 pitch | past clay, median |
+|---|---|---|---|---|---|---|---|
+| A, as before | - | - | 0.5 | - | 83% | 3.5% | 0.29 pitch |
+| B | 0.2 | - | 0.5 | - | 88% | 5.9% | 0.36 |
+| C | - | yes | 0.5 | - | 83% | 1.2% | 0.29 |
+| **D, chosen** | 0.2 | yes | 0.5 | - | **88%** | **2.9%** | 0.36 |
+| E | 0.2 | yes | 0.25 | - | 80% | 1.3% | 0.13 |
+| F | 0.1 | yes | 0.25 | - | 85% | 1.4% | 0.17 |
+| G | - | - | 0.25 | - | 72% | 1.4% | 0.07 |
+| H, option | 0.2 | yes | 0.5 | yes | 82% | 0.1% | 0.00 |
+| I | - | - | 0.5 | yes | 77% | 0.5% | 0.00 |
+
+Extending alone (B) keeps five more lines in a hundred whole but doubles the large overhangs; clipping alone (C)
+cuts those overhangs by two thirds and costs nothing; together (D) they keep the gain and the overhang stays at the
+old level. Shrinking the margin (E, F, G) trades whole lines for overhang one for one, which is the general narrowing
+Test 1 warned against. Trimming to clay (H, I) removes the overhang almost entirely, at six points of kept-whole
+lines: on worn or dark faces the clay test misjudges the tablet edge and trims written clay.
+
+**Test split** (245 faces, 1,179 fully annotated lines; the model never saw these faces):
+
+| | before (Test 1 crops) | D: extend + clip | H: D + trim to clay |
+|---|---|---|---|
+| kept whole on clay | 78% | **83%** | 75% |
+| kept whole, old measure | 45% | 51% | 31% |
+| median cut, left / right end | 0.05 / 0.20 pitch | 0.02 / 0.11 | 0.23 / 0.31 |
+| more than 50% too wide | 1.4% | 1.5% | 1.4% |
+| past the clay by >= 1 pitch | 2.7% | **1.5%** | 0.2% |
+| past the clay, median | 0.34 pitch | 0.39 | 0.00 |
+| line recall / precision | 0.85 / 0.88 | 0.86 / 0.87 | (same lines as D) |
+
+**What this means.** D does both things Step 2 had to do: five more lines in a hundred keep their full width, the
+right-end cut nearly halves, and large overhangs into the background halve as well. It did not make crops narrower
+in general; the median overhang grows slightly, because extended ends now reach the real end of the writing and the
+half-pitch margin then sits beyond it. Line finding is essentially unchanged: one point of recall for one point of
+precision, because extending one end of a tilted line moves its centre height, which is what line matching uses.
+D is now the default in `infer.py` and in the Line Splitter app (`--end-thr 0.2 --clip-tablet 1`). H is kept as the
+`make_crops.py --trim-background` option for uses where any background in a crop is worse than a slightly cut line.
+The stored `predictions/unet` and `line_crops_unet*` were made before this change and are left as they are, so the
+section 8 figures still describe them; rerunning inference regenerates them with the new ends.
+
+### Test 3: width as standing metrics (2 Oct 2026)
+
+The width measures are now part of the regular evaluation instead of a one-off diagnostic. `crop_width.py` exposes
+`measure()` (per-line rows and summary) and `headline()` (the numbers below); rerunning the refactored script on the
+Test 1 crops reproduces its summary exactly.
+
+- `evaluate_crops.py` prints a width line after its vertical metrics (`--split test` to restrict to the test faces,
+  `--no-width` to skip it; it reads the face images, about 40 seconds on the test split).
+- `report/compile_sample.py` adds a **Crop width** table to `samples/metrics/METRICS.md` for every crop set present,
+  on the test split, and copies each summary to `metrics/crop_width_<set>.json`.
+- `report/aggregate_metrics.py` records the same measures for the main crop set as `width_*` rows.
+
+The headline measures are kept whole on clay, more than 50 percent too wide, the median cut at each end, and how far
+crops run past the clay (median, and the share at one pitch or more). The current table, on the stored crop sets:
+
+| crops (test faces, coverage >= 0.9) | lines (fully annotated) | kept whole on clay | > 50% too wide | median cut left / right | past clay, median | past clay >= 1 pitch |
+|---|---|---|---|---|---|---|
+| detector route (`det_n`), gap-bounded | 1,925 (1,206) | 60% | 1% | 0.20 / 0.38 pitch | 0.11 pitch | 2% |
+| line model (`unet`), before Test 2 | 1,859 (1,179) | 78% | 1% | 0.05 / 0.20 | 0.34 | 3% |
+| line model, per-line rotation | 1,823 (1,153) | 75% | 1% | 0.00 / 0.21 | 0.44 | 6% |
+| line model, count reconciled (`unet_n`) | 1,859 (1,177) | 79% | 1% | 0.03 / 0.17 | 0.35 | 4% |
+| line model with Test 2 ends (D) | 1,858 (1,179) | 83% | 2% | 0.02 / 0.11 | 0.39 | 1.5% |
+
+The first row is new information: the detector route, whose crops end at its outermost sign boxes, keeps only 60
+percent of lines whole, against 83 percent for the line model with the new ends. On horizontal fit the line model is
+now clearly ahead, while it still trails the detector route on line recall and precision (section 8). Per-line
+rotation overhangs more because it is measured in the face frame (see the measures above), which overstates width
+for rotated crops.
+
+## 11. How to run
 
 ```
 python -m line_cropping.linemodel.targets --preview 12
 MPLBACKEND=Agg .venv/bin/python -m line_cropping.linemodel.train --epochs 40 --out weights/linemodel/run1
-.venv/bin/python -m line_cropping.linemodel.infer --weights weights/linemodel/run1/model.pt --faces ebl_tablets/faces/faces.csv --out ebl_tablets/predictions --split test [--use-n] [--viz 8]
-.venv/bin/python -m line_cropping.eval.evaluate_lines --faces ebl_tablets/faces/faces.csv --pred ebl_tablets/predictions
-.venv/bin/python -m line_cropping.crops.make_crops --faces ebl_tablets/faces/faces.csv --pred ebl_tablets/predictions --method unet --bounds segments --rotate-per-line --split test --out ebl_tablets/line_crops_unet
+.venv/bin/python -m line_cropping.linemodel.infer --weights weights/linemodel/run1/model.pt --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions --split test [--use-n] [--viz 8] [--end-thr 0.2 --clip-tablet 1]
+.venv/bin/python -m line_cropping.eval.evaluate_lines --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions
+.venv/bin/python -m line_cropping.crops.make_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions --method unet --bounds segments --rotate-per-line --split test --out tablet_data/ebl_tablets/line_crops_unet
 .venv/bin/python -m line_cropping.linemodel.render_predictions --n 10
+.venv/bin/python -m line_cropping.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops_unet/crops.csv --split test   # includes crop width
+.venv/bin/python -m line_cropping.eval.crop_width --crops tablet_data/ebl_tablets/line_crops_unet/crops.csv --pred tablet_data/ebl_tablets/predictions --split test   # per-line detail, worst-case renders
 ```
 
-## 11. Sources
+## 12. Sources
 
 1. Wentao Che et al., *Automated sign detection across the Electronic Babylonian Library*, 2026. https://arxiv.org/abs/2606.22608 (the detector the line model is compared against)
 2. Olaf Ronneberger, Philipp Fischer, Thomas Brox, *U-Net: Convolutional Networks for Biomedical Image Segmentation*, MICCAI 2015. https://arxiv.org/abs/1505.04597

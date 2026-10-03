@@ -26,10 +26,11 @@ import torch
 
 from line_cropping.app.pipeline import detect_views, split_view
 from line_cropping.linemodel.infer import load_model
+from line_cropping.paths import APP_SESSIONS
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 STATIC = os.path.join(HERE, 'static')
-SESSIONS = os.path.join('tablet_data', 'app_sessions')
+SESSIONS = APP_SESSIONS
 DISPLAY_MAX = 2000
 MAX_UPLOAD = 80 * 1024 * 1024
 STATE = {}
@@ -197,7 +198,7 @@ def main():
     dev = 'cuda' if torch.cuda.is_available() else 'cpu'
     cfgp = os.path.join(os.path.dirname(a.weights), 'config.json')
     cfg = json.load(open(cfgp)) if os.path.exists(cfgp) else {}
-    readout = {k: cfg.get(k, d) for k, d in (('kernel_thr', 0.5), ('band_thr', 0.4), ('min_area', 12), ('max_reach', 1.5), ('max_dev', 45.0), ('merge_dy', 0.5))}
+    readout = {k: cfg.get(k, d) for k, d in (('kernel_thr', 0.5), ('band_thr', 0.4), ('min_area', 12), ('max_reach', 1.5), ('max_dev', 45.0), ('merge_dy', 0.5), ('end_thr', 0.2), ('max_ext', 3.0), ('clip_tablet', 1))}
     STATE.update(model=load_model(a.weights, dev), dev=dev, weights=a.weights, readout=readout)
     os.makedirs(SESSIONS, exist_ok=True)
     print(f'Line Splitter on http://{a.host}:{a.port}  (model {a.weights}, {dev})', flush=True)

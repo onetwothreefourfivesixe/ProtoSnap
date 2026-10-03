@@ -1,10 +1,11 @@
+from line_cropping.paths import OA
 import csv,collections,numpy as np,cv2,random
 from scipy.signal import find_peaks
 import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt
 
 def main():
-    ROOT='fat-cross_processed/fat-cross_processed'
-    rows=list(csv.DictReader(open('fat-cross_processed/experiments/profile_line_counts.csv')))
+    ROOT=f'{OA}/fat-cross_processed'
+    rows=list(csv.DictReader(open(f'{OA}/experiments/profile_line_counts.csv')))
     random.seed(3)
     picks=[]
     for lo,hi in ((4,6),(9,11),(14,16),(19,21),(24,28),(30,60)):
@@ -49,7 +50,7 @@ def main():
         ax.plot(p/p.max()*body.shape[1]*0.3,np.arange(len(p)),color='yellow',lw=0.7); ax.axis('off')
         ax.set_title(f"{r['p_number']} {r['face']}\nATF {N} lines | free {len(free)} | comb pitch {pitch:.0f}px, skew {ang:+.0f}",fontsize=8)
     plt.suptitle('Old Assyrian faces: red dashed = free profile peaks, green = ATF-constrained comb fit (N lines from transliteration)',fontsize=9)
-    plt.tight_layout(); plt.savefig('fat-cross_processed/experiments/oa_comb_fit.png',dpi=100)
+    plt.tight_layout(); plt.savefig(f'{OA}/experiments/oa_comb_fit.png',dpi=100)
     print([ (r['p_number'],r['atf_lines']) for r in picks])
 
 

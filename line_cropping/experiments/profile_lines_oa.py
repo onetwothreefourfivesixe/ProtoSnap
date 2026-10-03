@@ -1,10 +1,11 @@
+from line_cropping.paths import OA
 import json,re,csv,collections,os,sys,time
 import numpy as np,cv2
 from scipy.signal import find_peaks
 
 def main():
-    ROOT='fat-cross_processed/fat-cross_processed'
-    inv={r['p_number']:r for r in csv.DictReader(open('fat-cross_processed/inventory.csv'))}
+    ROOT=f'{OA}/fat-cross_processed'
+    inv={r['p_number']:r for r in csv.DictReader(open(f'{OA}/inventory.csv'))}
     def face_lines(atf):
         out={}; cur=None
         for l in atf.splitlines():
@@ -44,7 +45,7 @@ def main():
             res=count_lines(fp)
             if res: rows.append(dict(p_number=p,face=face,atf_lines=atfs[p][face],**res))
         if i%200==0: print(i,len(rows),f'{time.time()-t0:.0f}s',flush=True)
-    with open('fat-cross_processed/experiments/profile_line_counts.csv','w',newline='') as f:
+    with open(f'{OA}/experiments/profile_line_counts.csv','w',newline='') as f:
         w=csv.DictWriter(f,fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
     d=np.array([r['peaks']-r['atf_lines'] for r in rows]); a=np.array([r['atf_lines'] for r in rows])
     print(f'faces scored: {len(rows)}; exact count match: {(d==0).mean():.1%}; within ±1: {(abs(d)<=1).mean():.1%}; within ±2: {(abs(d)<=2).mean():.1%}; median |diff|: {np.median(abs(d)):.0f}; mean signed diff: {d.mean():+.2f}')

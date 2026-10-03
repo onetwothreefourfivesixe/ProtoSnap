@@ -1,19 +1,20 @@
 """Phase 1a: derive line-level ground truth from eBL sign annotations.
 
-Reads ebl_tablets/manifest.csv and, for every downloaded tablet, groups the eBL sign boxes into text
+Reads tablet_data/ebl_tablets/manifest.csv and, for every downloaded tablet, groups the eBL sign boxes into text
 lines per (side, object, column). Writes:
-  ebl_tablets/ground_truth/lines/<tablet>.csv   one row per line (pixel box, centre, tilt, #signs, flags)
-  ebl_tablets/ground_truth/blocks.csv           one row per text block (side/column): pitch, tilt, extent
-  ebl_tablets/ground_truth/tablets.csv          one row per tablet
-  ebl_tablets/ground_truth/previews/<tablet>.jpg  overlay for visual checking (first --preview tablets)
+  tablet_data/ebl_tablets/ground_truth/lines/<tablet>.csv   one row per line (pixel box, centre, tilt, #signs, flags)
+  tablet_data/ebl_tablets/ground_truth/blocks.csv           one row per text block (side/column): pitch, tilt, extent
+  tablet_data/ebl_tablets/ground_truth/tablets.csv          one row per tablet
+  tablet_data/ebl_tablets/ground_truth/previews/<tablet>.jpg  overlay for visual checking (first --preview tablets)
 
 Usage (from repo root):  python -m line_cropping.truth.ebl_ground_truth [--preview 12] [--force]
 """
+from line_cropping.paths import EBL
 import argparse, csv, json, os, re, collections
 import numpy as np
 from PIL import Image, ImageDraw
 
-ROOT = 'ebl_tablets'
+ROOT = EBL
 GT = os.path.join(ROOT, 'ground_truth')
 SIGN_TYPES = {'HasSign', 'Number', 'Damaged', 'PartiallyBroken', 'UnclearSign', 'CompoundGrapheme'}
 ROMAN = {'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii'}

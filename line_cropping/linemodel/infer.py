@@ -1,15 +1,17 @@
 """Phase 7 inference and read-out: face image -> line segments -> predictions in the pipeline's format.
 
   .venv/bin/python -m line_cropping.linemodel.infer --weights weights/linemodel/run1/model.pt \
-      --faces ebl_tablets/faces/faces.csv --out ebl_tablets/predictions --method unet [--split test]
+      --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions --method unet [--split test]
 
-Read-out: kernel = sigmoid(ch0) > kernel_thr; connected components (area >= min_area px at stride 4) are line
+Read-out (optional end refinement: --end-thr extends line ends along the band, --clip-tablet trims ends over
+background): kernel = sigmoid(ch0) > kernel_thr; connected components (area >= min_area px at stride 4) are line
 instances; every band pixel (sigmoid(ch1) > band_thr) within max_reach x the median kernel height joins its nearest
 kernel component (farther band pixels are dropped); a PCA line through each
 component's band pixels gives the segment and its thickness. Predictions are written like the detector route
 (faces_run.csv + <method>/<face>.csv with y_deskewed/x0/x1 in the frame rotated by the face's median line angle), so
 evaluate_lines.py / phase5_eval.py score them unchanged, plus <method>_segments/<face>.csv with the raw segments.
 """
+from line_cropping.paths import EBL
 import argparse, csv, os, time
 import numpy as np, cv2, torch
 from line_cropping.linemodel.model import LineUNet
@@ -32,8 +34,71 @@ def predict_face(model, path_or_img, dev, long_side=1024, pad=32):
     maps = np.concatenate([1 / (1 + np.exp(-out[:2])), out[2:4]]); return maps, s     # (4, h/4, w/4), scale image->resized
 
 
-def read_lines(maps, scale, kernel_thr=0.5, band_thr=0.4, min_area=12, max_reach=1.5, max_dev=45.0, merge_dy=0.5):
-    """maps (4,h,w) at stride 4 of the resized image; returns segments in ORIGINAL face pixels."""
+def tablet_mask_for(img, maps_shape, scale):
+    """Tablet-versus-background mask at the resolution of the model's maps (stride 4 of the image resized by scale).
+    Background polarity from the border median: dark studio cloth (< 60) or light paper (< median - 25)."""
+    h, w = maps_shape[-2:]
+    g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if img.ndim == 3 else img
+    small = cv2.resize(g, (max(1, int(round(g.shape[1] * scale / STRIDE))), max(1, int(round(g.shape[0] * scale / STRIDE)))), interpolation=cv2.INTER_AREA)
+    small = cv2.GaussianBlur(small, (0, 0), 1.0)
+    b = np.concatenate([small[:2].ravel(), small[-2:].ravel(), small[:, :2].ravel(), small[:, -2:].ravel()]); bg = float(np.median(b))
+    m = (small > min(60, bg + 30)) if bg < 128 else (small < bg - 25)
+    out = np.zeros((h, w), bool); hh, ww = min(h, m.shape[0]), min(w, m.shape[1]); out[:hh, :ww] = m[:hh, :ww]
+    return out
+
+
+def _probe(arr, p, n, hw, k=5):
+    """Max of arr over k points across the line (normal n, half-width hw) at position p; 0 outside the map."""
+    h, w = arr.shape; best = 0.0
+    for o in np.linspace(-hw, hw, k):
+        x, y = int(round(p[0] + n[0] * o)), int(round(p[1] + n[1] * o))
+        if 0 <= x < w and 0 <= y < h: best = max(best, float(arr[y, x]))
+    return best
+
+
+def refine_ends(a, b, d, hw, band_prob, tab=None, end_thr=0.0, max_ext=0.0, tab_min=0.3):
+    """Move a segment's ends (map pixels) along its direction d. Extension: while the band probability across the line
+    stays above end_thr, step outward up to max_ext pixels per end (two consecutive misses stop it). Background trim:
+    where tab (tablet mask) is given, step each end inward while less than tab_min of the line's width is tablet."""
+    n = np.array([-d[1], d[0]])
+    if end_thr > 0 and max_ext > 0:
+        for sign in (1, -1):
+            e = b if sign == 1 else a; last = e.copy(); miss = 0; t = 1.0
+            while t <= max_ext:
+                p = e + sign * d * t
+                if _probe(band_prob, p, n, hw) > end_thr: last = p; miss = 0
+                else:
+                    miss += 1
+                    if miss >= 2: break
+                t += 1.0
+            if sign == 1: b = last
+            else: a = last
+    if tab is not None:
+        L = float(np.linalg.norm(b - a))
+        for sign in (1, -1):
+            t = 0.0
+            while t < 0.45 * L:
+                p = (b - d * t) if sign == 1 else (a + d * t)
+                if _probe(tab.astype(np.float32), p, n, hw) >= 1.0 or _tab_share(tab, p, n, hw) >= tab_min: break
+                t += 1.0
+            if sign == 1: b = b - d * t
+            else: a = a + d * t
+    return a, b
+
+
+def _tab_share(tab, p, n, hw, k=7):
+    h, w = tab.shape; hit = 0; tot = 0
+    for o in np.linspace(-hw, hw, k):
+        x, y = int(round(p[0] + n[0] * o)), int(round(p[1] + n[1] * o)); tot += 1
+        if 0 <= x < w and 0 <= y < h and tab[y, x]: hit += 1
+    return hit / tot
+
+
+def read_lines(maps, scale, kernel_thr=0.5, band_thr=0.4, min_area=12, max_reach=1.5, max_dev=45.0, merge_dy=0.5,
+               end_thr=0.0, max_ext=3.0, tab=None):
+    """maps (4,h,w) at stride 4 of the resized image; returns segments in ORIGINAL face pixels.
+    end_thr > 0 extends each line's ends while the band probability stays above it (up to max_ext x the median kernel
+    height per end); tab (tablet mask from tablet_mask_for) trims ends that sit over the studio background."""
     kern = (maps[0] > kernel_thr).astype(np.uint8); band = (maps[1] > band_thr).astype(np.uint8) | kern
     n, lab, stats, _ = cv2.connectedComponentsWithStats(kern, connectivity=8)
     keep = [i for i in range(1, n) if stats[i, cv2.CC_STAT_AREA] >= min_area]
@@ -62,7 +127,15 @@ def read_lines(maps, scale, kernel_thr=0.5, band_thr=0.4, min_area=12, max_reach
     if len(segs) >= 3:
         angs = np.array([np.degrees(np.arctan2(s['ay1'] - s['ay0'], s['ax1'] - s['ax0'])) for s in segs]); med = np.median(angs)
         dev = np.abs((angs - med + 90) % 180 - 90); segs = [s for s, d in zip(segs, dev) if d <= max_dev]
-    return merge_fragments(segs, merge_dy) if merge_dy > 0 else segs
+    if merge_dy > 0: segs = merge_fragments(segs, merge_dy)
+    # ends are refined only after merging: extended fragments would overlap and no longer be recognised as one line
+    if end_thr > 0 or tab is not None:
+        for sg in segs:
+            a = np.array([sg['ax0'], sg['ay0']]) / f; b = np.array([sg['ax1'], sg['ay1']]) / f
+            d = (b - a) / max(np.linalg.norm(b - a), 1e-6)
+            a, b = refine_ends(a, b, d, max(1.0, sg['thickness'] / f / 2), maps[1], tab, end_thr, max_ext * kh)
+            sg.update(ax0=a[0] * f, ay0=a[1] * f, ax1=b[0] * f, ay1=b[1] * f)
+    return segs
 
 
 def merge_fragments(segs, merge_dy=0.5, max_overlap=0.3):
@@ -142,25 +215,28 @@ def main():
     ap.add_argument('--max-reach', type=float, default=None, help='band pixels join a kernel only within this many kernel heights (default: config.json, else 1.5)')
     ap.add_argument('--max-dev', type=float, default=None, help='drop segments more than this many degrees off the face median angle (default: config.json, else 45)')
     ap.add_argument('--merge-dy', type=float, default=None, help='merge side-by-side fragments whose centres differ by less than this x band thickness; 0 disables (default: config.json, else 0.5)')
+    ap.add_argument('--end-thr', type=float, default=None, help='extend line ends while band probability stays above this; 0 disables (default: config.json, else 0.2, chosen in crop width Test 2)')
+    ap.add_argument('--max-ext', type=float, default=None, help='longest extension per end, in kernel heights (default: config.json, else 3)')
+    ap.add_argument('--clip-tablet', type=int, choices=[0, 1], default=None, help='1 = trim line ends that sit over the studio background (default: config.json, else 1)')
     ap.add_argument('--limit', type=int, default=None)
     ap.add_argument('--use-n', action='store_true', help='reconcile the line count with the transliteration count (--n-col) where one exists; method name gets a _n suffix unless --method is given explicitly')
     ap.add_argument('--viz', type=int, default=0, help='write prediction overlays for the first N faces to <out>/<method>_viz/ (green = predicted band, lime = predicted kernel, red = read-out segments)')
     a = ap.parse_args(); dev = 'cuda' if torch.cuda.is_available() else 'cpu'; model = load_model(a.weights, dev)
     import json; cfgp = os.path.join(os.path.dirname(a.weights), 'config.json'); cfg = json.load(open(cfgp)) if os.path.exists(cfgp) else {}
     a.kernel_thr = a.kernel_thr if a.kernel_thr is not None else cfg.get('kernel_thr', 0.5); a.band_thr = a.band_thr if a.band_thr is not None else cfg.get('band_thr', 0.4)
-    for k, d in (('min_area', 12), ('max_reach', 1.5), ('max_dev', 45.0), ('merge_dy', 0.5)):
+    for k, d in (('min_area', 12), ('max_reach', 1.5), ('max_dev', 45.0), ('merge_dy', 0.5), ('end_thr', 0.2), ('max_ext', 3.0), ('clip_tablet', 1)):
         if getattr(a, k) is None: setattr(a, k, cfg.get(k, d))
-    print(f'read-out: kernel_thr {a.kernel_thr} band_thr {a.band_thr} min_area {a.min_area} max_reach {a.max_reach} max_dev {a.max_dev} merge_dy {a.merge_dy}', flush=True)
+    print(f'read-out: kernel_thr {a.kernel_thr} band_thr {a.band_thr} min_area {a.min_area} max_reach {a.max_reach} max_dev {a.max_dev} merge_dy {a.merge_dy} end_thr {a.end_thr} max_ext {a.max_ext} clip_tablet {a.clip_tablet}', flush=True)
     if a.use_n and a.method == 'unet': a.method = 'unet_n'
     faces = list(csv.DictReader(open(a.faces)))
-    if a.split != 'all' and os.path.exists('ebl_tablets/split.csv'):
-        fs = {r['face'] for r in csv.DictReader(open('ebl_tablets/split.csv')) if r['split'] == a.split}; faces = [f for f in faces if f['face'] in fs]
+    if a.split != 'all' and os.path.exists(f'{EBL}/split.csv'):
+        fs = {r['face'] for r in csv.DictReader(open(f'{EBL}/split.csv')) if r['split'] == a.split}; faces = [f for f in faces if f['face'] in fs]
     if a.limit: faces = faces[:a.limit]
     os.makedirs(os.path.join(a.out, a.method), exist_ok=True); os.makedirs(os.path.join(a.out, a.method + '_segments'), exist_ok=True); run = []; t0 = time.time()
     for k, f in enumerate(faces):
         im = cv2.imread(f['file'])
         if im is None: continue
-        H, W = im.shape[:2]; ts = time.time(); maps, s = predict_face(model, im, dev, a.long_side); segs = read_lines(maps, s, a.kernel_thr, a.band_thr, a.min_area, a.max_reach, a.max_dev, a.merge_dy)
+        H, W = im.shape[:2]; ts = time.time(); maps, s = predict_face(model, im, dev, a.long_side); tab = tablet_mask_for(im, maps.shape, s) if a.clip_tablet else None; segs = read_lines(maps, s, a.kernel_thr, a.band_thr, a.min_area, a.max_reach, a.max_dev, a.merge_dy, a.end_thr, a.max_ext, tab)
         ang, rows = segments_to_lines(segs, W, H)
         n_atf = int(float(f[a.n_col])) if f.get(a.n_col) else None
         if a.use_n and n_atf:

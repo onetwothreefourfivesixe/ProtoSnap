@@ -7,17 +7,18 @@ tablet. It therefore cannot train the detector; it trains a sign classifier used
 the transliteration's expected sign (see train_classifier.py and protosnap/protosnap_prep.py --classifier).
 
 Split keeps everything evaluated downstream out of training:
-  test  = snippets on faces in the Phase 5 test split (ebl_tablets/split.csv); a snippet's face comes from its eBL
+  test  = snippets on faces in the Phase 5 test split (tablet_data/ebl_tablets/split.csv); a snippet's face comes from its eBL
           line index via the Phase 1 line table; snippets with no line index on a tablet that has a test face
   val   = the remaining snippets of 10% of tablets (seeded, by tablet)
   train = the rest
 Classes are the signs with at least --min-train TRAINING samples; rarer signs are dropped from all splits.
-Writes ebl_tablets/sign_classifier/<script>/{train,val,test}.csv (id,path,sign,label,tablet,type), classes.json, stats.json.
+Writes tablet_data/ebl_tablets/sign_classifier/<script>/{train,val,test}.csv (id,path,sign,label,tablet,type), classes.json, stats.json.
 """
+from line_cropping.paths import EBL
 import argparse, csv, json, os, random, collections
 
 KEEP_TYPES = {'MANUALLY_ANNOTATED_SIGN', 'OCR', 'MANUALLY_ANNOTATED_SIGN_DAMAGED', 'PARTIALLY_BROKEN'}
-OUT = 'ebl_tablets/sign_classifier'
+OUT = f'{EBL}/sign_classifier'
 
 
 def main():
@@ -29,11 +30,11 @@ def main():
     # Phase 5 split is per face. A snippet's label is its eBL path, whose first element is the text-line index, and
     # Phase 1 knows which face each line index belongs to, so hold-out can be decided per face: a snippet is held
     # out if its face is a test face, or if its face cannot be determined and its tablet has any test face.
-    face_split = {r['face']: r['split'] for r in csv.DictReader(open('ebl_tablets/split.csv'))} if os.path.exists('ebl_tablets/split.csv') else {}
+    face_split = {r['face']: r['split'] for r in csv.DictReader(open(f'{EBL}/split.csv'))} if os.path.exists(f'{EBL}/split.csv') else {}
     held = {f.split('__')[0] for f, sp in face_split.items() if sp == 'test'}
     line_face = {}
     for tab in {f.split('__')[0] for f in face_split}:
-        lp = f'ebl_tablets/ground_truth/lines/{tab}.csv'
+        lp = f'{EBL}/ground_truth/lines/{tab}.csv'
         if not os.path.exists(lp): continue
         for l in csv.DictReader(open(lp)):
             face = f"{tab}__{l['side']}" + (f"__{l['object']}" if l['object'] else '')

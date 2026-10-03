@@ -1,19 +1,20 @@
 """Phase 5: formal evaluation of the detector-route line finder on the eBL set.
 
 1. Stratified tune/test split of the single-column faces (by script and pixels-per-line bucket), seeded;
-   written to ebl_tablets/split.csv.
+   written to tablet_data/ebl_tablets/split.csv.
 2. Grid search of the clustering thresholds (gap_frac, merge_frac, score_thr) on the TUNE split only.
 3. Test-split report for det (no count) and det_n (ATF count) against the plan's criteria:
    recall >= 0.9, first line within 0.5 pitch on >= 90% of faces, count agreement >= 80%.
 4. Failure categories among test faces with recall < 0.7.
   python -m line_cropping.eval.phase5_eval
 """
+from line_cropping.paths import EBL
 import csv, os, random, collections, itertools, json
 import numpy as np
 from line_cropping.eval.evaluate_lines import truth_in_frame
 from line_cropping.lines.lines_from_boxes import lines_for_face
 
-FACES = 'ebl_tablets/faces/faces.csv'; DET = 'ebl_tablets/detections'; TRUTH = 'ebl_tablets/faces/lines'
+FACES = f'{EBL}/faces/faces.csv'; DET = f'{EBL}/detections'; TRUTH = f'{EBL}/faces/lines'
 
 
 def load():
@@ -38,7 +39,7 @@ def make_split(items, seed=7):
     for k, ids in by.items():
         random.shuffle(ids)
         for i, fid in enumerate(ids): split[fid] = 'tune' if i % 2 == 0 else 'test'
-    with open('ebl_tablets/split.csv', 'w', newline='') as fh:
+    with open(f'{EBL}/split.csv', 'w', newline='') as fh:
         w = csv.writer(fh); w.writerow(['face', 'split', 'bucket'])
         for f, _ in items: w.writerow([f['face'], split[f['face']], bucket(f)])
     return split
@@ -80,7 +81,7 @@ def main():
         print(f"   gap {gap} merge {merge} thr {thr}: recall {S['recall']:.3f} first<0.5 {S['first_lt_half']:.2f} count {S['count']:.2f}")
         if best is None or obj > best[0]: best = (obj, gap, merge, thr)
     _, gap, merge, thr = best; print(f'chosen: gap_frac {gap}, merge_frac {merge}, score_thr {thr}')
-    json.dump(dict(gap_frac=gap, merge_frac=merge, score_thr=thr), open('ebl_tablets/det_params.json', 'w'))
+    json.dump(dict(gap_frac=gap, merge_frac=merge, score_thr=thr), open(f'{EBL}/det_params.json', 'w'))
     print('--- TEST split ---')
     results = {}
     for name, use_n in (('det_n', True), ('det', False)):
@@ -105,7 +106,7 @@ def main():
         else: cats['other (placement)'] += 1
     print(f'  faces with recall < 0.7: {len(bad)} of {len(results["det_n"])}')
     for k, v in cats.most_common(): print(f'   {v:3d}  {k}')
-    with open('ebl_tablets/phase5_test_results.csv', 'w', newline='') as fh:
+    with open(f'{EBL}/phase5_test_results.csv', 'w', newline='') as fh:
         w = csv.writer(fh); w.writerow(['face', 'method', 'bucket', 'recall', 'precision', 'first_err', 'count_ok', 'n_pred', 'n_truth', 'n_boxes', 'coverage', 'px_per_line'])
         for name, R in results.items():
             for f, r in R:

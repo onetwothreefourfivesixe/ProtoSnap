@@ -10,7 +10,7 @@ transliteration can be matched to the image. A transliteration is the sign-by-si
 tablet's text in Latin letters, one text line per line, which is how Assyriologists publish tablet
 contents.
 
-The immediate target is the 1,532 Old Assyrian tablets in `fat-cross_processed/`, whose faces have
+The immediate target is the 1,532 Old Assyrian tablets in `tablet_data/fat-cross_processed/`, whose faces have
 already been cut out of their museum photographs. The procedure counts as consistent when, on a
 held-out set of faces, it recovers at least nine out of ten lines, places the first line within half
 a line height of the truth, and produces a number of crops equal to the transliteration's line
@@ -22,12 +22,12 @@ The investigation so far and the data in the repository establish the following.
 
 **Face images.** Museum photographs are laid out as a fat cross, the conventional arrangement in
 which the obverse (front face) sits at the centre, the reverse (back face) below it and the four
-edges around them. `fat-cross_processed/` holds, for 1,532 tablets named by their CDLI P-number,
+edges around them. `tablet_data/fat-cross_processed/` holds, for 1,532 tablets named by their CDLI P-number,
 one file per face (`_obverse`, `_reverse`, `_left`, `_right`, `_top`, `_bottom`) plus a `_layout`
 image showing the detected faces drawn on the composite photograph. 1,505 tablets have an obverse
 file and 1,350 have both obverse and reverse; the remainder are missing faces or are single-face
 fragments. A subfolder `incomplete/` holds about 155 composites that could not be split, and
-`Test_ObvRev/` holds 46 hand-checked faces. `fat-cross_processed/inventory.csv` lists all of this per
+`Test_ObvRev/` holds 46 hand-checked faces. `tablet_data/fat-cross_processed/inventory.csv` lists all of this per
 tablet and is rebuilt by `line_cropping/ingest/inventory.py` whenever images are added.
 
 **Transliterations.** All 1,532 tablets are in the CDLI dump under `artifacts_json/`, and 1,312 of
@@ -49,7 +49,7 @@ here. No line-level truth exists for these tablets yet; section 3 describes how 
 FCENet model packaged as a Docker API (Zenodo record 10693601). A detector is a neural network that
 outputs a bounding box, an axis-aligned rectangle, and a class label for every sign it finds.
 
-**Measurements on this set** (scripts and tables in `fat-cross_processed/experiments/`):
+**Measurements on this set** (scripts and tables in `tablet_data/fat-cross_processed/experiments/`):
 
 - A projection profile is a one-dimensional signal made by summing a per-pixel quantity along each
   row of the image. Summing the vertical image gradient, which is strong along the shadowed upper
@@ -70,7 +70,7 @@ outputs a bounding box, an axis-aligned rectangle, and a class label for every s
 - Some face crops are wrong: of 2,856 obverse and reverse files, 60 are under 150 pixels in one
   dimension, 233 have an implausible aspect ratio and 94 are too short for their ATF line count, for
   example a 445 by 98 pixel sliver labelled as the obverse of P250549; 243 files carry at least one of
-  these flags. `fat-cross_processed/experiments/face_qc.csv` lists them. These need to be caught
+  these flags. `tablet_data/fat-cross_processed/experiments/face_qc.csv` lists them. These need to be caught
   before line finding.
 
 ## 3. Phase 1: quality-check the faces and build a small ground-truth set

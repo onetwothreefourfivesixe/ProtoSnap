@@ -1,12 +1,13 @@
 """Download eBL tablet photos, sign annotations and transliterations for the repo's Neo-Assyrian and
 Old Babylonian tablets. Resumable: existing files are skipped. Run from the repo root.
 
-Output: ebl_tablets/<NA|OB>/<museum number>/{photo.jpg, annotations.json, fragment.json}
-        ebl_tablets/manifest.csv  (one row per tablet: script, eBL period, photo size, #boxes, #atf lines)
+Output: tablet_data/ebl_tablets/<NA|OB>/<museum number>/{photo.jpg, annotations.json, fragment.json}
+        tablet_data/ebl_tablets/manifest.csv  (one row per tablet: script, eBL period, photo size, #boxes, #atf lines)
 """
+from line_cropping.paths import EBL
 import json, csv, os, sys, time, collections, urllib.request, urllib.error
 API = 'https://www.ebl.lmu.de/api/fragments/'
-OUT = 'ebl_tablets'
+OUT = EBL
 SCRIPTS = {'NA', 'OB'}
 HEADERS = {'User-Agent': 'ProtoSnap-research (contact: edwardxuming.lin@gmail.com)'}
 

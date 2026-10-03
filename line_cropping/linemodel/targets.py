@@ -1,7 +1,7 @@
 """Phase 7, step 1: line truth as oriented segments and the target maps painted from them.
 
 A truth line is an oriented segment (ax0, ay0) -> (ax1, ay1) with a thickness, in face pixels of the UNROTATED face.
-eBL faces have these directly (ebl_tablets/faces/lines/<face>.csv). Old Assyrian labels are line centres in a
+eBL faces have these directly (tablet_data/ebl_tablets/faces/lines/<face>.csv). Old Assyrian labels are line centres in a
 deskewed frame; `oa_segments()` turns them into segments in the same format.
 
 Target maps, at 1/`stride` of the image (default stride 4), channels:
@@ -11,8 +11,9 @@ Target maps, at 1/`stride` of the image (default stride 4), channels:
   4 ignore   1 where the truth is unreliable: gaps between consecutive lines wider than `ignore_gap` (1.5) pitches
              and one pitch beyond the first and last line of a block. Ignored pixels carry no loss.
 
-  python -m line_cropping.linemodel.targets --preview 12   # overlays in ebl_tablets/linemodel/target_previews/
+  python -m line_cropping.linemodel.targets --preview 12   # overlays in tablet_data/ebl_tablets/linemodel/target_previews/
 """
+from line_cropping.paths import EBL
 import argparse, csv, os, collections, random
 import numpy as np, cv2
 
@@ -94,7 +95,7 @@ def overlay(img, T, stride=STRIDE):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--preview', type=int, default=12); ap.add_argument('--seed', type=int, default=0)
-    ap.add_argument('--out', default='ebl_tablets/linemodel/target_previews'); a = ap.parse_args(); os.makedirs(a.out, exist_ok=True)
+    ap.add_argument('--out', default=f'{EBL}/linemodel/target_previews'); a = ap.parse_args(); os.makedirs(a.out, exist_ok=True)
     from line_cropping.linemodel.dataset import build_index
     idx = build_index(); random.seed(a.seed); picks = random.sample(idx['train'], min(a.preview, len(idx['train'])))
     for it in picks:

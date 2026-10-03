@@ -1,10 +1,11 @@
 """Quality check of obverse/reverse face crops: size, aspect ratio and pixels per ATF line. Writes face_qc.csv."""
+from line_cropping.paths import OA
 import csv, os, re, json, collections, numpy as np
 from PIL import Image
 
 def main():
-    ROOT = 'fat-cross_processed/fat-cross_processed'
-    inv = {r['p_number']: r for r in csv.DictReader(open('fat-cross_processed/inventory.csv'))}
+    ROOT = f'{OA}/fat-cross_processed'
+    inv = {r['p_number']: r for r in csv.DictReader(open(f'{OA}/inventory.csv'))}
     def face_lines(atf):
         out = {}; cur = None
         for l in atf.splitlines():
@@ -27,7 +28,7 @@ def main():
             if not (0.45 <= h / w <= 4): flags.append('aspect')
             if ppl is not None and ppl < 12: flags.append('too_few_px_per_line')
             rows.append(dict(p_number=p, face=face, width=w, height=h, atf_lines=n or '', px_per_line=round(ppl) if ppl else '', flags='|'.join(flags), mtime=int(os.path.getmtime(fp))))
-    with open('fat-cross_processed/experiments/face_qc.csv', 'w', newline='') as f:
+    with open(f'{OA}/experiments/face_qc.csv', 'w', newline='') as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
     ppl = np.array([r['px_per_line'] for r in rows if r['px_per_line'] != ''])
     print(f"faces: {len(rows)}; median size {np.median([r['width'] for r in rows]):.0f}x{np.median([r['height'] for r in rows]):.0f}")

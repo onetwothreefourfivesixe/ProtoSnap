@@ -11,6 +11,7 @@ Outputs: <out>/signs/<face>__L<nn>__S<kk>__<hex>.png, <out>/samples.csv (fn,file
 columns run_test.py reads) and <out>/alignment.csv (per ATF sign: matched box, detector class, truth IoU).
   python -m line_cropping.protosnap.protosnap_prep --script OB --font Santakku --out protosnap_inputs/OB [--limit-crops 300]
 """
+from line_cropping.paths import EBL
 import argparse, csv, json, os, re, collections, unicodedata
 import numpy as np, cv2
 from line_cropping.lines.profile_lines import rotate
@@ -84,7 +85,7 @@ def iou(a, b):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--script', default='OB'); ap.add_argument('--font', default='Santakku'); ap.add_argument('--out', default='protosnap_inputs/OB')
     ap.add_argument('--limit-crops', type=int, default=None); ap.add_argument('--pad', type=float, default=0.15); ap.add_argument('--min-side', type=int, default=40)
-    ap.add_argument('--crops', default='ebl_tablets/line_crops/crops.csv', help='crop table to work from (e.g. the line model\'s crops)')
+    ap.add_argument('--crops', default=f'{EBL}/line_crops/crops.csv', help='crop table to work from (e.g. the line model\'s crops)')
     ap.add_argument('--classifier', action='store_true', help='score sign-to-box alignment with the trained sign classifier (weights/sign_classifier/<script>) instead of the detector label alone')
     ap.add_argument('--split', choices=['all', 'test', 'tune'], default='all', help='restrict to faces of this Phase 5 split (use test for uncontaminated evaluation of --classifier)')
     ap.add_argument('--no-write', action='store_true', help='evaluate the alignment only; write no target images')
@@ -95,10 +96,10 @@ def main():
     for r in csv.DictReader(open('prototypes/metadata.csv')):
         if r.get(a.font) == 'True' and r['name']: proto[r['hex']] = r['name']
     skel = {f.split('_')[0] for f in os.listdir(f'skeletons/{a.font}') if f.endswith('_adf.csv')}
-    faces = {f['face']: f for f in csv.DictReader(open('ebl_tablets/faces/faces.csv'))}
+    faces = {f['face']: f for f in csv.DictReader(open(f'{EBL}/faces/faces.csv'))}
     crops = [c for c in csv.DictReader(open(a.crops)) if c['script'] == a.script and c['atf_aligned'] == 'True' and c['side'] in ('obverse', 'reverse', 'face')]
     if a.split != 'all':
-        fs = {r['face'] for r in csv.DictReader(open('ebl_tablets/split.csv')) if r['split'] == a.split}; crops = [c for c in crops if c['face'] in fs]
+        fs = {r['face'] for r in csv.DictReader(open(f'{EBL}/split.csv')) if r['split'] == a.split}; crops = [c for c in crops if c['face'] in fs]
     if a.limit_crops: crops = crops[:a.limit_crops]
     clf = None
     if a.classifier:
@@ -109,7 +110,7 @@ def main():
     samples, align_rows = [], []; stats = collections.Counter(); frag_cache = {}; rot_cache = {}
     for face, cs in by_face.items():
         f = faces[face]; W, H = int(f['width']), int(f['height']); skew = float(cs[0]['skew_deg']); M = cv2.getRotationMatrix2D((W / 2, H / 2), skew, 1.0)
-        frag = json.load(open(os.path.join('ebl_tablets', f['script'], f['tablet'], 'fragment.json'), encoding='utf-8'))
+        frag = json.load(open(os.path.join(EBL, f['script'], f['tablet'], 'fragment.json'), encoding='utf-8'))
         # ATF lines of this side, in order
         lines_atf = []; cur = None
         for l in (frag.get('atf') or '').splitlines():
@@ -119,18 +120,18 @@ def main():
                 if tok in ('obverse', 'reverse', 'left', 'right', 'top', 'bottom', 'edge', 'face'): cur = tok
                 elif tok in ('tablet', 'envelope', 'object', 'fragment'): cur = None
             elif re.match(r"^\d+[a-z]?'?\.", t) and cur == f['side']: lines_atf.append(t)
-        det = list(csv.DictReader(open(os.path.join('ebl_tablets', 'detections', face + '.csv'), encoding='utf-8')))
+        det = list(csv.DictReader(open(os.path.join(EBL, 'detections', face + '.csv'), encoding='utf-8')))
         boxes = []
         for d in det:
             b = [float(d['x0']), float(d['y0']), float(d['x1']), float(d['y1'])]; cx, cy = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2
             rc = M @ np.array([cx, cy, 1.0]); boxes.append(dict(box=b, rx=rc[0], ry=rc[1], sign=d['sign'], score=float(d['score'])))
         # truth sign boxes (eBL annotations) for alignment scoring
         truth = []
-        annp = os.path.join('ebl_tablets', f['script'], f['tablet'], 'annotations.json')
+        annp = os.path.join(EBL, f['script'], f['tablet'], 'annotations.json')
         if os.path.exists(annp):
             A = json.load(open(annp, encoding='utf-8'))['annotations']; PW, PH = None, None
             from PIL import Image; Image.MAX_IMAGE_PIXELS = None
-            PW, PH = Image.open(os.path.join('ebl_tablets', f['script'], f['tablet'], 'photo.jpg')).size
+            PW, PH = Image.open(os.path.join(EBL, f['script'], f['tablet'], 'photo.jpg')).size
             cx0, cy0 = int(f['crop_x0']), int(f['crop_y0'])
             for an in A:
                 if an['data'].get('type') not in ('HasSign', 'Number', 'Damaged', 'PartiallyBroken', 'UnclearSign'): continue

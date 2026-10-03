@@ -77,7 +77,7 @@ flowchart LR
     N -->|too many| Mg[Merge closest pair] --> O
 ```
 
-Tilt is the median angle between each box centre and its nearest neighbour to the right within one box height; centres are rotated about the face centre by that angle. Lines are then formed by sorting centre heights and cutting at gaps larger than 0.5 times the median box height, followed by merging clusters closer than 0.35 box heights. The thresholds were chosen by grid search on a tune split and are stored in `ebl_tablets/det_params.json`.
+Tilt is the median angle between each box centre and its nearest neighbour to the right within one box height; centres are rotated about the face centre by that angle. Lines are then formed by sorting centre heights and cutting at gaps larger than 0.5 times the median box height, followed by merging clusters closer than 0.35 box heights. The thresholds were chosen by grid search on a tune split and are stored in `tablet_data/ebl_tablets/det_params.json`.
 
 When a transliteration exists, its line count for that side, **N**, is enforced (`det_n` in the code): over-merged clusters are split first, then lines are interpolated into gaps of at least 1.5 pitches, then surplus lines are merged. **Pitch** here is the median centre-to-centre distance between consecutive lines on the face, and all tolerances below are expressed in pitches. Without a transliteration the clustering output stands (`det`).
 
@@ -157,7 +157,7 @@ This sign-level trial exceeded the project's stated aim, which is the clean line
 
 ## 9. Metrics in one place
 
-`python -m line_cropping.report.aggregate_metrics` collects every result table of both sets and writes `docs/metrics_comparison.md`, a side-by-side comparison of data, detection, line finding, crops and ProtoSnap, with the per-set values and their source files in `ebl_tablets/metrics/` and `fat-cross_processed/metrics/`. `python -m line_cropping.report.compile_sample` regenerates `samples/`, the tracked extract of 20 tablets per set with every output.
+`python -m line_cropping.report.aggregate_metrics` collects every result table of both sets and writes `docs/metrics_comparison.md`, a side-by-side comparison of data, detection, line finding, crops and ProtoSnap, with the per-set values and their source files in `tablet_data/ebl_tablets/metrics/` and `tablet_data/fat-cross_processed/metrics/`. `python -m line_cropping.report.compile_sample` regenerates `samples/`, the tracked extract of 20 tablets per set with every output.
 
 ## 10. Running the pipeline
 
@@ -167,15 +167,15 @@ All commands run from the repository root; the detector runs in the mmdetection 
 python -m line_cropping.ingest.download_ebl
 python -m line_cropping.truth.ebl_ground_truth
 python -m line_cropping.faces.prepare_faces ebl
-~/venvs/mmdet/bin/python -m line_cropping.lines.detect_signs --faces ebl_tablets/faces/faces.csv --out ebl_tablets/detections --single-column-only
-python -m line_cropping.lines.lines_from_boxes --faces ebl_tablets/faces/faces.csv --det ebl_tablets/detections --out ebl_tablets/predictions --use-n
-python -m line_cropping.crops.make_crops --faces ebl_tablets/faces/faces.csv --pred ebl_tablets/predictions --method det_n --out ebl_tablets/line_crops
+~/venvs/mmdet/bin/python -m line_cropping.lines.detect_signs --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/detections --single-column-only
+python -m line_cropping.lines.lines_from_boxes --faces tablet_data/ebl_tablets/faces/faces.csv --det tablet_data/ebl_tablets/detections --out tablet_data/ebl_tablets/predictions --use-n
+python -m line_cropping.crops.make_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions --method det_n --out tablet_data/ebl_tablets/line_crops
 python -m line_cropping.eval.phase5_eval
-python -m line_cropping.eval.evaluate_crops --faces ebl_tablets/faces/faces.csv --crops ebl_tablets/line_crops/crops.csv
+python -m line_cropping.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops/crops.csv
 python -m line_cropping.protosnap.protosnap_prep --script OB --font Santakku --out protosnap_inputs/OB
 ```
 
-Outputs land under `ebl_tablets/`: `faces/` (face crops and line truth in face coordinates), `detections/`, `predictions/<method>/`, `line_crops/<face>/` with `crops.csv`, `split.csv`, `det_params.json`, `phase5_test_results.csv`.
+Outputs land under `tablet_data/ebl_tablets/`: `faces/` (face crops and line truth in face coordinates), `detections/`, `predictions/<method>/`, `line_crops/<face>/` with `crops.csv`, `split.csv`, `det_params.json`, `phase5_test_results.csv`.
 
 ## 10. Sources
 

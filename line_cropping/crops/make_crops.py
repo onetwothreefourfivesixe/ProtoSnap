@@ -3,9 +3,12 @@
 Default (`--bounds gap`): each line's vertical extent is the 10th-90th percentile of the detector boxes assigned to
 it, and the crop runs from the midpoint of the gap to the line above to the midpoint of the gap to the line below
 (first/last line: extent plus 6% of a pitch). Neighbouring lines are therefore not sliced into the crop. `--bounds band`
-restores the fixed strip (centre +- (0.5 + pad) x pitch).
+restores the fixed strip (centre +- (0.5 + pad) x pitch). `--overlap f` lets neighbouring crops share f pitch beyond
+each boundary, capped at the edge of the neighbour's band (`--overlap-into g` lets it reach g of that band's height
+past the edge, for interlocking lines), so tall signs and slightly slanted lines are not clipped
+while no crop takes in half of the next line.
 
-  python -m line_cropping.crops.make_crops --faces ebl_tablets/faces/faces.csv --pred ebl_tablets/predictions --method det_n --out ebl_tablets/line_crops
+  python -m line_cropping.crops.make_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions --method det_n --out tablet_data/ebl_tablets/line_crops
 
 For each face with a prediction: rotate the face by the run's skew, then cut, for line i at centre y_i, the rows
 [y_i - (0.5 + pad) * pitch, y_i + (0.5 + pad) * pitch] (pad 0.5 by default, i.e. a crop two pitches tall: eBL sign boxes are
@@ -15,6 +18,7 @@ about as tall as the line pitch, so a shorter crop cuts the wedges of most lines
 the face's offset in the original photo, and the ATF line label when the predicted count equals the ATF count
 for that side (else blank, with `atf_aligned` = False).
 """
+from line_cropping.paths import EBL
 import argparse, csv, os, json, re
 import numpy as np, cv2
 from line_cropping.lines.profile_lines import rotate
@@ -61,6 +65,7 @@ def line_bounds_from_boxes(det_csv, W, H, skew, ys, pitch, pad_frac=0.06):
         if i == n - 1: bot = ext_bot[i] + pad_frac * pitch
         else: bot = (ext_bot[i] + ext_top[i + 1]) / 2 if ext_bot[i] < ext_top[i + 1] else (ys[i] + ys[i + 1]) / 2
         bounds.append((top, bot))
+    line_bounds_from_boxes.edges = list(zip(ext_top, ext_bot))
     return bounds
 
 
@@ -92,6 +97,26 @@ def line_bounds_from_segments(seg_csv, W, H, skew, ys, pitch, pad_frac=0.06):
         top = top_i - pad_frac * pitch if i == 0 else ((bands[i - 1][2] + top_i) / 2 if bands[i - 1][2] < top_i else (bands[i - 1][0] + c) / 2)
         bot = bot_i + pad_frac * pitch if i == n - 1 else ((bot_i + bands[i + 1][1]) / 2 if bot_i < bands[i + 1][1] else (c + bands[i + 1][0]) / 2)
         out.append((top, bot))
+    line_bounds_from_segments.edges = [(b[1], b[2]) for b in bands]
+    return out
+
+
+def apply_overlap(bounds, ys, pitch, overlap, edges=None, into=0.0):
+    """Let neighbouring crops share rows: every boundary between two lines moves outward by overlap x pitch in both
+    crops (first/last line's outer edge unchanged). The move is capped at the near edge of the neighbour's band
+    (edges = (top, bottom) per line: box extents or predicted bands; without them, 0.35 pitch from the neighbour's
+    centre) pushed `into` x that band's height further in. into = 0 takes in the gap and the line's own tall signs but
+    none of the neighbour's band, so where two bands touch the boundary stays put; into = 0.25 also allows the outer
+    quarter of the neighbour's band, for lines whose signs interlock. Clamped below 0.5: never half of the next line."""
+    if overlap <= 0 or not bounds: return bounds
+    n = len(bounds); d = overlap * pitch; into = min(max(into, 0.0), 0.45); out = []
+    if edges is None or len(edges) != n: edges = [(y - 0.35 * pitch, y + 0.35 * pitch) for y in ys]
+    for i, (top, bot) in enumerate(bounds):
+        if i > 0:
+            et, eb = edges[i - 1]; top = min(top, max(top - d, eb - into * (eb - et)))
+        if i < n - 1:
+            et, eb = edges[i + 1]; bot = max(bot, min(bot + d, et + into * (eb - et)))
+        out.append((top, bot))
     return out
 
 
@@ -106,19 +131,39 @@ def crop_along_segment(img, seg, top_off, bot_off, margin):
     return rot[Y0:Y1, X0:X1], dict(x0=X0, y0=Y0, x1=X1, y1=Y1, angle=float(ang), cx=float(cx), cy=float(cy))
 
 
+def trim_to_tablet(rot_img, X0, Y0, X1, Y1, min_share=0.3):
+    """Shrink a crop's left and right edges to the first and last column, within the crop's rows, where at least
+    min_share of the pixels are tablet rather than studio background. Clay is never trimmed, only background beyond
+    the tablet's edge. Background polarity comes from the image border median."""
+    g = cv2.cvtColor(rot_img, cv2.COLOR_BGR2GRAY) if rot_img.ndim == 3 else rot_img
+    border = np.concatenate([g[:4].ravel(), g[-4:].ravel(), g[:, :4].ravel(), g[:, -4:].ravel()])
+    bg = float(np.median(border))
+    band = cv2.GaussianBlur(g[Y0:Y1, X0:X1], (0, 0), 2)
+    if band.size == 0:
+        return X0, X1
+    tab = band > min(60, bg + 30) if bg < 128 else band < bg - 25
+    on = np.where(tab.mean(axis=0) >= min_share)[0]
+    if len(on) == 0:
+        return X0, X1
+    return X0 + int(on[0]), X0 + int(on[-1]) + 1
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--faces', required=True); ap.add_argument('--pred', required=True); ap.add_argument('--method', default='det_n')
     ap.add_argument('--out', required=True); ap.add_argument('--pad', type=float, default=0.5); ap.add_argument('--margin', type=float, default=0.5)
     ap.add_argument('--quality', type=int, default=92); ap.add_argument('--limit', type=int, default=None)
     ap.add_argument('--bounds', choices=['gap', 'segments', 'midpoint', 'band'], default='gap', help="gap: from the gap above the line to the gap below, found from detector boxes; segments: from the predicted bands of the line model (<pred>/<method>_segments); midpoint: halfway between consecutive line centres (no boxes needed); band: centre +- (0.5+pad) pitch")
+    ap.add_argument('--overlap', type=float, default=0.0, help='neighbouring crops share this many pitches beyond each boundary between lines, capped at the edge of the neighbour\'s band (see --overlap-into) so no crop takes in half of the next line (gap, segments and midpoint bounds; 0 = no overlap)')
+    ap.add_argument('--overlap-into', type=float, default=0.0, help='with --overlap: how far past the edge of the neighbour\'s band a crop may reach, as a share of that band\'s height (0 = up to the edge; 0.25 = its outer quarter, for interlocking lines; clamped below 0.5)')
+    ap.add_argument('--trim-background', action='store_true', help='after adding the margin, trim each crop\'s left and right edges back to the edge of the clay')
     ap.add_argument('--rotate-per-line', action='store_true', help='with --bounds segments: cut each line in its own frame, rotated by that line\'s predicted angle (curved/warped faces); lines without a segment fall back to the face-level frame')
-    ap.add_argument('--split', choices=['all', 'test', 'tune'], default='all', help='restrict to faces of this Phase 5 split (ebl_tablets/split.csv)')
+    ap.add_argument('--split', choices=['all', 'test', 'tune'], default='all', help='restrict to faces of this Phase 5 split (tablet_data/ebl_tablets/split.csv)')
     ap.add_argument('--atf-source', choices=['ebl', 'cdli'], default='ebl', help='where the ATF line labels come from: eBL fragment.json (eBL faces) or the CDLI dump (faces.csv needs a p_number column)')
-    ap.add_argument('--det', default='ebl_tablets/detections', help='detector boxes used for gap bounds')
+    ap.add_argument('--det', default=f'{EBL}/detections', help='detector boxes used for gap bounds')
     a = ap.parse_args(); os.makedirs(a.out, exist_ok=True)
     faces = list(csv.DictReader(open(a.faces)))
-    if a.split != 'all' and os.path.exists('ebl_tablets/split.csv'):
-        fs = {r['face'] for r in csv.DictReader(open('ebl_tablets/split.csv')) if r['split'] == a.split}; faces = [f for f in faces if f['face'] in fs]
+    if a.split != 'all' and os.path.exists(f'{EBL}/split.csv'):
+        fs = {r['face'] for r in csv.DictReader(open(f'{EBL}/split.csv')) if r['split'] == a.split}; faces = [f for f in faces if f['face'] in fs]
     runs = {r['face']: r for r in csv.DictReader(open(os.path.join(a.pred, 'faces_run.csv'))) if r['method'] == a.method}
     rows = []; n_faces = 0
     for f in faces:
@@ -142,15 +187,19 @@ def main():
                     sg = {k: float(r[k]) for k in ('ax0', 'ay0', 'ax1', 'ay1', 'thickness')}; p0 = M0 @ np.array([sg['ax0'], sg['ay0'], 1.0]); p1 = M0 @ np.array([sg['ax1'], sg['ay1'], 1.0]); segl.append(((p0[1] + p1[1]) / 2, sg))
                 segl.sort(key=lambda t: t[0])
                 if len(segl) == len(lines): segs_by_line = {i + 1: sg for i, (_, sg) in enumerate(segl)}
+        line_bounds_from_boxes.edges = line_bounds_from_segments.edges = None
         if a.bounds == 'gap': bounds = line_bounds_from_boxes(os.path.join(a.det, f['face'] + '.csv'), W, H, skew, ys, pitch)
         elif a.bounds == 'midpoint': bounds = line_bounds_midpoint(ys, pitch)
         elif a.bounds == 'segments': bounds = line_bounds_from_segments(os.path.join(a.pred, a.method + '_segments', f['face'] + '.csv'), W, H, skew, ys, pitch)
         else: bounds = None
+        if bounds is not None and a.overlap > 0:
+            edges = {'gap': getattr(line_bounds_from_boxes, 'edges', None), 'segments': getattr(line_bounds_from_segments, 'edges', None)}.get(a.bounds)
+            bounds = apply_overlap(bounds, ys, pitch, a.overlap, edges if edges is not None and len(edges) == len(ys) else None, a.overlap_into)
         # ATF alignment: only when the counts agree
         labels = []
         if a.atf_source == 'ebl':
             try:
-                frag = json.load(open(os.path.join('ebl_tablets', f['script'], f['tablet'], 'fragment.json'), encoding='utf-8'))
+                frag = json.load(open(os.path.join(EBL, f['script'], f['tablet'], 'fragment.json'), encoding='utf-8'))
                 labels = atf_labels_for_side(frag.get('atf'), f['side'])
             except Exception: pass
         else:
@@ -166,6 +215,8 @@ def main():
             if bounds is not None: ylo, yhi = bounds[i - 1]
             else: ylo, yhi = y - half, y + half
             X0, X1 = int(max(0, x0)), int(min(W, x1)); Y0, Y1 = int(max(0, ylo)), int(min(H, yhi))
+            if a.trim_background and Y1 - Y0 >= 4 and X1 - X0 >= 4:
+                X0, X1 = trim_to_tablet(rot, X0, Y0, X1, Y1)
             if X1 - X0 < 4 or Y1 - Y0 < 4: continue
             name = f"{f['face']}__L{i:02d}.jpg"; line_angle = ''
             sg = segs_by_line.get(i); sg_ang = np.degrees(np.arctan2(sg['ay1'] - sg['ay0'], sg['ax1'] - sg['ax0'])) if sg else None

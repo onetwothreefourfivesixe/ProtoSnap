@@ -1,15 +1,16 @@
 """Phase 1b: pick a stratified sample of Old Assyrian faces for hand labelling and write automatic
 pre-labels (line centres from the ATF-constrained comb fit) plus preview overlays to correct against.
 
-Writes fat-cross_processed/ground_truth/{sample_faces.csv, prelabels.csv, previews/<face>.png}
+Writes tablet_data/fat-cross_processed/ground_truth/{sample_faces.csv, prelabels.csv, previews/<face>.png}
 Usage (repo root): python -m line_cropping.truth.oa_sample [--n 100] [--seed 0]
 """
+from line_cropping.paths import OA
 import argparse, csv, os, random, collections
 import numpy as np, cv2
 from line_cropping.lines.profile_lines import find_lines, rotate
 
-FACES = 'fat-cross_processed/fat-cross_processed'
-OUT = 'fat-cross_processed/ground_truth'
+FACES = f'{OA}/fat-cross_processed'
+OUT = f'{OA}/ground_truth'
 
 
 def stratum(r):
@@ -22,7 +23,7 @@ def stratum(r):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--n', type=int, default=100); ap.add_argument('--seed', type=int, default=0)
     a = ap.parse_args(); random.seed(a.seed)
-    qc = [r for r in csv.DictReader(open('fat-cross_processed/experiments/face_qc.csv')) if not r['flags'] and r['atf_lines']]
+    qc = [r for r in csv.DictReader(open(f'{OA}/experiments/face_qc.csv')) if not r['flags'] and r['atf_lines']]
     strata = collections.defaultdict(list)
     for r in qc: strata[stratum(r)].append(r)
     total = len(qc); picks = []
