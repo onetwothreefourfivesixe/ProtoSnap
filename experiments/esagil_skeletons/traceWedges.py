@@ -6,9 +6,9 @@ continuing beyond it), then extend the tail from the apex along the ink -- re-ce
 stroke's ridge each step -- until the ink ends or another head begins. Two tails that run toward
 each other along the same line (a shared tail) are truncated to meet halfway.
 
-  python add_new_font_skeletons/traceWedges.py Esagil 0x1230b 0x12038 ...
-      Writes a proposal image per sign to fontTargets/<font>_proposals/<hex>.png.
-      With no hex codes given, processes every sign in fontTargets/<font>/.
+  python experiments/esagil_skeletons/traceWedges.py Esagil 0x1230b 0x12038 ...
+      Writes a proposal image per sign to data/fonts/fontTargets/<font>_proposals/<hex>.png.
+      With no hex codes given, processes every sign in data/fonts/fontTargets/<font>/.
 
 Run from the repo root. This is a feasibility prototype: it draws proposals for review, it does
 not yet write skeleton CSVs.
@@ -19,7 +19,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from detectWedges import load_processed_glyph, glyph_path, C_RADIUS  # noqa: E402
 
@@ -151,11 +151,11 @@ def draw(gray, strokes):
 
 
 def main(font, hexes):
-    out_dir = Path("fontTargets") / f"{font}_proposals"
+    out_dir = Path("data/fonts/fontTargets") / f"{font}_proposals"
     out_dir.mkdir(parents=True, exist_ok=True)
     if not hexes:
-        hexes = sorted(t.stem for t in Path("fontTargets", font).glob("0x*.png"))
-        print(f"No signs given: proposing wedges for all {len(hexes)} signs in fontTargets/{font}")
+        hexes = sorted(t.stem for t in Path("data/fonts/fontTargets", font).glob("0x*.png"))
+        print(f"No signs given: proposing wedges for all {len(hexes)} signs in data/fonts/fontTargets/{font}")
     for hx in hexes:
         try:
             gray = load_processed_glyph(glyph_path(font, hx))

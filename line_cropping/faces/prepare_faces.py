@@ -191,7 +191,7 @@ def oa(rot_left, rot_right):
     qc = {(r['p_number'], r['face']): r for r in csv.DictReader(open(f'{OA}/experiments/face_qc.csv'))}
     inv = {r['p_number']: r for r in csv.DictReader(open(f'{OA}/inventory.csv'))}
     atf = {}
-    for l in open('artifacts_json/transliterations.jsonl', encoding='utf-8'):
+    for l in open('data/cdli/artifacts_json/transliterations.jsonl', encoding='utf-8'):
         r = json.loads(l)
         if r['p_number'] in inv: atf[r['p_number']] = atf_lines_per_side(r['atf'])
     rows = []; rot = {'left': rot_left, 'right': rot_right}

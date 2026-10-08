@@ -1,21 +1,21 @@
 """Transfer skeletons from an annotated font (Assurbanipal) to a new font of the same signs.
 
 Three steps:
-  1. python add_new_font_skeletons/bootstrapSkeletons.py prepare Esagil
+  1. python experiments/esagil_skeletons/bootstrapSkeletons.py prepare Esagil
        Renders each Esagil glyph the way the repo processes prototypes (crop, pad, resize to 512)
-       into fontTargets/Esagil/, and writes test_set/transfer_Esagil.csv listing every sign that has
+       into data/fonts/fontTargets/Esagil/, and writes test_set/transfer_Esagil.csv listing every sign that has
        both an Esagil glyph and an Assurbanipal skeleton.
   2. python run_test.py --samples_df_path test_set/transfer_Esagil.csv \
          --font_dir prototypes/Assurbanipal --con_dir skeletons/Assurbanipal \
-         --output_folder transfer_Esagil --ignore_errors
+         --output_folder esagil/transfer_Esagil --ignore_errors
        This is the normal pipeline: it snaps the Assurbanipal skeleton onto each Esagil glyph.
-  3. python add_new_font_skeletons/bootstrapSkeletons.py convert Esagil
+  3. python experiments/esagil_skeletons/bootstrapSkeletons.py convert Esagil
        Reads each run's fitted points, maps them back into the raw glyph image's coordinate frame,
        and writes skeletons/Esagil/<hex>_adf.csv (the _con.csv files are copied unchanged, because
        the transfer never changes which points connect to which).
 
 Prerequisite: prototypes/Esagil/0x12xxx/<hex>.png glyph images must exist (rendered from the font).
-Afterwards, eyeball output/transfer_Esagil/*/itr99_viz.png and hand-fix signs whose wedge count differs.
+Afterwards, eyeball output/esagil/transfer_Esagil/*/itr99_viz.png and hand-fix signs whose wedge count differs.
 """
 import csv
 import os
@@ -23,7 +23,7 @@ import shutil
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # repo root, for src imports
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # repo root, for src imports
 
 import numpy as np
 import pandas as pd
@@ -50,7 +50,7 @@ def signs_with_source_skeletons():
 def prepare(font):
     df = pd.read_csv("prototypes/metadata.csv")
     df = df[df["name"].notna()]
-    targets_dir = Path("fontTargets") / font
+    targets_dir = Path("data/fonts/fontTargets") / font
     targets_dir.mkdir(parents=True, exist_ok=True)
 
     rows, missing = [], 0
@@ -81,7 +81,7 @@ def prepare(font):
         writer.writerows(rows)
     print(f"{len(rows)} signs ready ({missing} had no {font} glyph). Now run:")
     print(f"  python run_test.py --samples_df_path {out_csv} --font_dir prototypes/{SOURCE_FONT} "
-          f"--con_dir skeletons/{SOURCE_FONT} --output_folder transfer_{font} --ignore_errors")
+          f"--con_dir skeletons/{SOURCE_FONT} --output_folder esagil/transfer_{font} --ignore_errors")
 
 
 def regroup_order(labels):
@@ -130,7 +130,7 @@ def convert(font):
         shutil.copy(f"skeletons/{SOURCE_FONT}/{hex_code}_con.csv", skel_dir / f"{hex_code}_con.csv")
         done += 1
     print(f"Wrote {done} skeletons to {skel_dir} ({skipped} runs had no result). "
-          f"Review overlays in output/transfer_{font}/ before trusting them.")
+          f"Review overlays in output/esagil/transfer_{font}/ before trusting them.")
 
 
 if __name__ == "__main__":

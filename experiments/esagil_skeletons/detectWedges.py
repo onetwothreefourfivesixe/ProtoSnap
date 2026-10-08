@@ -12,9 +12,9 @@ Validated on the 148 signs that have skeletons in both Santakku and Assurbanipal
 flagging 51 of 148 signs overall. Treat the output as a review shortlist, not ground truth, and
 keep the transfer fit-quality metrics as a second net for the misses.
 
-  python add_new_font_skeletons/detectWedges.py triage Esagil
-      Writes fontTargets/Esagil_triage.csv, biggest suspected mismatches first.
-  python add_new_font_skeletons/detectWedges.py calibrate
+  python experiments/esagil_skeletons/detectWedges.py triage Esagil
+      Writes data/fonts/fontTargets/Esagil_triage.csv, biggest suspected mismatches first.
+  python experiments/esagil_skeletons/detectWedges.py calibrate
       Re-runs the Santakku-vs-Assurbanipal validation above (useful after tuning C_RADIUS).
 
 Run from the repo root.
@@ -27,7 +27,7 @@ import cv2
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # repo root, for src imports
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # repo root, for src imports
 from src.utils import crop_img  # noqa: E402
 
 SOURCE_FONT = "Assurbanipal"
@@ -93,7 +93,7 @@ def triage(font):
     truth = true_stroke_counts(SOURCE_FONT)
     expected = gottstein_counts(FONT_PERIOD.get(font, ""))
     rows = []
-    for target in sorted(Path("fontTargets", font).glob("0x*.png")):
+    for target in sorted(Path("data/fonts/fontTargets", font).glob("0x*.png")):
         hex_code = target.stem
         if hex_code in expected and hex_code in truth:
             # best case: compare the period's documented wedge count with the source skeleton
@@ -114,7 +114,7 @@ def triage(font):
         df.loc[img, "diff_centered"] = df.loc[img, "diff"] - df.loc[img, "diff"].median()
     df["flagged"] = df["diff_centered"].abs() >= FLAG_AT
     df = df.reindex(df["diff_centered"].abs().sort_values(ascending=False).index)
-    out = Path("fontTargets") / f"{font}_triage.csv"
+    out = Path("data/fonts/fontTargets") / f"{font}_triage.csv"
     df.to_csv(out, index=False)
     print(df.head(25).to_string(index=False))
     print(f"\n{len(df)} signs -> {out}. {df['flagged'].sum()} flagged (|diff| >= {FLAG_AT}): "

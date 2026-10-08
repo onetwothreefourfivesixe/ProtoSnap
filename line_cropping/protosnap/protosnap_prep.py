@@ -1,7 +1,7 @@
 """Phase 6a: from line crops + ATF lines + detector boxes to ProtoSnap inputs.
 
 For each crop with an ATF line label (OB by default): tokenise the eBL ATF line into sign names (values are
-mapped to signs with a frequency table built from signs_snippets_metadata.json; logograms and determinatives
+mapped to signs with a frequency table built from data/ebl/signs_snippets_metadata.json; logograms and determinatives
 are taken as sign names), take the detector boxes whose centres fall inside the crop (in the deskewed frame),
 sort them left to right, align the ATF sign sequence to the box sequence (Needleman-Wunsch: +2 for equal sign
 name, 0 for a different name, -1 per gap), and for every ATF sign matched to a box that has a Santakku
@@ -9,9 +9,9 @@ prototype and skeleton, save the box region as a ProtoSnap target image.
 
 Outputs: <out>/signs/<face>__L<nn>__S<kk>__<hex>.png, <out>/samples.csv (fn,file_path,abz,name,hex,sign — the
 columns run_test.py reads) and <out>/alignment.csv (per ATF sign: matched box, detector class, truth IoU).
-  python -m line_cropping.protosnap.protosnap_prep --script OB --font Santakku --out protosnap_inputs/OB [--limit-crops 300]
+  python -m line_cropping.protosnap.protosnap_prep --script OB --font Santakku --out tablet_data/protosnap_inputs/OB [--limit-crops 300]
 """
-from line_cropping.paths import EBL
+from line_cropping.paths import EBL, PROTOSNAP_INPUTS
 import argparse, csv, json, os, re, collections, unicodedata
 import numpy as np, cv2
 from line_cropping.lines.profile_lines import rotate
@@ -27,7 +27,7 @@ def sign_hex(name):
 
 
 def value_map(script):
-    d = json.load(open('signs_snippets_metadata.json'))
+    d = json.load(open('data/ebl/signs_snippets_metadata.json'))
     m = collections.defaultdict(collections.Counter)
     for x in d:
         if x['script'] == script and x['value'] and x['signName']: m[x['value'].lower()][x['signName']] += 1
@@ -83,7 +83,7 @@ def iou(a, b):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument('--script', default='OB'); ap.add_argument('--font', default='Santakku'); ap.add_argument('--out', default='protosnap_inputs/OB')
+    ap = argparse.ArgumentParser(); ap.add_argument('--script', default='OB'); ap.add_argument('--font', default='Santakku'); ap.add_argument('--out', default=os.path.join(PROTOSNAP_INPUTS, 'OB'))
     ap.add_argument('--limit-crops', type=int, default=None); ap.add_argument('--pad', type=float, default=0.15); ap.add_argument('--min-side', type=int, default=40)
     ap.add_argument('--crops', default=f'{EBL}/line_crops/crops.csv', help='crop table to work from (e.g. the line model\'s crops)')
     ap.add_argument('--classifier', action='store_true', help='score sign-to-box alignment with the trained sign classifier (weights/sign_classifier/<script>) instead of the detector label alone')

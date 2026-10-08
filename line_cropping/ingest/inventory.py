@@ -12,11 +12,11 @@ def main():
             if not m: other.append(os.path.join(rel, f)); continue
             if rel == '.': faces[m[1]][m[2].lower()] = f
             else: sub[rel].append(f)
-    idx = {r['p_number']: r for r in csv.DictReader(open('artifacts_json/artifacts_index.csv', encoding='utf-8'))}
+    idx = {r['p_number']: r for r in csv.DictReader(open('data/cdli/artifacts_json/artifacts_index.csv', encoding='utf-8'))}
     m2p = collections.defaultdict(set)
-    for r in csv.DictReader(open('artifacts_json/protosnap_tablets_to_cdli.csv', encoding='utf-8')):
+    for r in csv.DictReader(open('data/cdli/artifacts_json/protosnap_tablets_to_cdli.csv', encoding='utf-8')):
         if r['p_number']: m2p[r['p_number']].add(r['tabletNumber'])
-    lab = {x['tabletNumber'] for x in json.load(open('signs_snippets_metadata.json')) if x['label'] != '[]'}
+    lab = {x['tabletNumber'] for x in json.load(open('data/ebl/signs_snippets_metadata.json')) if x['label'] != '[]'}
     with open(f'{OA}/inventory.csv', 'w', newline='', encoding='utf-8') as f:
         w = csv.writer(f)
         w.writerow(['p_number', 'faces', 'has_obverse', 'has_reverse', 'in_cdli', 'has_atf', 'period', 'genre', 'museum_no', 'accession_no', 'ebl_tablet'])

@@ -8,7 +8,7 @@ import unicodedata
 fontDir = 'Assurbanipal'  # Neo-Assyrian/Babylonian. Use 'Santakku' for Old Babylonian.
 scriptsForFont = {'Assurbanipal': {'NA'}, 'Santakku': {'OB'}, 'Esagil': {'NB'}}[fontDir]
 
-with open('signs_snippets_metadata.json') as f:
+with open('data/ebl/signs_snippets_metadata.json') as f:
     metaData = json.load(f)
 
 # the repo looks prototypes up by the name in prototypes/metadata.csv, so map hex -> that name
@@ -36,7 +36,7 @@ def signHex(signName):
 # only sample from entries the model can actually run (right script, known sign, skeleton + image exist)
 for entry in metaData:
     entry['hex'], entry['sign'] = signHex(entry['signName'])
-    entry['file_path'] = 'singleSignImages/' + entry['_id'] + '.jpeg'
+    entry['file_path'] = 'data/ebl/singleSignImages/' + entry['_id'] + '.jpeg'
 usable = [e for e in metaData
           if e['script'] in scriptsForFont
           and e['hex'] in hexToName and e['hex'] in skeletons
@@ -56,4 +56,4 @@ with open(outputCsv, 'w', newline='') as f:
 
 print(f'Wrote {numberOfSigns} rows to {outputCsv}. Run all of them with:')
 print(f'  python run_test.py --samples_df_path {outputCsv} --font_dir prototypes/{fontDir} '
-      f'--con_dir skeletons/{fontDir} --output_folder singleSigns_{fontDir} --ignore_errors')
+      f'--con_dir skeletons/{fontDir} --output_folder font_tests/singleSigns_{fontDir} --ignore_errors')

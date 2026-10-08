@@ -30,7 +30,7 @@ fragments. A subfolder `incomplete/` holds about 155 composites that could not b
 `Test_ObvRev/` holds 46 hand-checked faces. `tablet_data/fat-cross_processed/inventory.csv` lists all of this per
 tablet and is rebuilt by `line_cropping/ingest/inventory.py` whenever images are added.
 
-**Transliterations.** All 1,532 tablets are in the CDLI dump under `artifacts_json/`, and 1,312 of
+**Transliterations.** All 1,532 tablets are in the CDLI dump under `data/cdli/artifacts_json/`, and 1,312 of
 them have a transliteration in ATF. ATF (ASCII Transliteration Format) is CDLI's plain-text
 convention: structural lines beginning with `@` such as `@obverse` or `@left`, state lines beginning
 with `$` such as `$ beginning broken`, and numbered text lines such as `3. a-na ...`. A prime after
@@ -60,7 +60,7 @@ outputs a bounding box, an axis-aligned rectangle, and a class label for every s
   line on only 25 percent of 1,881 faces, and systematically undercounted dense faces. Free counting
   is therefore not sufficient on its own.
 - When the line count is taken from the ATF and the profile is only used to place that many lines,
-  the fit tracks the lines well on faces of ordinary density (see `experiments/oa_comb_fit.png`).
+  the fit tracks the lines well on faces of ordinary density (see `tablet_data/fat-cross_processed/experiments/oa_comb_fit.png`).
   This is the key observation: for the 1,312 tablets with an ATF, the task is placing a known number
   of lines, which is far easier than counting them.
 - Resolution is the main physical limit. Faces are about 614 by 654 pixels at the median, which
@@ -163,7 +163,7 @@ distance between the predicted and true first line in units of pitch. Count agre
 no-ATF route only, is the fraction of faces where the detected N equals the true N. The targets are
 recall of at least 0.9 and first-line error under 0.5 pitch on at least nine faces in ten for the
 higher-resolution group, with the lower-resolution group reported but not gated. Every failure is
-inspected by overlaying predicted and true lines on the face, as in `experiments/oa_comb_fit.png`,
+inspected by overlaying predicted and true lines on the face, as in `tablet_data/fat-cross_processed/experiments/oa_comb_fit.png`,
 and the largest failure category decides what to improve next.
 
 ## 8. Phase 6: connect to ProtoSnap
@@ -174,7 +174,7 @@ rotation, the pitch supplies the expected sign height, and detector boxes where 
 starting positions, so the existing best-buddies initialisation can be seeded instead of started
 from a random guess. Two things must be settled before this pays off. First, the repository has
 fonts for Old Babylonian, Neo-Assyrian and Neo-Babylonian script but none for Old Assyrian, so
-either an Old Assyrian font is added through the `add_new_font_skeletons` workflow or the Old
+either an Old Assyrian font is added through the `experiments/esagil_skeletons` workflow or the Old
 Babylonian font is tested as a stand-in. Second, at 45 pixels per line the signs are far smaller
 than the 512-pixel crops ProtoSnap was developed on, so upscaling and its effect on the diffusion
 features must be checked on a few lines before committing to the whole set. Training a dedicated

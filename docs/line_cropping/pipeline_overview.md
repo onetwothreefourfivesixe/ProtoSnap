@@ -1,6 +1,6 @@
 # Line detection on cuneiform tablet photographs and the hand-off to ProtoSnap
 
-This document describes the pipeline in `line_cropping/` for a reader who knows OCR and object detection but not cuneiform or this project. Standard vision terms are used without explanation; terms specific to Assyriology or to this repository are defined where they first appear. Commands and per-phase numbers are in `line_cropping/README.md`; the design rationale and its revisions are in `docs/line_cropping_plan.md`.
+This document describes the pipeline in `line_cropping/` for a reader who knows OCR and object detection but not cuneiform or this project. Standard vision terms are used without explanation; terms specific to Assyriology or to this repository are defined where they first appear. Commands and per-phase numbers are in `line_cropping/README.md`; the design rationale and its revisions are in `docs/line_cropping/line_cropping_plan.md`.
 
 ## 1. Task
 
@@ -145,7 +145,7 @@ The gap-bounded crops are the intended input: the transliteration line gives the
 
 This sign-level trial exceeded the project's stated aim, which is the clean line crop; it is kept because the sign-to-box alignment is what a per-line ProtoSnap run needs.
 
-**Projecting results back onto the tablet.** `overlay_results.py` maps each fitted skeleton out of ProtoSnap's 512-pixel target frame, undoing the y flip it saves with, through the padded sign box into face pixels, and then through the face's deskew rotation into the line crop's coordinates. This yields two views per result: the unrotated face with every fitted skeleton and its source box drawn (Figure 10), and the gap-bounded line crop with the skeletons of its signs drawn in place (Figure 11). The line view is the one that shows what the pipeline was built for: a single-line crop, the sign box the detector put inside it, and ProtoSnap's stroke graph snapped onto the wedges within that box. Outputs are in `output/phase6_OB/overlays/` with an `index.csv` linking each target to its two overlays.
+**Projecting results back onto the tablet.** `overlay_results.py` maps each fitted skeleton out of ProtoSnap's 512-pixel target frame, undoing the y flip it saves with, through the padded sign box into face pixels, and then through the face's deskew rotation into the line crop's coordinates. This yields two views per result: the unrotated face with every fitted skeleton and its source box drawn (Figure 10), and the gap-bounded line crop with the skeletons of its signs drawn in place (Figure 11). The line view is the one that shows what the pipeline was built for: a single-line crop, the sign box the detector put inside it, and ProtoSnap's stroke graph snapped onto the wedges within that box. Outputs are in `output/line_cropping/phase6_OB/overlays/` with an `index.csv` linking each target to its two overlays.
 
 ![ProtoSnap skeletons drawn on the unrotated face of CBS.1601](img/protosnap_overlay_face.jpg)
 
@@ -157,7 +157,7 @@ This sign-level trial exceeded the project's stated aim, which is the clean line
 
 ## 9. Metrics in one place
 
-`python -m line_cropping.report.aggregate_metrics` collects every result table of both sets and writes `docs/metrics_comparison.md`, a side-by-side comparison of data, detection, line finding, crops and ProtoSnap, with the per-set values and their source files in `tablet_data/ebl_tablets/metrics/` and `tablet_data/fat-cross_processed/metrics/`. `python -m line_cropping.report.compile_sample` regenerates `samples/`, the tracked extract of 20 tablets per set with every output.
+`python -m line_cropping.report.aggregate_metrics` collects every result table of both sets and writes `docs/line_cropping/metrics_comparison.md`, a side-by-side comparison of data, detection, line finding, crops and ProtoSnap, with the per-set values and their source files in `tablet_data/ebl_tablets/metrics/` and `tablet_data/fat-cross_processed/metrics/`. `python -m line_cropping.report.compile_sample` regenerates `samples/`, the tracked extract of 20 tablets per set with every output.
 
 ## 10. Running the pipeline
 
@@ -172,7 +172,7 @@ python -m line_cropping.lines.lines_from_boxes --faces tablet_data/ebl_tablets/f
 python -m line_cropping.crops.make_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions --method det_n --out tablet_data/ebl_tablets/line_crops
 python -m line_cropping.eval.phase5_eval
 python -m line_cropping.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops/crops.csv
-python -m line_cropping.protosnap.protosnap_prep --script OB --font Santakku --out protosnap_inputs/OB
+python -m line_cropping.protosnap.protosnap_prep --script OB --font Santakku --out tablet_data/protosnap_inputs/OB
 ```
 
 Outputs land under `tablet_data/ebl_tablets/`: `faces/` (face crops and line truth in face coordinates), `detections/`, `predictions/<method>/`, `line_crops/<face>/` with `crops.csv`, `split.csv`, `det_params.json`, `phase5_test_results.csv`.

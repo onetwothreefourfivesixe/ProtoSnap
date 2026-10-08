@@ -13,7 +13,7 @@ def main():
             elif re.match(r"^\d+'?\.",l) and cur: out[cur]+=1
         return out
     atfs={}
-    for l in open('artifacts_json/transliterations.jsonl',encoding='utf-8'):
+    for l in open('data/cdli/artifacts_json/transliterations.jsonl',encoding='utf-8'):
         r=json.loads(l)
         if r['p_number'] in inv: atfs[r['p_number']]=face_lines(r['atf'])
     def profile(img,sig):

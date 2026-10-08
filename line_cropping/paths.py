@@ -11,6 +11,7 @@ DATA_ROOT = os.environ.get('LINECROP_DATA_ROOT', 'tablet_data')
 EBL = os.path.join(DATA_ROOT, 'ebl_tablets')            # eBL downloads, ground truth, faces, predictions, crops
 OA = os.path.join(DATA_ROOT, 'fat-cross_processed')     # CDLI Old Assyrian faces and everything derived from them
 APP_SESSIONS = os.path.join(DATA_ROOT, 'app_sessions')  # Line Splitter uploads and results
+PROTOSNAP_INPUTS = os.path.join(DATA_ROOT, 'protosnap_inputs')  # line crops prepared as ProtoSnap targets (protosnap_prep)
 
 
 def rewrite_tables(old_prefixes, new_root=DATA_ROOT, top=DATA_ROOT, dry_run=False):
@@ -52,7 +53,7 @@ if __name__ == '__main__':
     ap.add_argument('--rewrite', nargs='*', default=None, help="old path prefixes to re-root under DATA_ROOT, e.g. 'ebl_tablets/' 'fat-cross_processed/'")
     ap.add_argument('--dry-run', action='store_true')
     a = ap.parse_args()
-    print(f'DATA_ROOT {DATA_ROOT}\nEBL       {EBL}\nOA        {OA}\nAPP       {APP_SESSIONS}')
+    print(f'DATA_ROOT {DATA_ROOT}\nEBL       {EBL}\nOA        {OA}\nAPP       {APP_SESSIONS}\nPROTOSNAP {PROTOSNAP_INPUTS}')
     if a.rewrite:
         res = rewrite_tables(a.rewrite, dry_run=a.dry_run)
         for p, n in res:

@@ -1,8 +1,15 @@
-# line_cropping — implementation of docs/line_cropping_plan.md, phase by phase
+# line_cropping — implementation of docs/line_cropping/line_cropping_plan.md, phase by phase
 
 Run everything from the repo root with `python -m line_cropping.<stage>.<module>`.
 
-New to the project? Read `docs/pipeline_overview.md` first: it explains the whole pipeline in plain language.
+New to the project? Read `docs/line_cropping/pipeline_overview.md` first: it explains the whole pipeline in plain language.
+
+**Two parts of the project share this package.**
+
+- **First iteration (phases 1–6):** `ingest/`, `truth/`, `faces/`, `lines/`, `crops/`, `eval/`, `signs/`, `protosnap/`, `report/`, `experiments/`. Lines come from the eBL sign detector plus the transliteration's line count. Docs: `docs/line_cropping/`.
+- **Custom line model (phase 7):** `linemodel/` (U-Net that predicts text-line bands directly) and `app/` (Line Splitter web app). Docs: `docs/line_model/line_model.md`.
+
+Both use the same data root (`paths.py`), the same crop maker (`crops/make_crops.py`) and the same evaluators (`eval/`), so they stay in one package.
 
 **Data location.** All data lives under `tablet_data/` (`tablet_data/ebl_tablets/`, `tablet_data/fat-cross_processed/`,
 `tablet_data/app_sessions/`), defined once in `line_cropping/paths.py`. Set `LINECROP_DATA_ROOT` to use another folder; after
@@ -12,21 +19,22 @@ moving the data, `python -m line_cropping.paths --rewrite <old-prefix>/` re-root
 
 | folder | stage | modules |
 |---|---|---|
-| `ingest/` | get data in | `extract_atf.py`, `match_museum.py` (CDLI dump -> transliterations, museum-number join), `download_ebl.py` (eBL photos + annotations + ATF), `inventory.py`, `face_qc.py` (Old Assyrian fat-cross set) |
+| `ingest/` | get data in | `extract_atf.py`, `match_museum.py` (CDLI dump -> transliterations, museum-number join), `download_ebl.py` (eBL photos + annotations + ATF; `--scripts` picks scripts, `--annotations-dump` reads boxes from the eBL annotation export), `inventory.py`, `face_qc.py` (Old Assyrian fat-cross set) |
 | `truth/` | ground truth | `ebl_ground_truth.py` (lines from eBL sign boxes), `oa_sample.py`, `labels_from_db.py`, `labeler/` (source of the Old Assyrian Line Marker page) |
 | `faces/` | Phase 2 | `prepare_faces.py` (cut sides from composite photos; Old Assyrian face list and edge rotation) |
 | `lines/` | Phase 3 | `profile_lines.py`, `find_lines.py` (profile methods), `detect_signs.py` (eBL detector, mmdet env), `lines_from_boxes.py` (boxes -> lines) |
-| `signs/` | sign classifier | `build_dataset.py` (per-script datasets from `signs_snippets_metadata.json`, face-level hold-out), `train_classifier.py` (ResNet-34), `classify.py` (inference) |
+| `signs/` | sign classifier | `build_dataset.py` (per-script datasets from `data/ebl/signs_snippets_metadata.json`, face-level hold-out), `train_classifier.py` (ResNet-34), `classify.py` (inference) |
 | `crops/` | Phase 4 | `make_crops.py` (gap-bounded single-line crops) |
-| `eval/` | Phase 5 | `evaluate_lines.py`, `evaluate_crops.py`, `crop_width.py`, `evaluate_oa.py`, `phase5_eval.py`, `render_lines.py` |
-| `app/` | local web app | `server.py`, `pipeline.py`, `static/index.html`: upload a photograph, split it into line crops, compare with the original |
+| `eval/` | Phase 5 | `evaluate_lines.py`, `evaluate_crops.py`, `crop_width.py`, `evaluate_oa.py`, `phase5_eval.py`, `extend_split.py` (adds new faces to split.csv without moving existing ones; do not rerun `phase5_eval` for that, it reshuffles the split), `render_lines.py` |
+| `linemodel/` | Phase 7 | `targets.py`, `dataset.py`, `model.py` (U-Net, ResNet-34 encoder), `train.py`, `visualize.py`, `infer.py`, `render_predictions.py` |
+| `app/` | Phase 7, local web app | `server.py`, `pipeline.py`, `static/index.html`: upload a photograph, split it into line crops, compare with the original |
 | `protosnap/` | Phase 6 | `protosnap_prep.py`, `phase6_summary.py` |
-| `report/` | reporting | `aggregate_metrics.py` (every metric table of both sets -> `docs/metrics_comparison.md`, per-set `metrics/`), `compile_sample.py` (tracked `samples/`: metrics tables + 20 tablets per set with all outputs) |
+| `report/` | reporting | `aggregate_metrics.py` (every metric table of both sets -> `docs/line_cropping/metrics_comparison.md`, per-set `metrics/`), `compile_sample.py` (tracked `output/line_cropping/samples/`: metrics tables + 20 tablets per set with all outputs) |
 | `experiments/` | early trials | `profile_lines_oa.py`, `comb_fit_oa.py` (the first Old Assyrian profile experiments) |
 
-Data lives outside the package and is gitignored: `artifacts_json/` (CDLI dump and derived tables), `tablet_data/ebl_tablets/`
+Data lives outside the package and is gitignored: `data/cdli/artifacts_json/` (CDLI dump and derived tables), `tablet_data/ebl_tablets/`
 (eBL downloads, ground truth, faces, detections, predictions, line crops, `logs/`), `tablet_data/fat-cross_processed/`
-(Old Assyrian faces and everything derived from them), `ebl_detection_2024/` (Zenodo archive), `protosnap_inputs/`
+(Old Assyrian faces and everything derived from them), `data/ebl/ebl_detection_2024/` (Zenodo archive), `tablet_data/protosnap_inputs/`
 (sign targets), `external/cuneiform-ocr` (eBL detector code), `weights/ebl_detr/`. Notes on the external data sets
 are in `docs/`. Runs of ProtoSnap itself land in `output/` as before.
 
@@ -204,7 +212,7 @@ The older "truth band fully inside one crop" metric (83% for the band crops, 5% 
 yardstick here: eBL sign boxes are about as tall as the line pitch and overhang into the neighbouring rows, so a crop
 that contains a whole eBL band must contain parts of the neighbours by construction. The gap crops keep wedge tops
 and bottoms up to the detected box extents, which is what a single-line crop can do without admitting the next line.
-Evaluate with `python -m line_cropping.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops/crops.csv [--split test]`. Besides the vertical metrics it reports horizontal fit (crop width: lines kept whole on clay, cut ends, overhang past the tablet), from `eval/crop_width.py`, which also writes per-line detail and renders of the worst lines; see docs/line_model.md section 10.
+Evaluate with `python -m line_cropping.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops/crops.csv [--split test]`. Besides the vertical metrics it reports horizontal fit (crop width: lines kept whole on clay, cut ends, overhang past the tablet), from `eval/crop_width.py`, which also writes per-line detail and renders of the worst lines; see docs/line_model/line_model.md section 10.
 The band set can be deleted once nothing needs it (2.3 GB).
 
 ## Phase 5 — evaluation (status: done on the eBL set)
@@ -245,7 +253,7 @@ alignment step (ATF signs to detector boxes) is what a per-line ProtoSnap run wi
 
 `protosnap/protosnap_prep.py` turns aligned line crops into ProtoSnap inputs. For each crop with an ATF line label it
 tokenises the eBL ATF line into sign names (transliteration values are mapped to signs with a frequency table
-built from `signs_snippets_metadata.json`; 962 distinct OB values, 48 of them ambiguous), collects the detector
+built from `data/ebl/signs_snippets_metadata.json`; 962 distinct OB values, 48 of them ambiguous), collects the detector
 boxes whose centres fall in the crop, sorts them left to right, aligns the two sequences with Needleman-Wunsch
 (+2 same sign name, 0 different, -1 gap), and saves each matched box (15% padding) as a target image for every
 sign that has a Santakku prototype and skeleton. `samples.csv` has the columns `run_test.py` reads; `alignment.csv`
@@ -267,7 +275,7 @@ right sign on the right box seven times in ten. The safe subset for ProtoSnap is
 detector's own class agrees with the ATF, listed in `samples_agree.csv`. A 40-target sample (`samples_run40.csv`)
 was run with `run_test.py --font_dir prototypes/Santakku --con_dir skeletons/Santakku --output_folder phase6_OB`:
 all 40 completed without error in about 40 minutes on the RTX 4060 (initialisation dominates; the 100 optimisation
-steps take ~7 s). `protosnap/phase6_summary.py` writes `output/phase6_OB/summary.csv` and a `contact_sheet.jpg` of the
+steps take ~7 s). `protosnap/phase6_summary.py` writes `output/line_cropping/phase6_OB/summary.csv` and a `contact_sheet.jpg` of the
 per-target `itr99_viz.png` renders. The initialisation score (ProtoSnap's own agreement measure) has a median of
 0.60 against 0.75 on the repo's curated single-sign test set: the pipeline runs end to end, and roughly half the
 snaps look right by eye. The box itself is rarely the problem: 28 of the 40 boxes coincide with the eBL truth box of
@@ -280,8 +288,8 @@ the next two things to try.
 **First sign of each line (16 Sep 2026).** `protosnap_prep.py --first-only` writes a target only when the first ATF
 token of a line is matched to the leftmost detector box in its crop. Over all 6,299 aligned OB lines that holds for
 2,387 lines (38%); 1,961 have a Santakku prototype, 1,823 with detector and ATF agreeing on the sign, 1,675 confirmed
-by the eBL truth box (`protosnap_inputs/OB_first/`). A 60-target run, one per face (`samples_run.csv`, results in
-`output/phase6_OB_first/`), finished with a median initialisation score of 0.54 (40-sign trial 0.60; curated test
+by the eBL truth box (`tablet_data/protosnap_inputs/OB_first/`). A 60-target run, one per face (`samples_run.csv`, results in
+`output/line_cropping/phase6_OB_first/`), finished with a median initialisation score of 0.54 (40-sign trial 0.60; curated test
 set 0.75); 59 of the 60 boxes coincide with the eBL truth box. First signs are harder than average for two reasons
 visible in the overlays: they sit at the tablet's left edge, so the padded box often includes background or a broken
 margin, and the commonest first signs (DIŠ 16, IGI 12 of 60) are a single vertical wedge or a dense cluster, both
@@ -290,11 +298,11 @@ aborted the first attempt after 21 targets.
 
 `overlay_results.py` projects each fitted skeleton back onto the unrotated face and onto the gap-bounded line crop of
 its line (undoing ProtoSnap's 512-px stretch and y flip, then applying the face deskew), writing
-`output/phase6_OB/overlays/{faces,lines}/` plus `line_contact_sheet.jpg` and `index.csv`.
+`output/line_cropping/phase6_OB/overlays/{faces,lines}/` plus `line_contact_sheet.jpg` and `index.csv`.
 
 ## Sign classifier from the snippet metadata (20 Sep 2026; negative result for alignment)
 
-`signs_snippets_metadata.json` is a classification set: one cropped sign per entry with its name and script, and no
+`data/ebl/signs_snippets_metadata.json` is a classification set: one cropped sign per entry with its name and script, and no
 position on the tablet. It cannot train or fine-tune the detector; it can train a sign classifier, which was tried
 as a way to improve the sign-to-box alignment in `protosnap/protosnap_prep.py`.
 
@@ -328,7 +336,7 @@ about 55% of the signs a transliteration lists, so the sequence alignment has ga
 detection recall, not classification. `--classifier` therefore stays off by default. Where a snippet-trained
 classifier could still matter is a script the detector handles badly, such as Old Assyrian (9,175 OA snippets exist).
 
-## Phase 7 — learned line model (first run trained and evaluated; see `docs/line_model.md` for the full write-up)
+## Phase 7 — learned line model (first run trained and evaluated; see `docs/line_model/line_model.md` for the full write-up)
 
 `linemodel/` implements section 14 of the plan. Run from the repo root with the ProtoSnap venv.
 
@@ -404,5 +412,5 @@ The ranking is a review queue, not a metric: look at the bottom of it first.
 
 ## Later phases
 Phase 7, a learned line model that removes the dependence on the transliteration count and on sign-detector
-recall, is planned in section 14 of `docs/line_cropping_plan.md` (U-Net with a ResNet-34 encoder trained on the
+recall, is planned in section 14 of `docs/line_cropping/line_cropping_plan.md` (U-Net with a ResNet-34 encoder trained on the
 Phase 1 line segments; kernel, band and orientation maps; same evaluation harness). Not started.

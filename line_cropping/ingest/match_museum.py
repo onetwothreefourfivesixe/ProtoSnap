@@ -1,7 +1,7 @@
 import csv, json, re, collections
 
 def main():
-    OUT='/mnt/d/github/ProtoSnap/artifacts_json'
+    OUT='data/cdli/artifacts_json'
     ROMAN={'II':'2','III':'3','IV':'4'}
     def numtok(s):  # '0055-21-001' -> '55-21-1'
         return '-'.join(str(int(x)) if x.isdigit() else x for x in re.split(r'[-]', s))
@@ -27,7 +27,7 @@ def main():
             for part in re.split(r'\s*(?:\(\+\)|[+;])\s*', r.get(field) or ''):
                 k=norm(part)
                 if k and r not in cdli[k]: cdli[k].append(r)
-    snips=json.load(open('/mnt/d/github/ProtoSnap/signs_snippets_metadata.json'))
+    snips=json.load(open('data/ebl/signs_snippets_metadata.json'))
     tabs=collections.Counter(x['tabletNumber'] for x in snips)
     script={}
     for x in snips: script.setdefault(x['tabletNumber'],collections.Counter())[x['script']]+=1

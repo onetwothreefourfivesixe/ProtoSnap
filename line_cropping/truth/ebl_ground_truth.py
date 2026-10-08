@@ -275,7 +275,7 @@ def main():
         with open(os.path.join(GT, name), 'w', newline='', encoding='utf-8') as f:
             w = csv.DictWriter(f, fieldnames=list(data[0].keys())); w.writeheader(); w.writerows(data)
     T = tab_rows; B = blk_rows
-    print(f"tablets processed: {len(T)}  (NA {sum(t['script']=='NA' for t in T)}, OB {sum(t['script']=='OB' for t in T)})")
+    print(f"tablets processed: {len(T)}  ({dict(collections.Counter(t['script'] for t in T))})")
     print(f"text blocks: {len(B)}; lines: {sum(t['n_lines'] for t in T)}; signs: {sum(t['n_signs'] for t in T)}; signs with unknown side: {sum(t['n_unknown_side'] for t in T)}")
     ppl = np.array([b['px_per_line'] for b in B if b['px_per_line'] != ''], dtype=float)
     print(f"line pitch px: median {np.median(ppl):.0f}, 10th pct {np.percentile(ppl,10):.0f}, 90th pct {np.percentile(ppl,90):.0f}")

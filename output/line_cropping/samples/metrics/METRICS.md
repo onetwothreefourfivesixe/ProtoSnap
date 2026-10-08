@@ -107,5 +107,5 @@ labelled faces used: 88; tolerance 0.35 pitch
 
 ## ProtoSnap runs
 
-- `output/phase6_OB`: 40 targets, 40 finished, init score median 0.60 (curated single-sign test set: 0.75)
-- `output/phase6_OB_first`: 60 targets, 60 finished, init score median 0.54 (curated single-sign test set: 0.75)
+- `output/line_cropping/phase6_OB`: 40 targets, 40 finished, init score median 0.60 (curated single-sign test set: 0.75)
+- `output/line_cropping/phase6_OB_first`: 60 targets, 60 finished, init score median 0.54 (curated single-sign test set: 0.75)

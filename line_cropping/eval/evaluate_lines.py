@@ -55,7 +55,7 @@ def main():
             print(f"  {label:28s} {m:5s} n={len(R):4d} recall {rec:.2f}  precision {prec:.2f}  first-line err median {np.median(fe) if len(fe) else np.nan:.2f} pitch, <0.5: {(fe<0.5).mean() if len(fe) else np.nan:.0%} (n={len(fe)})  count match {np.mean([r['count_ok'] for r in R]):.0%}")
     print('recall = share of truth lines matched within', a.tol, 'pitch; precision only on faces with >=0.9 coverage')
     report(rows, 'all faces')
-    for sc in ('NA', 'OB'): report([r for r in rows if r['script'] == sc], f'script {sc}')
+    for sc in sorted({r['script'] for r in rows}): report([r for r in rows if r['script'] == sc], f'script {sc}')
     for lo, hi, lab in ((0, 60, 'px/line < 60'), (60, 120, 'px/line 60-120'), (120, 9999, 'px/line >= 120')):
         report([r for r in rows if lo <= r['px_per_line'] < hi], lab)
 

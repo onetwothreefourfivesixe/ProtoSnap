@@ -205,7 +205,7 @@ def main():
         else:
             if not hasattr(main, 'cdli'):
                 main.cdli = {}
-                for l in open('artifacts_json/transliterations.jsonl', encoding='utf-8'):
+                for l in open('data/cdli/artifacts_json/transliterations.jsonl', encoding='utf-8'):
                     rec = json.loads(l); main.cdli[rec['p_number']] = rec['atf']
             labels = atf_labels_for_side(main.cdli.get(f.get('p_number', ''), ''), f['side'])
         aligned = len(labels) == len(lines) and len(labels) > 0

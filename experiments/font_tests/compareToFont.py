@@ -7,7 +7,7 @@ still resembles the prototype glyph (NOT accuracy against the photo):
   * iou           : overlap between the fitted skeleton (drawn thick) and the glyph's ink
 Also writes <run>/font_compare.png: glyph | glyph + fitted skeleton | photo + fitted skeleton.
 
-Usage: python compareToFont.py singleSigns_Assurbanipal [--font Assurbanipal]
+Usage (from the repo root): python experiments/font_tests/compareToFont.py font_tests/singleSigns_Assurbanipal [--font Assurbanipal]
 """
 import json
 import re
@@ -23,7 +23,7 @@ import pandas as pd
 import torch
 from PIL import Image
 
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # repo root, for src imports
 from src.data import Prototype  # noqa: E402
 
 SUBSCRIPTS = str.maketrans("₀₁₂₃₄₅₆₇₈₉", "0123456789")
@@ -62,13 +62,13 @@ def overlay(base_rgb, points, connectivity, colour=(255, 0, 0)):
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("output_folder", help="name under output/, e.g. singleSigns_Assurbanipal")
+    parser.add_argument("output_folder", help="folder under output/, e.g. font_tests/singleSigns_Assurbanipal")
     parser.add_argument("--font", default=None, help="Assurbanipal or Santakku (default: guessed from folder name)")
     parser.add_argument("--itr", type=int, default=100, help="which saved iteration to use (0 = initialization only)")
     args = parser.parse_args()
     font = args.font or ("Santakku" if "Santakku" in args.output_folder else "Assurbanipal")
 
-    with open("signs_snippets_metadata.json") as f:
+    with open("data/ebl/signs_snippets_metadata.json") as f:
         id_to_sign = {e["_id"]: e["signName"] for e in json.load(f)}
     proto_df = pd.read_csv("prototypes/metadata.csv")
     hex_to_name = dict(zip(proto_df["hex"], proto_df["name"]))
@@ -102,7 +102,7 @@ def main():
         rows.append({"image": image_id, "sign": sign, "name": name, "hex": hex_code,
                      "mean_shift_px": shifts.mean(), "max_shift_px": shifts.max(), "iou": iou})
 
-        photo = Image.open(f"singleSignImages/{image_id}.jpeg")
+        photo = Image.open(f"data/ebl/singleSignImages/{image_id}.jpeg")
         panel = np.hstack([
             np.array(proto.proto.convert("RGB")),
             overlay(proto.proto, fitted, proto.connectivity),

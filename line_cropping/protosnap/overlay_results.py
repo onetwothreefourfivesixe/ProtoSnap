@@ -5,8 +5,8 @@ with y flipped for plotting. This tool undoes the flip, maps the points through 
 was cut from (alignment.csv, same padding as protosnap_prep.py) into face pixels, rotates them into the deskewed
 frame of the face's line crops, and draws them.
 
-  python -m line_cropping.protosnap.overlay_results --run output/phase6_OB --samples protosnap_inputs/OB/samples_run40.csv \
-      --alignment protosnap_inputs/OB/alignment.csv --out output/phase6_OB/overlays
+  python -m line_cropping.protosnap.overlay_results --run output/line_cropping/phase6_OB --samples tablet_data/protosnap_inputs/OB/samples_run40.csv \
+      --alignment tablet_data/protosnap_inputs/OB/alignment.csv --out output/line_cropping/phase6_OB/overlays
 Writes <out>/faces/<face>.jpg, <out>/lines/<face>__L<nn>.jpg, <out>/line_contact_sheet.jpg, <out>/index.csv.
 """
 from line_cropping.paths import EBL

@@ -1,4 +1,4 @@
-"""Build per-script sign-classification datasets from signs_snippets_metadata.json (the eBL sign-crop release).
+"""Build per-script sign-classification datasets from data/ebl/signs_snippets_metadata.json (the eBL sign-crop release).
 
   python -m line_cropping.signs.build_dataset [--scripts NA OB] [--min-train 20]
 
@@ -25,8 +25,8 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--scripts', nargs='+', default=['NA', 'OB']); ap.add_argument('--min-train', type=int, default=20)
     ap.add_argument('--val-frac', type=float, default=0.1); ap.add_argument('--seed', type=int, default=0)
     a = ap.parse_args()
-    meta = json.load(open('signs_snippets_metadata.json'))
-    have = set(os.listdir('singleSignImages'))
+    meta = json.load(open('data/ebl/signs_snippets_metadata.json'))
+    have = set(os.listdir('data/ebl/singleSignImages'))
     # Phase 5 split is per face. A snippet's label is its eBL path, whose first element is the text-line index, and
     # Phase 1 knows which face each line index belongs to, so hold-out can be decided per face: a snippet is held
     # out if its face is a test face, or if its face cannot be determined and its tablet has any test face.
@@ -59,7 +59,7 @@ def main():
             R = [x for x in rows if x['_part'] == split and x['signName'] in idx]
             with open(os.path.join(d, split + '.csv'), 'w', newline='', encoding='utf-8') as fh:
                 w = csv.writer(fh); w.writerow(['id', 'path', 'sign', 'label', 'tablet', 'type'])
-                for x in R: w.writerow([x['_id'], f"singleSignImages/{x['_id']}.jpeg", x['signName'], idx[x['signName']], x['tabletNumber'], x['type']])
+                for x in R: w.writerow([x['_id'], f"data/ebl/singleSignImages/{x['_id']}.jpeg", x['signName'], idx[x['signName']], x['tabletNumber'], x['type']])
             stats[split] = dict(samples=len(R), tablets=len({x['tabletNumber'] for x in R}), dropped_rare=sum(1 for x in rows if x['_part'] == split and x['signName'] not in idx))
         json.dump(classes, open(os.path.join(d, 'classes.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=0)
         stats.update(script=sc, n_classes=len(classes), min_train=a.min_train, tablets_with_a_test_face=len([t for t in tablets if t in held]), all_tablets=len(tablets),

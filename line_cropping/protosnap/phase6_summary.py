@@ -1,5 +1,5 @@
 """Summarise a ProtoSnap batch run on line-crop sign targets.
-  python -m line_cropping.protosnap.phase6_summary --run output/phase6_OB --samples protosnap_inputs/OB/samples_run40.csv
+  python -m line_cropping.protosnap.phase6_summary --run output/line_cropping/phase6_OB --samples tablet_data/protosnap_inputs/OB/samples_run40.csv
 Writes <run>/summary.csv (target, sign, init agg_score, files present) and <run>/contact_sheet.jpg made of each
 target's final_result_100.png (prototype skeleton snapped onto the photo).
 """

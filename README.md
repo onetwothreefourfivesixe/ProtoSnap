@@ -21,6 +21,23 @@ To this aim, we use diffusion features, extracted from a fine-tuned stable diffu
 <br>
 We used this method to train ControlNet, to generate new a diverse cuneiform signs, based only on a prototype. Weights for the ControlNet are available here.
 
+## This fork
+
+This fork builds on ProtoSnap in four parts. Upstream's own files (`main.py`, `run_test.py`, `src/`, `prototypes/`,
+`skeletons/`, `test_set/`, ...) are unchanged and stay where upstream has them. Run every command from the repository
+root.
+
+| part | what it is | code | docs | ProtoSnap results |
+|---|---|---|---|---|
+| 1. Font tests | ProtoSnap on photographed single signs with the Assurbanipal and Santakku font prototypes, and how far the fitted skeletons move from the font | `experiments/font_tests/` | `docs/font_tests/` | `output/font_tests/` |
+| 2. Line cropping, first iteration | splitting tablet photographs into single-line crops with the eBL sign detector and the transliteration's line count, then running ProtoSnap on signs in those crops | `line_cropping/` (phases 1–6) | `docs/line_cropping/` | `output/line_cropping/` |
+| 3. Esagil skeletons | ProtoSnap on Neo-Babylonian signs, with Esagil skeletons transferred from Assurbanipal and generated with ProtoSnapVectorMapper | `experiments/esagil_skeletons/` | `docs/esagil/` | `output/esagil/` |
+| 4. Custom line model | a U-Net that finds text lines directly, without a transliteration, plus the Line Splitter web app | `line_cropping/linemodel/`, `line_cropping/app/` (phase 7) | `docs/line_model/` | |
+
+Data: `data/` holds raw downloads (CDLI dump, eBL sign crops and annotation export, eBL detector training data,
+fonts); `tablet_data/` holds the line-cropping pipeline's working data; `weights/` holds model weights. All three are
+gitignored apart from `data/ebl/signs_snippets_metadata.json`. `docs/README.md` lists every document.
+
 ## Installation
 
 ```bash

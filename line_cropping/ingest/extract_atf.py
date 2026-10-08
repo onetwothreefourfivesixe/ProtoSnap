@@ -1,7 +1,7 @@
 import os, json, sys, time, csv
 from multiprocessing import Pool
-SRC='artifacts_json/artifacts_json'   # run from the repo root
-OUT='artifacts_json'
+SRC='data/cdli/artifacts_json/artifacts_json'   # run from the repo root
+OUT='data/cdli/artifacts_json'
 def proc(name):
     try:
         d=json.load(open(os.path.join(SRC,name),encoding='utf-8'))

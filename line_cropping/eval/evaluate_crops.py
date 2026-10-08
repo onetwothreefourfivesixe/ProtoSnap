@@ -5,7 +5,7 @@ share of crops that hold no truth line (empty or unannotated). Neighbour intrusi
 another line's truth band inside the crop's rows (>= 50% = half of the neighbouring line sliced in).
 Horizontal fit (crop width) comes from eval/crop_width.py on faces with coverage >= 0.9: the share of fully annotated
 lines kept whole on clay, extra width, the median cut at each end, and the overhang past the tablet into the
-background (crop width tests, docs/line_model.md section 10). It reads the face images; --no-width skips it.
+background (crop width tests, docs/line_model/line_model.md section 10). It reads the face images; --no-width skips it.
   python -m line_cropping.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops/crops.csv [--split test] [--no-width]
 """
 import argparse, csv, os, collections

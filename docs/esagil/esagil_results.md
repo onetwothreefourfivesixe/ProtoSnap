@@ -1,15 +1,15 @@
 # ProtoSnap on Esagil (Neo-Babylonian): a random sample of results
 
-This page shows 10 results drawn at random (seed 7) from the Esagil run in `output/singleSigns_Esagil_New/`. They are not selected for quality.
+This page shows 10 results drawn at random (seed 7) from the Esagil run in `output/esagil/singleSigns_Esagil_New/`. They are not selected for quality.
 
 ## What this is
 
 ProtoSnap aligns a font-derived **prototype** of a cuneiform sign, with a **skeleton** recording each wedge as a small stroke graph, to a photograph of that sign. Until recently the repository had skeletons only for the Santakku (Old Babylonian) and Assurbanipal (Neo-Assyrian) fonts, so Neo-Babylonian signs could not be processed. The 48 skeletons now in `skeletons/Esagil/` were generated with **ProtoSnapVectorMapper** [1], which predicts ProtoSnap-format skeletons (`*_adf.csv` points, `*_con.csv` connectivity) directly from rendered font glyphs and provides a browser editor for reviewing them, instead of annotating every sign by hand.
 
-The run uses the Neo-Babylonian sign photographs of the eBL sign-crop dataset (`singleSignImages/`, listed in `test_set/singleSigns_Esagil.csv`) whose sign has an Esagil prototype and skeleton:
+The run uses the Neo-Babylonian sign photographs of the eBL sign-crop dataset (`data/ebl/singleSignImages/`, listed in `test_set/singleSigns_Esagil.csv`) whose sign has an Esagil prototype and skeleton:
 
 ```
-python run_test.py --samples_df_path test_set/singleSigns_Esagil.csv --font_dir prototypes/Esagil --con_dir skeletons/Esagil --output_folder singleSigns_Esagil_New --ignore_errors
+python run_test.py --samples_df_path test_set/singleSigns_Esagil.csv --font_dir prototypes/Esagil --con_dir skeletons/Esagil --output_folder esagil/singleSigns_Esagil_New --ignore_errors
 ```
 
 At the time of writing 73 of 1227 listed signs had finished. The **initialisation score** quoted below is ProtoSnap's own agreement measure for the initial placement (0 to 1, higher is better); over the finished results its median is 0.70 (range 0.38 to 0.98). It is not an accuracy: there is no ground truth for these alignments, so the panels have to be judged by eye.
@@ -99,4 +99,4 @@ Each panel is ProtoSnap's `itr99_viz.png`. Top row: the photographed sign, the f
 2. Rachel Mikulinsky, Morris Alper, Shai Gordin, Enrique Jiménez, Yoram Cohen, Hadar Averbuch-Elor, *ProtoSnap: Prototype Alignment for Cuneiform Signs*, ICLR 2025. https://arxiv.org/abs/2502.00129
 3. Or Lewenstein et al., *A Large-Scale Dataset of Annotated Cuneiform Sign Images for Digital Palaeography*, Journal of Open Humanities Data, 2026 (the sign photographs). https://doi.org/10.5334/johd.503
 
-Regenerate this page with `python add_new_font_skeletons/sampleResults.py --seed 7`.
+Regenerate this page with `python experiments/esagil_skeletons/sampleResults.py --seed 7`.
