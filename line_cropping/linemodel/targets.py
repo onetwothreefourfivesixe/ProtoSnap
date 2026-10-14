@@ -28,6 +28,33 @@ def read_segments(path):
     return out
 
 
+def polyline_segments(polys, thickness_frac=0.6):
+    """Hand-drawn line polylines (list of (n, 2) point arrays in face pixels, e.g. the Heidelberg line annotations) ->
+    chains of short segments, one chain per text line. Pieces of one line drawn separately (either side of a crack:
+    same height, no horizontal overlap) share a line_index. Thickness = thickness_frac x median gap between lines, as
+    for the Old Assyrian labels; the line runs where it was drawn (about first to last sign centre)."""
+    L = []
+    for p in polys:
+        q = np.asarray(p, float); q = q[np.argsort(q[:, 0])]
+        if len(q) >= 2 and q[-1, 0] - q[0, 0] >= 2: L.append(dict(pts=q, y=float(q[:, 1].mean()), x0=q[0, 0], x1=q[-1, 0]))
+    if not L: return []
+    L.sort(key=lambda d: d['y']); g = np.diff([d['y'] for d in L]); big = g[g > 0.4 * np.percentile(g, 90)] if len(g) else g
+    pitch = float(np.median(big)) if len(big) else 50.0
+    lines = []
+    for d in L:
+        for m in lines:
+            if abs(m['y'] - d['y']) < 0.35 * pitch and min(m['x1'], d['x1']) - max(m['x0'], d['x0']) < 0.1 * min(m['x1'] - m['x0'], d['x1'] - d['x0']):
+                m['pieces'].append(d['pts']); m['x0'], m['x1'] = min(m['x0'], d['x0']), max(m['x1'], d['x1']); break
+        else: lines.append(dict(y=d['y'], x0=d['x0'], x1=d['x1'], pieces=[d['pts']]))
+    lines.sort(key=lambda m: m['y']); segs = []
+    for i, m in enumerate(lines):
+        for q in m['pieces']:
+            for a, b in zip(q[:-1], q[1:]):
+                if b[0] - a[0] < 1: continue
+                segs.append(dict(ax0=a[0], ay0=a[1], ax1=b[0], ay1=b[1], thickness=thickness_frac * pitch, column='single', line_index=i, chain=i))
+    return segs
+
+
 def oa_segments(labels_rows, W, H, skew_deg, x0_frac=0.05, x1_frac=0.95):
     """Old Assyrian hand labels (line centres y in the frame rotated by skew_deg about the face centre) -> segments
     in the unrotated face. Thickness = 0.6 x median gap (or 0.45 x face height / n for a single line)."""
@@ -53,12 +80,14 @@ def render_targets(segs, W, H, stride=STRIDE, shrink=0.4, ignore_gap=1.5, band_f
     sc = 1.0 / stride
     # painted widths are bounded by the block's pitch so neighbouring bands never merge: band <= band_frac x pitch,
     # kernel = shrink x band. (eBL sign boxes are as tall as the pitch, so the raw thickness would overlap.)
+    # a line may be drawn as a chain of short segments (hand-drawn polylines, marked with a 'chain' id): spacing and
+    # ignore regions are computed per chain; every other segment is its own line, so existing truth renders unchanged
     pitch_of = {}
-    blocks0 = collections.defaultdict(list)
-    for s in segs: blocks0[s['column']].append(s)
-    for col, L in blocks0.items():
-        mids = sorted((s['ay0'] + s['ay1']) / 2 for s in L); g = np.diff(mids)
-        pitch_of[col] = float(np.median(g)) if len(g) else float(np.median([s['thickness'] for s in L])) / band_frac
+    blocks0 = collections.defaultdict(lambda: collections.defaultdict(list))
+    for s in segs: blocks0[s['column']][s.get('chain', id(s))].append(s)
+    for col, lines in blocks0.items():
+        mids = sorted(np.mean([(s['ay0'] + s['ay1']) / 2 for s in L]) for L in lines.values()); g = np.diff(mids)
+        pitch_of[col] = float(np.median(g)) if len(g) else float(np.median([s['thickness'] for L in lines.values() for s in L])) / band_frac
     for s in segs:
         bw = min(s['thickness'], band_frac * pitch_of[s['column']]); s['_band'] = bw
         poly = (_band_polygon(s, bw) * sc).astype(np.int32); kern = (_band_polygon(s, bw * shrink) * sc).astype(np.int32)
@@ -67,7 +96,11 @@ def render_targets(segs, W, H, stride=STRIDE, shrink=0.4, ignore_gap=1.5, band_f
         T[2][m > 0] = np.sin(2 * th); T[3][m > 0] = np.cos(2 * th)
     # ignore: wide gaps between consecutive lines of a block, and one pitch beyond the block's first/last line
     blocks = collections.defaultdict(list)
-    for s in segs: blocks[s['column']].append(s)
+    for col, lines in blocks0.items():
+        for L in lines.values():
+            if len(L) == 1: blocks[col].append(L[0]); continue
+            pts = sorted([(q['ax0'], q['ay0']) for q in L] + [(q['ax1'], q['ay1']) for q in L])   # chain -> end-to-end stand-in
+            blocks[col].append(dict(ax0=pts[0][0], ay0=pts[0][1], ax1=pts[-1][0], ay1=pts[-1][1], _band=max(q['_band'] for q in L)))
     for L in blocks.values():
         L = sorted(L, key=lambda s: (s['ay0'] + s['ay1']) / 2)
         mids = np.array([(s['ay0'] + s['ay1']) / 2 for s in L]); gaps = np.diff(mids)

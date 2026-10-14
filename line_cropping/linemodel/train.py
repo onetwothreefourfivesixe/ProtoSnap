@@ -1,7 +1,7 @@
 """Phase 7, step 3: train the line U-Net.
 
   .venv/bin/python -m line_cropping.linemodel.train [--epochs 40] [--bs 6] [--lr 3e-4] [--win 768] [--dry-run]
-      [--no-oa] [--out weights/linemodel/run1]
+      [--no-oa] [--heidelberg] [--out weights/linemodel/run1]
 
 Trains on the index from dataset.build_index (tune-split eBL faces with coverage >= 0.9 plus labelled Old Assyrian
 faces, minus a by-tablet validation slice). AdamW, cosine schedule with warm-up, mixed precision. After every epoch
@@ -32,7 +32,7 @@ def validate(model, items, dev, long_side, max_faces=None, kernel_thr=0.5, band_
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--epochs', type=int, default=40); ap.add_argument('--bs', type=int, default=6); ap.add_argument('--lr', type=float, default=3e-4)
     ap.add_argument('--win', type=int, default=768); ap.add_argument('--long-side', type=int, default=1024); ap.add_argument('--per-face', type=int, default=4); ap.add_argument('--workers', type=int, default=6)
-    ap.add_argument('--min-cov', type=float, default=0.9); ap.add_argument('--no-oa', action='store_true'); ap.add_argument('--seed', type=int, default=0)
+    ap.add_argument('--min-cov', type=float, default=0.9); ap.add_argument('--no-oa', action='store_true'); ap.add_argument('--heidelberg', action='store_true', help='add the Heidelberg Neo-Assyrian faces with hand-drawn lines (authors\' train split; run eval/evaluate_heidelberg.py once first to write the crops)'); ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--out', default='weights/linemodel/run1'); ap.add_argument('--dry-run', action='store_true'); ap.add_argument('--resume', default=None)
     g = ap.add_argument_group('read-out (validation scoring and checkpoint selection only; saved to config.json and reused by infer.py)')
     g.add_argument('--kernel-thr', type=float, default=0.5, help='kernel probability above which a pixel is a line core')
@@ -47,7 +47,7 @@ def main():
     g.add_argument('--ignore-gap', type=float, default=1.5, help='gaps wider than this many pitches are excluded from the loss')
     ap.add_argument('--plot-every', type=int, default=0, help='also redraw the training graphs every N epochs while running (0 = only at the end)')
     a = ap.parse_args(); torch.manual_seed(a.seed); np.random.seed(a.seed); dev = 'cuda' if torch.cuda.is_available() else 'cpu'; os.makedirs(a.out, exist_ok=True)
-    idx = build_index(min_cov=a.min_cov, include_oa=not a.no_oa, seed=a.seed); tr, va = idx['train'], idx['val']
+    idx = build_index(min_cov=a.min_cov, include_oa=not a.no_oa, seed=a.seed, include_heidelberg=a.heidelberg); tr, va = idx['train'], idx['val']
     if a.dry_run: tr, va = tr[:12], va[:3]
     src = {}
     for it in tr: src[it['source']] = src.get(it['source'], 0) + 1

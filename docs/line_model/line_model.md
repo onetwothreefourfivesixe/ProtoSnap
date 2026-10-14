@@ -172,6 +172,12 @@ with the saved epoch circled.*
 | NA (159) | 0.82 / 0.91 | 0.81 / 0.92 | 49% → 50% | 11% → 8% |
 | fewer than 60 px per line (89) | 0.71 / 0.70 | 0.76 / 0.70 | 42% → 66% | 9% → 13% |
 
+![Run 1 vs run 2 on the test split](img/run1_vs_run2.png)
+
+*Figure 12. Run 1 (gray) against run 2 (blue) on the test split: line recall, precision and first-line placement by
+script, and the crop measures on the NA and OB test faces both runs cover. Each line runs from the run 1 value to the
+run 2 value; the change is printed beside it.*
+
 **What this means.**
 - **Old Assyrian** goes from the worst script to one of the best: run 1 found three lines in five, run 2 more
   than nine in ten. Run 1's hand-labelled CDLI Old Assyrian faces did not carry over to eBL's Old Assyrian
@@ -206,6 +212,166 @@ no line labels and a median of three boxes each, so that source is used up. The 
 coverage bar for NA only (`--min-cov 0.8` admits more NA faces at some label noise), building truth for NA tablets
 from boxes without line paths by clustering them into lines (`lines/lines_from_boxes.py`), or hand-labelling NA faces
 with the Line Marker page as was done for Old Assyrian.
+
+### Independent check: hand-drawn Neo-Assyrian lines (10 Oct 2026)
+
+**Why.** All line truth so far is built by us: eBL annotators boxed signs and recorded each sign's transliteration line,
+and `ebl_ground_truth.py` fits a straight segment through each line's boxes, so a truth line spans only the signs that
+were boxed and is always straight. The eBL sign dataset (Lewenstein et al. 2026, JOHD) has no line annotations of its
+own; its export holds only sign boxes plus a few boxes around ruled lines (150) and around whole surfaces and columns.
+Dencker et al. (2020) did draw text lines by hand: 618 lines on 50 faces of 36 Neo-Assyrian tablets from the State
+Archives of Assyria, each line a polyline from end to end that follows the line's curve
+(github.com/compvis/cuneiform-sign-detection-dataset, `annotations/line_annotations_{train,test}.csv`; downloaded to
+`data/heidelberg/`). None of the 36 tablets is in our eBL set. The photographs are the Heidelberg images already in the
+eBL OCR download; 9 faces (6 tablets) have none there and are skipped.
+
+![Hand-drawn Heidelberg line annotations](img/heidelberg_line_annotations.jpg)
+
+*Figure 13. Hand-drawn line annotations (red, numbered) on three Heidelberg faces: every line is drawn end to end and
+follows the line's slope; on the cracked tablet on the right a line is drawn as separate pieces either side of the crack.*
+
+**Method.** `eval/evaluate_heidelberg.py` cuts each face out of its composite photograph, runs the model with the
+standard read-out and scores it as `evaluate_lines.py` does (match within 0.35 pitch, one prediction per truth line,
+in the frame of the truth lines' median angle). Line pieces split by a crack are merged first. Every line on these
+faces is drawn, so precision is valid on every face. Because the drawn lines run end to end, it also measures how much
+of each true line the matched prediction covers and how far it runs past each end. No training or tuning used these
+faces.
+
+| run 2 on hand-drawn lines | faces | lines | recall | precision | first line within 0.5 pitch | count match | line length covered: median / at least 95% | runs past the drawn ends, median left / right |
+|---|---|---|---|---|---|---|---|---|
+| all | 41 | 474 | 0.92 | 0.90 | 71% | 39% | 100% / 94% | 0.74 / 0.88 pitch |
+| authors' test faces | 9 | 99 | 0.95 | 0.90 | 89% | 11% | 100% / 93% | 0.58 / 0.67 pitch |
+| eBL Neo-Assyrian test faces, for comparison | 159 | | 0.81 | 0.92 | 50% | 8% | | |
+
+**What this means.**
+- **On Neo-Assyrian the model does better against hand-drawn lines than against our eBL truth:** recall 0.92 against
+  0.81, first line 71 against 50 percent, at the same precision. The two sets are different tablets and photographs
+  (Heidelberg: CDLI composites of State Archives letters; eBL: mostly British Museum K. fragments), so this does not
+  prove the eBL truth is at fault, but it shows the model's Neo-Assyrian weakness is not simply an inability to see
+  Neo-Assyrian lines.
+- **Line ends: nothing is cut short.** Predicted lines cover the whole drawn line on 94 percent of lines, with no
+  shortfall at either end, so the run 2 crops do not lose the ends of lines.
+- **They run on by about 0.8 pitch at each end.** The annotators stopped at about the centre of the first and last
+  sign, which accounts for roughly half a sign; the rest is real: the model's lines continue to the edge of the clay
+  and onto rounded edges past the last sign. This matches the slightly larger background overhang of the run 2 crops.
+- **The weak faces are dense or tiny:** VAT08803 obverse (36 lines, recall 0.61) and P335608 (37 tightly packed
+  lines, 0.76), and small fragments with five or six lines where one miss costs 17 to 20 points.
+
+**Next.** These 41 faces (32 from the authors' training set) are the first Neo-Assyrian truth not built by us. Adding
+the 32 training faces to a run 3, with polylines rendered as chains of short segments and the 9 test faces held out,
+would more than double Neo-Assyrian's 20 training faces. The face crops are already written to
+`tablet_data/heidelberg/faces/`.
+
+### Run 3: adding the hand-drawn Neo-Assyrian lines (10 Oct 2026)
+
+**Data.** Run 2's data plus the 32 Heidelberg faces from the authors' train split (27 train, 5 validation in our
+tablet-level slice); their 9 test faces stay out. Each hand-drawn polyline is painted as a chain of short segments
+(`targets.polyline_segments`, thickness 0.6 pitch as for the Old Assyrian labels), with line spacing and ignore regions
+computed per chain; all 513 existing training faces render identical targets to before. Note that `faces.csv` was
+reduced on 7 Oct 2026 by 102 faces (99 Neo-Babylonian, 3 Old Babylonian) and kept that way, so run 3 also trains on 48
+fewer Neo-Babylonian tune faces than run 2 did, and the test comparison below re-scores run 2 on the same reduced set
+(705 faces; Neo-Babylonian 130 instead of 183). `train.py --heidelberg`, otherwise the same settings as run 2:
+491 training and 54 validation faces, 54 minutes, checkpoint from epoch 25.
+
+![Training dashboard for run3](img/training_dashboard_run3.png)
+
+*Figure 14. run3: training loss, validation recall and precision, and the selection score with the saved epoch circled.*
+
+| eBL test faces | run 2 recall / precision | run 3 recall / precision | first line within 0.5 pitch, run 2 → run 3 | count match, run 2 → run 3 |
+|---|---|---|---|---|
+| all (705) | 0.87 / 0.88 | 0.89 / 0.89 | 84% → 83% | 32% → 36% |
+| Neo-Assyrian (159) | 0.81 / 0.92 | **0.85** / 0.90 | 50% → 51% | 8% → 11% |
+| Neo-Babylonian (130) | 0.85 / 0.87 | 0.88 / 0.87 | 82% → 79% | 28% → 35% |
+| Old Assyrian (90) | 0.92 / 0.91 | 0.90 / 0.91 | 89% → 81% | 49% → 48% |
+| Old Babylonian (326) | 0.89 / 0.88 | 0.90 / 0.89 | 91% → 92% | 42% → 44% |
+| fewer than 60 px per line (49) | 0.70 / 0.69 | **0.82 / 0.76** | 46% → 54% | 10% → 14% |
+
+| Heidelberg test faces (9 faces, 99 hand-drawn lines, never trained on) | run 2 | run 3 |
+|---|---|---|
+| recall / precision | 0.95 / 0.90 | **0.98 / 0.94** |
+| line count equals the drawn count | 11% | **67%** |
+| first line within 0.5 pitch | 89% | 78% (one face of nine) |
+| line length covered, at least 95% | 93% | 91% |
+| runs past the drawn ends, median left / right | 0.58 / 0.67 pitch | 0.44 / 0.45 pitch |
+
+**What this means.**
+- **Neo-Assyrian recall rises four points on the eBL test faces** (0.81 to 0.85) for two points of precision, from 27
+  training faces of a different collection; on the held-out Heidelberg faces both recall and precision rise and the
+  line count is right on six faces in nine instead of one.
+- **Placing the first Neo-Assyrian line did not improve** (50 to 51 percent on eBL). Whatever makes the top line hard
+  on the eBL Neo-Assyrian fragments, mostly broken K. fragments whose first surviving line is often damaged, is not
+  fixed by more Neo-Assyrian lines from intact letters.
+- **Lines stop closer to the real ends**: the overshoot past the drawn ends falls by about a third, the hand-drawn
+  truth being the first to show the model where a line actually stops.
+- **Small faces improve most** (recall 0.70 to 0.82), probably because the Heidelberg faces are small CDLI images.
+- **Old Assyrian first-line placement drops eight points** (six faces of 72) and Neo-Babylonian three; with one
+  training run per configuration this is within what a different validation slice and fewer Neo-Babylonian faces
+  could cause, so it needs a second run before it is read as a regression.
+
+**Second seed.** Run 3 was repeated with `--seed 1`, which changes the starting weights, the training windows and the
+validation slice, to see how much of the difference from run 2 is chance:
+
+| eBL test faces | run 2 | run 3, seed 0 | run 3, seed 1 |
+|---|---|---|---|
+| all: recall / precision | 0.87 / 0.88 | 0.89 / 0.89 | 0.90 / 0.88 |
+| Neo-Assyrian: recall / precision | 0.81 / 0.92 | 0.85 / 0.90 | 0.88 / 0.90 |
+| Neo-Assyrian: first line within 0.5 pitch | 50% | 51% | 63% |
+| Neo-Babylonian: recall / precision | 0.85 / 0.87 | 0.88 / 0.87 | 0.90 / 0.90 |
+| Old Assyrian: recall / precision, first line | 0.92 / 0.91, 89% | 0.90 / 0.91, 81% | 0.91 / 0.87, 85% |
+| Old Babylonian: recall / precision, first line | 0.89 / 0.88, 91% | 0.90 / 0.89, 92% | 0.91 / 0.87, 91% |
+| fewer than 60 px per line: recall / precision | 0.70 / 0.69 | 0.82 / 0.76 | 0.83 / 0.83 |
+| Heidelberg test: recall / precision, count match | 0.95 / 0.90, 11% | 0.98 / 0.94, 67% | 0.95 / 0.92, 33% |
+| Heidelberg test: runs past the drawn ends | 0.58 / 0.67 pitch | 0.44 / 0.45 | 0.37 / 0.50 |
+
+The two seeds differ by up to three points in per-script recall or precision and by up to twelve points in
+first-line placement on the smaller groups (Neo-Assyrian 49 to 51 faces, Old Assyrian 71). Differences between run 2
+and run 3 smaller than that are not reliable. What holds in both seeds: **Neo-Assyrian recall** rises (0.81 to 0.85
+and 0.88), **overall recall** rises two to three points, **small faces** gain twelve to thirteen points of recall,
+and **lines stop closer to their real ends**. The Old Assyrian first-line drop (89 to 81 percent) shrinks to four
+points with seed 1 and is within the seed spread; precision on Old Assyrian and Old Babylonian is one to four points
+lower with seed 1, also within it. Neo-Assyrian first-line placement remains the weak point (51 and 63 percent).
+
+**Data caveat.** The reduction of `faces.csv` on 7 Oct 2026 was not a deliberate selection: row 47 (BM.31033__face)
+ends in typed characters (`tablet_data/ bnjm.njm.`) and the 102 rows that followed it are missing, which is what
+selecting a block of the file in an editor and typing over it produces. Run 3 (both seeds) therefore trained without 48
+Neo-Babylonian tune faces, and all comparisons in this section use the reduced test set. On 10 Oct 2026 the file was
+regenerated with `python -m line_cropping.faces.prepare_faces ebl` (damaged copy kept as
+`faces.csv.damaged_2026-10-07`): 1,969 faces again, 106 restored (103 Neo-Babylonian, 3 Old Babylonian), and every
+undamaged row of the damaged copy identical in the regenerated file. Runs 3 and 3 seed 1 above were trained before the
+restore.
+
+**Final comparison on the restored data (11 Oct 2026).** Both seeds were retrained on the restored face list
+(`run3_full_s0`, `run3_full_s1`; checkpoints from epochs 18 and 20 of 40) and scored with run 2 on the full test set.
+These figures supersede the two tables above, which used the damaged face list.
+
+| eBL test faces (full set) | run 2 | run 3, seed 0 | run 3, seed 1 |
+|---|---|---|---|
+| all (760): recall / precision | 0.87 / 0.88 | 0.87 / 0.87 | 0.88 / 0.87 |
+| all: first line within 0.5 pitch | 84% | 86% | 79% |
+| Neo-Assyrian (160): recall / precision | 0.81 / 0.92 | 0.85 / 0.89 | 0.84 / 0.90 |
+| Neo-Assyrian: first line within 0.5 pitch | 50% | 59% | 52% |
+| Neo-Babylonian (183): recall / precision | 0.85 / 0.85 | 0.88 / 0.87 | 0.88 / 0.88 |
+| Old Assyrian (90): recall / precision | 0.92 / 0.91 | 0.89 / 0.89 | 0.89 / 0.87 |
+| Old Assyrian: first line within 0.5 pitch | 89% | 89% | 66% |
+| Old Babylonian (327): recall / precision | 0.89 / 0.88 | 0.87 / 0.86 | 0.89 / 0.86 |
+| fewer than 60 px per line (89): recall / precision | 0.76 / 0.70 | 0.81 / 0.76 | 0.81 / 0.72 |
+| Heidelberg test (9 faces): recall / precision | 0.95 / 0.90 | 0.98 / 0.94 | 0.96 / 0.93 |
+| Heidelberg test: count match, runs past the drawn ends | 11%, 0.58 / 0.67 pitch | 56%, 0.50 / 0.54 | 44%, 0.51 / 0.54 |
+
+**What this means.**
+- **Overall, run 3 ties with run 2** (recall 0.87 to 0.88, precision 0.87 against 0.88). The hand-drawn Neo-Assyrian
+  lines move accuracy between scripts rather than adding to it.
+- **Gains in both seeds:** Neo-Assyrian recall (0.81 to 0.85 and 0.84) and Neo-Babylonian recall and precision (three
+  points each), small faces (recall 0.76 to 0.81), and on the held-out hand-drawn faces higher precision, a right line
+  count far more often and line ends closer to the real ones.
+- **Costs in both seeds:** Old Assyrian recall falls three points (0.92 to 0.89) and Old Babylonian precision two
+  (0.88 to 0.86); Neo-Assyrian precision falls two to three points.
+- **First-line placement is too noisy to call:** the two seeds differ by 7 points on Neo-Assyrian (59 and 52 percent)
+  and by 23 points on Old Assyrian (89 and 66 percent). The checkpoint is chosen on a validation slice of about 54
+  faces that changes with the seed, which adds to this spread.
+
+Run 3 is the better model for Neo-Assyrian, Neo-Babylonian and small faces and run 2 for Old Assyrian and Old
+Babylonian, with no overall winner. The stored outputs (section 8, "Moving the stored outputs") stay on run 2.
 
 ## 9. Known failure modes and next steps
 

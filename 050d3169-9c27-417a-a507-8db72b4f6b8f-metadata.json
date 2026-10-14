@@ -1,0 +1,215 @@
+{
+    "id": "050d3169-9c27-417a-a507-8db72b4f6b8f",
+    "access_rights": {
+        "id": "b5816a85-c5dd-4279-8028-ff49ae3fbea4",
+        "license": [
+            {
+                "id": "1dc278ff-12c9-43ec-81a5-14b81dd3d3db",
+                "custom_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+                "title": {
+                    "en": "Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)",
+                    "fi": "Creative Commons Nimeä-JaaSamoin 4.0 Kansainvälinen (CC BY-SA 4.0)",
+                    "und": "Creative Commons Nimeä-JaaSamoin 4.0 Kansainvälinen (CC BY-SA 4.0)"
+                },
+                "url": "http://uri.suomi.fi/codelist/fairdata/license/code/CC-BY-SA-4.0",
+                "in_scheme": "http://uri.suomi.fi/codelist/fairdata/license",
+                "pref_label": {
+                    "en": "Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)",
+                    "fi": "Creative Commons Nimeä-JaaSamoin 4.0 Kansainvälinen (CC BY-SA 4.0)"
+                }
+            }
+        ],
+        "access_type": {
+            "id": "d01ac02c-fc70-4c68-9434-8383cb693ff0",
+            "url": "http://uri.suomi.fi/codelist/fairdata/access_type/code/open",
+            "in_scheme": "http://uri.suomi.fi/codelist/fairdata/access_type",
+            "pref_label": {
+                "en": "Open",
+                "fi": "Avoin"
+            }
+        },
+        "restriction_grounds": []
+    },
+    "actors": [
+        {
+            "id": "97f20a54-e21b-46ec-801f-13ebd3fd3683",
+            "roles": [
+                "creator"
+            ],
+            "organization": {
+                "id": "23dbd9bf-4ffa-4bed-8276-f6173a756496",
+                "pref_label": {
+                    "en": "Open Richly Annotated Cuneiform Corpus Project"
+                },
+                "homepage": {
+                    "url": "http://oracc.museum.upenn.edu/doc/about/licensing/index.html"
+                },
+                "email": "<hidden>"
+            }
+        },
+        {
+            "id": "c09b7086-8d57-47b8-8f83-a04183f30c68",
+            "roles": [
+                "curator"
+            ],
+            "person": {
+                "id": "b9032c14-300b-4385-b274-0df636056bcc",
+                "name": "User support FIN-CLARIN",
+                "email": "<hidden>"
+            }
+        },
+        {
+            "id": "89389106-b173-42f2-bfce-3a9906e33411",
+            "roles": [
+                "curator"
+            ],
+            "organization": {
+                "id": "91948bf4-6f4c-48b2-8e9b-c5aa3984ce02",
+                "pref_label": {
+                    "en": "University of Helsinki"
+                },
+                "email": "<hidden>"
+            }
+        }
+    ],
+    "cumulative_state": 0,
+    "data_catalog": "urn:nbn:fi:att:data-catalog-harvest-kielipankki",
+    "description": {
+        "en": "Open Richly Annotated Cuneiform Corpus (Oracc) brings together the work of several Assyriological projects to publish online editions of cuneiform texts. The Korp version of Oracc allows extensive searches on the texts and presents the results as a KWIC concordance list. Korp also offers statistical information and comparison of the search results. Downloading the query results is possible as well.\n\nThis version of Oracc in Korp contains almost all the data that were available on the Oracc project website in June 2021. The data have been extracted from the JSON files provided by Oracc. The additional features added by the Helsinki team in Oracc in Korp 2021 are automatic lemmatization and POS-tagging for previously unlemmatized texts (Aleksi Sahala), normalized divine names (Tero Alstola, Heidi Jauhiainen) and coordinates for tablet provenancies (Aleksi Sahala).\n\nThe Oracc projects in Korp are:\n\nADsD: Astronomical Diaries Digital\nAEMW: Akkadian in the Eastern Mediterranean World\nAkkadian Love Literature\nARIo: Achaemenid Royal Inscriptions online\nATAE: Archival Texts of the Assyrian Empire\nblms: Bilinguals in Late Mesopotamian Scholarship\nBTTo: Babylonian Topographical Texts Online\nCAMS: Corpus of Ancient Mesopotamian Scholarship\nCCPo: Cuneiform Commentaries Project on Oracc\nCKST: Corpus of Kassite Sumerian Texts\nCMAwRo: Corpus of Mesopotamian Anti-witchcraft Rituals\nCTIJ: Cuneiform Texts Mentioning Israelites, Judeans, and Other Related Groups\nDCCLT: Digital Corpus of Cuneiform Lexical Texts\nDCCMT: Digital Corpus of Cuneiform Mathematical Texts\nDSSt: Datenbank sumerischer Streitliteratur\neCUT: Electronic Corpus of Urartian Texts\nEPSD2: Electronic Pennsylvania Sumerian Dictionary 2\nETCSRI: Electronic Text Corpus of Sumerian Royal Inscriptions\nGlass: Corpus of Glass Technological Texts\nHBTIN: Hellenistic Babylonia: Texts, Iconography, Names\nLaOCOST: Law and Order: Cuneiform Online Sustainable Tool\nOBMC: Old Babylonian Model Contracts\nOBTA: Old Babylonian Tabular Accounts\nRIAo: Royal Inscriptions of Assyria online\nRIBo: Royal Inscriptions of Babylonia online\nRīm-Anum: The House of Prisoners\nRINAP: Royal Inscriptions of the Neo-Assyrian Period\nSAAo: State Archives of Assyria Online\nSuhu: The Inscriptions of Suhu online\n\nNote that the projects CAMS, CTIJ, DCCLT and HBTIN contain less data than their counterparts in Oracc, Korp version, May 2019.\n\nOther projects, contains texts from several smaller projects:\n-Idrimi: Statue of Idrimi\n-akklove: Akkadian Love Literature\n-Contributions Amarna\n-CKST: Corpus of Kassite Sumerian Texts\n-Glass: Corpus of Glass Technological Texts\n-LaOCOST: Law and Order: Cuneiform Online Sustainable Tool\n-OBTA: Old Babylonian Tabular Accounts\n-Suhu: The Inscriptions of Suhu online.\n\nThe Languages present in the Corpora are:\nAkkadian\nSumerian\nAramaic\nEblaite\nElamite\nHittite\nOld Persian\nUgaritic\nUrartian"
+    },
+    "field_of_science": [
+        {
+            "id": "62b43705-b725-40cd-aa4f-f5b1465678e1",
+            "url": "http://www.yso.fi/onto/okm-tieteenala/ta6121",
+            "in_scheme": "http://www.yso.fi/onto/okm-tieteenala/conceptscheme",
+            "pref_label": {
+                "en": "Languages",
+                "fi": "Kielitieteet",
+                "sv": "Språkvetenskaper"
+            }
+        }
+    ],
+    "infrastructure": [],
+    "issued": "2023-02-26",
+    "keyword": [],
+    "language": [
+        {
+            "id": "cfc592f7-0f69-4874-9289-97c30b111ead",
+            "url": "http://lexvo.org/id/iso639-3/xeb",
+            "in_scheme": "http://lexvo.org/id/",
+            "pref_label": {
+                "en": "Eblan",
+                "fi": "Eblan kieli"
+            }
+        },
+        {
+            "id": "f7b20228-5bbe-4545-8165-a25709b3aba6",
+            "url": "http://lexvo.org/id/iso639-3/xur",
+            "in_scheme": "http://lexvo.org/id/",
+            "pref_label": {
+                "en": "Urartian",
+                "sv": "Urarteiska"
+            }
+        },
+        {
+            "id": "f3dc8c8f-f2cc-48f4-b61a-83298530bbc5",
+            "url": "http://lexvo.org/id/iso639-3/akk",
+            "in_scheme": "http://lexvo.org/id/",
+            "pref_label": {
+                "en": "Akkadian",
+                "fi": "akkadi",
+                "sv": "akkadiska"
+            }
+        },
+        {
+            "id": "f835c2c4-1f2b-4178-83c0-5a5fcd79024a",
+            "url": "http://lexvo.org/id/iso639-3/arc",
+            "in_scheme": "http://lexvo.org/id/",
+            "pref_label": {
+                "en": "Aramaic",
+                "fi": "valtakunnanaramea",
+                "sv": "arameiska"
+            }
+        },
+        {
+            "id": "7166ac1a-4f42-4abf-9f3b-6a87bc176d11",
+            "url": "http://lexvo.org/id/iso639-3/peo",
+            "in_scheme": "http://lexvo.org/id/",
+            "pref_label": {
+                "en": "Old Persian",
+                "fi": "muinaispersia",
+                "sv": "fornpersiska"
+            }
+        },
+        {
+            "id": "ab5c6a7e-5093-424b-8bde-86f6e57effa5",
+            "url": "http://lexvo.org/id/iso639-3/sux",
+            "in_scheme": "http://lexvo.org/id/",
+            "pref_label": {
+                "en": "Sumerian",
+                "fi": "sumeri",
+                "sv": "sumeriska"
+            }
+        },
+        {
+            "id": "1389df2d-09b7-4fb8-b5ef-3b993019e91e",
+            "url": "http://lexvo.org/id/iso639-3/hit",
+            "in_scheme": "http://lexvo.org/id/",
+            "pref_label": {
+                "en": "Hittite",
+                "fi": "heetti",
+                "sv": "hettitiska"
+            }
+        },
+        {
+            "id": "b7b7db2d-7c14-442d-a0f4-c68e0c87b506",
+            "url": "http://lexvo.org/id/iso639-3/uga",
+            "in_scheme": "http://lexvo.org/id/",
+            "pref_label": {
+                "en": "Ugaritic",
+                "fi": "ugarit",
+                "sv": "ugaritiska"
+            }
+        }
+    ],
+    "metadata_owner": {
+        "id": "541fdb9b-f8a8-4c75-a75d-13f413454d72",
+        "organization": "fairdata.fi"
+    },
+    "other_identifiers": [],
+    "persistent_identifier": "urn:nbn:fi:lb-2022031705",
+    "pid_generated_by_fairdata": false,
+    "projects": [],
+    "provenance": [],
+    "relation": [],
+    "remote_resources": [],
+    "spatial": [],
+    "state": "published",
+    "temporal": [],
+    "theme": [],
+    "title": {
+        "en": "Open Richly Annotated Cuneiform Corpus, Korp Version, June 2021",
+        "fi": "Open Richly Annotated Cuneiform Corpus, Korp-versio, kesäkuu 2021"
+    },
+    "created": "2022-03-19T11:49:33Z",
+    "modified": "2023-02-26T00:00:00Z",
+    "dataset_versions": [
+        {
+            "id": "050d3169-9c27-417a-a507-8db72b4f6b8f",
+            "title": {
+                "en": "Open Richly Annotated Cuneiform Corpus, Korp Version, June 2021",
+                "fi": "Open Richly Annotated Cuneiform Corpus, Korp-versio, kesäkuu 2021"
+            },
+            "persistent_identifier": "urn:nbn:fi:lb-2022031705",
+            "state": "published",
+            "created": "2022-03-19T11:49:33Z",
+            "version": 1
+        }
+    ],
+    "published_revision": 2,
+    "version": 1,
+    "api_version": 1,
+    "metadata_repository": "Fairdata",
+    "record_created": "2022-03-19T11:49:33Z",
+    "record_modified": "2023-02-26T00:00:00Z"
+}

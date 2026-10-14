@@ -2,20 +2,39 @@
 
 Index (build_index):
   train  = eBL faces in the Phase 5 TUNE split with coverage >= min_cov (default 0.9)  +  Old Assyrian faces with
-           hand labels (status done) -- minus a validation slice
+           hand labels (status done)  +  with include_heidelberg, the Heidelberg Neo-Assyrian faces in the authors'
+           train split that have hand-drawn line annotations and a face crop (eval/evaluate_heidelberg.py writes the
+           crops) -- minus a validation slice. The authors' Heidelberg test faces are never included.
   val    = val_frac of the training tablets (by tablet), used for model selection
   test faces are never included; evaluation runs through infer.py + the Phase 5 evaluators.
 Windows: the face is resized so its long side is `long_side` x a random scale in [0.5, 2], a random `win` square is
 cut (biased to contain lines), photometric jitter and background polarity swap are applied, and the five target maps
 are painted from the transformed segments at stride 4.
 """
-from line_cropping.paths import EBL, OA
+from line_cropping.paths import EBL, OA, DATA_ROOT
 import csv, os, random, collections
 import numpy as np, cv2, torch
-from line_cropping.linemodel.targets import render_targets, read_segments, oa_segments, STRIDE
+from line_cropping.linemodel.targets import render_targets, read_segments, oa_segments, polyline_segments, STRIDE
 
 
-def build_index(min_cov=0.9, val_frac=0.1, seed=0, include_oa=True):
+def heidelberg_items(split='train'):
+    """Heidelberg faces with hand-drawn lines (data/heidelberg/line_annotations_<split>.csv) whose crop exists in
+    <DATA_ROOT>/heidelberg/faces/. Tablet key drops the Vs/Rs side suffix so a tablet's faces stay together."""
+    import re
+    p = os.path.join('data', 'heidelberg', f'line_annotations_{split}.csv')
+    if not os.path.exists(p): return []
+    by = collections.defaultdict(lambda: collections.defaultdict(list))
+    for r in csv.DictReader(open(p)): by[(r['tablet_CDLI'], r['segm_idx'])][r['line_idx']].append((float(r['x']), float(r['y'])))
+    items = []
+    for (tab, si), lines in sorted(by.items()):
+        f = os.path.join(DATA_ROOT, 'heidelberg', 'faces', f'{tab}__s{si}.jpg')
+        if not os.path.exists(f): continue
+        segs = polyline_segments([np.array(v) for _, v in sorted(lines.items(), key=lambda kv: int(kv[0]))])
+        if segs: items.append(dict(face=f'{tab}__s{si}', tablet='heid-' + re.sub(r'(Vs|Rs)$', '', tab), file=f, source='heid-NA', segments=segs))
+    return items
+
+
+def build_index(min_cov=0.9, val_frac=0.1, seed=0, include_oa=True, include_heidelberg=False):
     items = []
     faces = {f['face']: f for f in csv.DictReader(open(f'{EBL}/faces/faces.csv'))} if os.path.exists(f'{EBL}/faces/faces.csv') else {}
     split = {r['face']: r['split'] for r in csv.DictReader(open(f'{EBL}/split.csv'))} if os.path.exists(f'{EBL}/split.csv') else {}
@@ -36,6 +55,7 @@ def build_index(min_cov=0.9, val_frac=0.1, seed=0, include_oa=True):
             if im is None: continue
             H, W = im.shape
             items.append(dict(face=fid, tablet=f['p_number'], file=f['file'], source='oa', segments=oa_segments(rows, W, H, float(rows[0]['skew_deg']))))
+    if include_heidelberg: items += heidelberg_items('train')
     tablets = sorted({it['tablet'] for it in items}); random.seed(seed); random.shuffle(tablets); nval = max(1, int(val_frac * len(tablets))); val_t = set(tablets[:nval])
     return dict(train=[it for it in items if it['tablet'] not in val_t], val=[it for it in items if it['tablet'] in val_t])
 

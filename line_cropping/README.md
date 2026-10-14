@@ -25,7 +25,7 @@ moving the data, `python -m line_cropping.paths --rewrite <old-prefix>/` re-root
 | `lines/` | Phase 3 | `profile_lines.py`, `find_lines.py` (profile methods), `detect_signs.py` (eBL detector, mmdet env), `lines_from_boxes.py` (boxes -> lines) |
 | `signs/` | sign classifier | `build_dataset.py` (per-script datasets from `data/ebl/signs_snippets_metadata.json`, face-level hold-out), `train_classifier.py` (ResNet-34), `classify.py` (inference) |
 | `crops/` | Phase 4 | `make_crops.py` (gap-bounded single-line crops) |
-| `eval/` | Phase 5 | `evaluate_lines.py`, `evaluate_crops.py`, `crop_width.py`, `evaluate_oa.py`, `phase5_eval.py`, `extend_split.py` (adds new faces to split.csv without moving existing ones; do not rerun `phase5_eval` for that, it reshuffles the split), `render_lines.py` |
+| `eval/` | Phase 5 | `evaluate_lines.py`, `evaluate_crops.py`, `crop_width.py`, `evaluate_oa.py`, `phase5_eval.py`, `evaluate_heidelberg.py` (line model vs hand-drawn Neo-Assyrian lines, Dencker et al. 2020), `extend_split.py` (adds new faces to split.csv without moving existing ones; do not rerun `phase5_eval` for that, it reshuffles the split), `render_lines.py` |
 | `linemodel/` | Phase 7 | `targets.py`, `dataset.py`, `model.py` (U-Net, ResNet-34 encoder), `train.py`, `visualize.py`, `infer.py`, `render_predictions.py` |
 | `app/` | Phase 7, local web app | `server.py`, `pipeline.py`, `static/index.html`: upload a photograph, split it into line crops, compare with the original |
 | `protosnap/` | Phase 6 | `protosnap_prep.py`, `phase6_summary.py` |
