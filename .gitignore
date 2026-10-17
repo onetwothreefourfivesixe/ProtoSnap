@@ -25,3 +25,6 @@ data/ebl/ebl_detection_2024/
 data/fonts/
 data/heidelberg/
 tablet_data/logs/download_*.log
+
+# export archives are shared directly, not through git (GitHub limit 100 MB per file)
+tablet_data/exports/*.zip
