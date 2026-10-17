@@ -1,0 +1,13 @@
+32 Heidelberg train faces, 388 lines, 4440 patches per epoch
+epoch   1: loss 0.574, patch accuracy 0.699, 0.1 min
+epoch  11: loss 0.444, patch accuracy 0.800, 1.2 min
+epoch  21: loss 0.408, patch accuracy 0.821, 2.4 min
+epoch  31: loss 0.440, patch accuracy 0.799, 3.4 min
+epoch  41: loss 0.404, patch accuracy 0.819, 4.5 min
+epoch  51: loss 0.405, patch accuracy 0.820, 5.5 min
+epoch  61: loss 0.393, patch accuracy 0.830, 6.6 min
+epoch  71: loss 0.380, patch accuracy 0.826, 7.6 min
+epoch  81: loss 0.380, patch accuracy 0.834, 8.7 min
+epoch  91: loss 0.379, patch accuracy 0.827, 9.7 min
+epoch 101: loss 0.383, patch accuracy 0.828, 10.8 min
+-> weights/dencker/linenet_ours.pt

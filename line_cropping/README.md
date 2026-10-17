@@ -30,6 +30,7 @@ moving the data, `python -m line_cropping.paths --rewrite <old-prefix>/` re-root
 | `app/` | Phase 7, local web app | `server.py`, `pipeline.py`, `static/index.html`: upload a photograph, split it into line crops, compare with the original |
 | `protosnap/` | Phase 6 | `protosnap_prep.py`, `phase6_summary.py` |
 | `report/` | reporting | `aggregate_metrics.py` (every metric table of both sets -> `docs/line_cropping/metrics_comparison.md`, per-set `metrics/`), `compile_sample.py` (tracked `output/line_cropping/samples/`: metrics tables + 20 tablets per set with all outputs) |
+| `baselines/` | comparisons | `dencker_linenet.py` (Dencker et al. 2020 line network, re-implemented and retrained), `kraken_seg.py` (Kraken's segmenter: PageXML export, prediction in its own venv, fragment join); see docs/line_model/related_work.md |
 | `experiments/` | early trials | `profile_lines_oa.py`, `comb_fit_oa.py` (the first Old Assyrian profile experiments) |
 
 Data lives outside the package and is gitignored: `data/cdli/artifacts_json/` (CDLI dump and derived tables), `tablet_data/ebl_tablets/`

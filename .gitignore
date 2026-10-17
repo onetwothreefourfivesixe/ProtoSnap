@@ -10,6 +10,8 @@ artifacts_json/
 ebl_tablets/
 fat-cross_processed/
 ebl_detection_2024/
+tablet_data/heidelberg/
+tablet_data/kraken/
 external/
 protosnap_inputs/
 tablet_data/app_sessions/

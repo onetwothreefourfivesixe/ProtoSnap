@@ -26,5 +26,8 @@ its own figures in `img/`.
 
 ## 4. Custom line model — `line_model/`
 
-- [line_model.md](line_model/line_model.md): architecture, training data, training, read-out, results, the crop
-  width tests (Tests 1–4) and run 2 with Old Assyrian and Neo-Babylonian data.
+- [line_model.md](line_model/line_model.md): report on the learned line finder: summary, data and ground truth, model,
+  read-out and crops, evaluation, results across runs and against other line finders, limitations; the experiments in
+  order in Appendix A.
+- [related_work.md](line_model/related_work.md): other line finders compared with the line model (Kraken retrained,
+  the Dencker et al. line network rebuilt) and the literature review behind the choice.

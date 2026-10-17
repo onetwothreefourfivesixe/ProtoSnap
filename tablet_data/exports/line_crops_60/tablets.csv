@@ -1,0 +1,61 @@
+tablet,script,period,genres,n_faces,n_line_crops,n_signs,transliteration
+BM.141781,NA,Neo-Assyrian,CANONICAL/Literature/Hymns/Divine,1,19,546,transliterations/BM.141781.atf
+K.9905,NA,Neo-Assyrian,CANONICAL/Divination/Teratological/Šumma izbu,1,13,18,transliterations/K.9905.atf
+K.7917,NA,Neo-Assyrian,CANONICAL,1,5,19,transliterations/K.7917.atf
+K.7853,NA,Neo-Assyrian,CANONICAL/Divination/Extispicy/Bārûtu/8. Kakku,1,23,218,transliterations/K.7853.atf
+K.10545,NA,Neo-Assyrian,CANONICAL/Divination/Extispicy,1,17,78,transliterations/K.10545.atf
+CBS.1470,NA,Neo-Assyrian,,1,8,70,transliterations/CBS.1470.atf
+K.4003,NA,Neo-Assyrian,CANONICAL/Divination/Extispicy/Bārûtu/8. Kakku,1,27,307,transliterations/K.4003.atf
+K.1808,NA,Neo-Assyrian,CANONICAL/Divination/Extispicy/Bārûtu/1. Isru;CANONICAL/Technical/Commentary,1,23,179,transliterations/K.1808.atf
+K.4063,NA,Neo-Assyrian,CANONICAL,1,10,89,transliterations/K.4063.atf
+K.10084,NA,Neo-Assyrian,CANONICAL/Divination/Celestial,1,9,46,transliterations/K.10084.atf
+K.2712,NA,Neo-Assyrian,CANONICAL/Divination/Extispicy,1,24,160,transliterations/K.2712.atf
+K.11309,NA,Neo-Assyrian,CANONICAL/Divination/Celestial;CANONICAL/Technical/Commentary,1,6,32,transliterations/K.11309.atf
+AO.9073,NA,Neo-Assyrian,CANONICAL/Literature/Monologue and dialogue/Scribal,2,40,284,transliterations/AO.9073.atf
+K.12000,NA,Neo-Assyrian,CANONICAL/Literature/Hymns/Divine,1,5,32,transliterations/K.12000.atf
+CBS.1490,NA,Neo-Assyrian,,3,8,59,transliterations/CBS.1490.atf
+BM.41267,NB,Neo-Babylonian,CANONICAL/Literature/Hymns/Divine/Šuʾila,2,19,83,transliterations/BM.41267.atf
+BM.34110,NB,Neo-Babylonian,CANONICAL/Literature/Monologue and dialogue/Proverbs,2,24,321,transliterations/BM.34110.atf
+CBS.1515,NB,Neo-Babylonian,CANONICAL/Literature/Hymns/Divine/Šuʾila,2,34,343,transliterations/CBS.1515.atf
+YBC.3763,NB,Neo-Babylonian,ARCHIVAL,2,15,191,transliterations/YBC.3763.atf
+YBC.4083,NB,Neo-Babylonian,ARCHIVAL,4,23,239,transliterations/YBC.4083.atf
+CBS.1519,NB,Neo-Babylonian,CANONICAL/Literature/Hymns/Divine/Šuʾila,2,42,430,transliterations/CBS.1519.atf
+YBC.3839,NB,Neo-Babylonian,ARCHIVAL,3,20,236,transliterations/YBC.3839.atf
+BM.33762,NB,Late Babylonian,CANONICAL/Technical/Astronomy/Astronomical Diaries,3,10,63,transliterations/BM.33762.atf
+CBS.1505,NB,Neo-Babylonian,,2,35,298,transliterations/CBS.1505.atf
+GCBC.248,NB,Neo-Babylonian,ARCHIVAL,2,7,51,transliterations/GCBC.248.atf
+BM.38272,NB,Neo-Babylonian,CANONICAL/Magic;CANONICAL/Technical/Ritual texts,2,35,245,transliterations/BM.38272.atf
+YBC.4115,NB,Neo-Babylonian,ARCHIVAL,3,22,263,transliterations/YBC.4115.atf
+CBS.1203,NB,Neo-Babylonian,,1,8,213,transliterations/CBS.1203.atf
+BM.38287,NB,Neo-Babylonian,ARCHIVAL/Administrative;CANONICAL/Historiography,2,27,220,transliterations/BM.38287.atf
+YBC.4114,NB,Neo-Babylonian,ARCHIVAL,3,17,170,transliterations/YBC.4114.atf
+NBC.1729,OA,Old Assyrian,ARCHIVAL,3,17,98,transliterations/NBC.1729.atf
+NBC.3666,OA,Old Assyrian,ARCHIVAL,2,9,44,transliterations/NBC.3666.atf
+NBC.1728,OA,Old Assyrian,ARCHIVAL,4,22,108,transliterations/NBC.1728.atf
+HS.352,OA,Old Assyrian,,2,20,82,transliterations/HS.352.atf
+HS.367,OA,Old Assyrian,,2,17,82,transliterations/HS.367.atf
+HS.286,OA,Old Assyrian,,2,18,87,transliterations/HS.286.atf
+NBC.3658,OA,Old Assyrian,ARCHIVAL,3,20,150,transliterations/NBC.3658.atf
+HS.436,OA,Old Assyrian,,2,13,55,transliterations/HS.436.atf
+NBC.3684,OA,Old Assyrian,ARCHIVAL,2,10,44,transliterations/NBC.3684.atf
+NBC.4029,OA,Old Assyrian,ARCHIVAL,3,13,58,transliterations/NBC.4029.atf
+NBC.3669,OA,Old Assyrian,ARCHIVAL,2,13,61,transliterations/NBC.3669.atf
+NBC.3675,OA,Old Assyrian,ARCHIVAL,2,14,55,transliterations/NBC.3675.atf
+HS.284,OA,Old Assyrian,,2,21,92,transliterations/HS.284.atf
+HS.277,OA,Old Assyrian,"ARCHIVAL/Legal/Debt Note, Loan",4,20,83,transliterations/HS.277.atf
+NBC.3673,OA,Old Assyrian,ARCHIVAL,4,19,107,transliterations/NBC.3673.atf
+HS.2020,OB,Old Babylonian,ARCHIVAL/Administrative/Inventories/Balanced Accounts,2,9,37,transliterations/HS.2020.atf
+YBC.5036,OB,Old Babylonian,CANONICAL/Divination/Extispicy,1,16,234,transliterations/YBC.5036.atf
+YBC.4275,OB,Old Babylonian,ARCHIVAL/Legal/Sale,1,15,72,transliterations/YBC.4275.atf
+NBC.5345,OB,Old Babylonian,ARCHIVAL/Letter,3,27,172,transliterations/NBC.5345.atf
+YBC.5056,OB,Old Babylonian,CANONICAL/Divination/Extispicy,1,5,30,transliterations/YBC.5056.atf
+HS.2048,OB,Old Babylonian,ARCHIVAL/Administrative/Inventories/Balanced Accounts,2,12,33,transliterations/HS.2048.atf
+HS.2051,OB,Old Babylonian,ARCHIVAL/Administrative/Inventories/Balanced Accounts,2,11,19,transliterations/HS.2051.atf
+NBC.5298,OB,Old Babylonian,ARCHIVAL/Letter,1,8,68,transliterations/NBC.5298.atf
+YBC.4356,OB,Old Babylonian,"ARCHIVAL/Legal/Transfer of Properties, Other/Inheritance",1,12,45,transliterations/YBC.4356.atf
+YBC.5730,OB,Old Babylonian,ARCHIVAL/Legal/Marriage,1,14,69,transliterations/YBC.5730.atf
+YBC.4590,OB,Old Babylonian,CANONICAL,1,18,66,transliterations/YBC.4590.atf
+YBC.4616,OB,Old Babylonian,CANONICAL,1,28,250,transliterations/YBC.4616.atf
+BM.42260,OB,Old Babylonian,ARCHIVAL/Administrative/Inventories/Balanced Accounts,1,7,43,transliterations/BM.42260.atf
+HS.2091,OB,Old Babylonian,ARCHIVAL/Administrative/Inventories/Balanced Accounts,1,6,21,transliterations/HS.2091.atf
+HS.2022,OB,Old Babylonian,ARCHIVAL/Administrative/Inventories/Balanced Accounts,2,6,21,transliterations/HS.2022.atf

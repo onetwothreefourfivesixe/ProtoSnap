@@ -1,0 +1,578 @@
+                  Training Class Summary                   
+┏━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━┓
+┃ Category  ┃ Class   ┃ Label Index ┃ Merged With ┃ Count ┃
+┡━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━┩
+│ baselines │ default │           2 │             │  4556 │
+│ regions   │ text    │           3 │             │   490 │
+└───────────┴─────────┴─────────────┴─────────────┴───────┘
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+`Trainer(val_check_interval=1.0)` was configured so validation will run at the end of the training epoch..
+Loading from checkpoint /home/edwardlin/venvs/kraken/lib/python3.11/site-packages/kraken/blla.mlmodel.
+You are using a CUDA device ('NVIDIA GeForce RTX 4060') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+[10/14/26 18:49:03] WARNING  Changing baseline location from unset   blla.py:597
+                             to baseline.                                       
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+┏━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┳━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━━┓
+┃   ┃                   ┃         ┃        ┃       ┃        ┃     In ┃     Out ┃
+┃   ┃ Name              ┃ Type    ┃ Params ┃ Mode  ┃  FLOPs ┃  sizes ┃   sizes ┃
+┡━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━╇━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━━┩
+│ 0 │ net               │ TorchV… │  1.3 M │ train │ 77.3 B │ [1, 3, │ [[1, 4, │
+│   │                   │         │        │       │        │  1800, │    450, │
+│   │                   │         │        │       │        │   300] │    75], │
+│   │                   │         │        │       │        │        │    '?'] │
+│ 1 │ net.nn            │ MultiP… │  1.3 M │ train │ 77.3 B │   [[1, │ [[1, 4, │
+│   │                   │         │        │       │        │     3, │    450, │
+│   │                   │         │        │       │        │  1800, │    75], │
+│   │                   │         │        │       │        │  300], │    '?'] │
+│   │                   │         │        │       │        │   '?'] │         │
+│ 2 │ net._aux_layers   │ Module… │      0 │ train │      0 │      ? │       ? │
+│ 3 │ net.criterion     │ BCEWit… │      0 │ train │      0 │      ? │       ? │
+│ 4 │ criterion         │ BCEWit… │      0 │ train │      0 │      ? │       ? │
+│ 5 │ dice              │ SoftDi… │      0 │ train │      0 │      ? │       ? │
+│ 6 │ val_px_accuracy   │ Multil… │      0 │ train │      0 │      ? │       ? │
+│ 7 │ val_mean_accuracy │ Multil… │      0 │ train │      0 │      ? │       ? │
+│ 8 │ val_mean_iu       │ Multil… │      0 │ train │      0 │      ? │       ? │
+│ 9 │ val_freq_iu       │ Multil… │      0 │ train │      0 │      ? │       ? │
+└───┴───────────────────┴─────────┴────────┴───────┴────────┴────────┴─────────┘
+Trainable params: 1.3 M                                                         
+Non-trainable params: 0                                                         
+Total params: 1.3 M                                                             
+Total estimated model params size (MB): 5                                       
+Modules in train mode: 44                                                       
+Modules in eval mode: 0                                                         
+Total FLOPs: 77.3 B                                                             
+stage 0/∞ ━━━━━━━━━━━━ 490/490 0:09:30 •    1.00it/s train_loss_s… early_stoppi…
+                               0:00:00               0.389         0/10 0.34487 
+                                                     val_accuracy:              
+                                                     0.998                      
+                                                     val_mean_acc:              
+                                                     0.998                      
+                                                     val_mean_iu:               
+                                                     0.345                      
+                                                     val_freq_iu:               
+                                                     0.994                      
+                                                     val_bl_f1:                 
+                                                     0.051                      
+                                                     train_loss_e…              
+                                                     0.426                      
+stage 1/∞ ━━━━━━━━━━━━ 490/490 0:09:41 •    1.29it/s train_loss_s… early_stoppi…
+                               0:00:00               0.354         0/10 0.35191 
+                                                     val_accuracy:              
+                                                     0.998                      
+                                                     val_mean_acc:              
+                                                     0.998                      
+                                                     val_mean_iu:               
+                                                     0.352                      
+                                                     val_freq_iu:               
+                                                     0.994                      
+                                                     val_bl_f1:                 
+                                                     0.387                      
+                                                     train_loss_e…              
+                                                     0.400                      
+stage 2/∞ ━━━━━━━━━━━━ 490/490 0:09:36 •    0.79it/s train_loss_s… early_stoppi…
+                               0:00:00               0.380         0/10 0.35701 
+                                                     val_accuracy:              
+                                                     0.998                      
+                                                     val_mean_acc:              
+                                                     0.998                      
+                                                     val_mean_iu:               
+                                                     0.357                      
+                                                     val_freq_iu:               
+                                                     0.996                      
+                                                     val_bl_f1:                 
+                                                     0.399                      
+                                                     train_loss_e…              
+                                                     0.394                      
+stage 3/∞ ━━━━━━━━━━━━ 490/490 0:09:41 •    0.79it/s train_loss_s… early_stoppi…
+                               0:00:00               0.416         0/10 0.35887 
+                                                     val_accuracy:              
+                                                     0.998                      
+                                                     val_mean_acc:              
+                                                     0.998                      
+                                                     val_mean_iu:               
+                                                     0.359                      
+                                                     val_freq_iu:               
+                                                     0.996                      
+                                                     val_bl_f1:                 
+                                                     0.390                      
+                                                     train_loss_e…              
+                                                     0.389                      
+stage 4/∞ ━━━━━━━━━━━━ 490/490 0:09:38 •    0.74it/s train_loss_s… early_stoppi…
+                               0:00:00               0.414         0/10 0.36004 
+                                                     val_accuracy:              
+                                                     0.998                      
+                                                     val_mean_acc:              
+                                                     0.998                      
+                                                     val_mean_iu:               
+                                                     0.360                      
+                                                     val_freq_iu:               
+                                                     0.995                      
+                                                     val_bl_f1:                 
+                                                     0.356                      
+                                                     train_loss_e…              
+                                                     0.385                      
+stage 5/∞ ━━━━━━━━━━━━ 490/490 0:09:31 •    0.75it/s train_loss_s… early_stoppi…
+                               0:00:00               0.381         1/10 0.36004 
+                                                     val_accuracy:              
+                                                     0.999                      
+                                                     val_mean_acc:              
+                                                     0.999                      
+                                                     val_mean_iu:               
+                                                     0.359                      
+                                                     val_freq_iu:               
+                                                     0.998                      
+                                                     val_bl_f1:                 
+                                                     0.374                      
+                                                     train_loss_e…              
+                                                     0.381                      
+stage 6/∞ ━━━━━━━━━━━━ 490/490 0:09:32 •    0.87it/s train_loss_s… early_stoppi…
+                               0:00:00               0.382         2/10 0.36004 
+                                                     val_accuracy:              
+                                                     0.999                      
+                                                     val_mean_acc:              
+                                                     0.999                      
+                                                     val_mean_iu:               
+                                                     0.360                      
+                                                     val_freq_iu:               
+                                                     0.998                      
+                                                     val_bl_f1:                 
+                                                     0.463                      
+                                                     train_loss_e…              
+                                                     0.379                      
+stage 7/∞ ━━━━━━━━━━━━ 490/490 0:09:32 •    0.74it/s train_loss_s… early_stoppi…
+                               0:00:00               0.370         3/10 0.36004 
+                                                     val_accuracy:              
+                                                     0.998                      
+                                                     val_mean_acc:              
+                                                     0.998                      
+                                                     val_mean_iu:               
+                                                     0.356                      
+                                                     val_freq_iu:               
+                                                     0.994                      
+                                                     val_bl_f1:                 
+                                                     0.429                      
+                                                     train_loss_e…              
+                                                     0.375                      
+stage 8/∞ ━━━━━━━━━━━━ 490/490 0:09:37 •    1.31it/s train_loss_s… early_stoppi…
+                               0:00:00               0.458         0/10 0.36174 
+                                                     val_accuracy:              
+                                                     0.999                      
+                                                     val_mean_acc:              
+                                                     0.999                      
+                                                     val_mean_iu:               
+                                                     0.362                      
+                                                     val_freq_iu:               
+                                                     0.998                      
+                                                     val_bl_f1:                 
+                                                     0.495                      
+                                                     train_loss_e…              
+                                                     0.375                      
+stage 9/∞ ━━━━━━━━━━━━ 490/490 0:09:43 •    0.71it/s train_loss_s… early_stoppi…
+                               0:00:00               0.377         0/10 0.36443 
+                                                     val_accuracy:              
+                                                     0.999                      
+                                                     val_mean_acc:              
+                                                     0.999                      
+                                                     val_mean_iu:               
+                                                     0.364                      
+                                                     val_freq_iu:               
+                                                     0.997                      
+                                                     val_bl_f1:                 
+                                                     0.506                      
+                                                     train_loss_e…              
+                                                     0.372                      
+stage 10/∞ ━━━━━━━━━━━━ 490/490 0:10:06 •    0.87it/s train_loss_… early_stoppi…
+                                0:00:00               0.374        0/10 0.36638 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.366                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.484                     
+                                                      train_loss_…              
+                                                      0.370                     
+stage 11/∞ ━━━━━━━━━━━━ 490/490 0:09:47 •    0.84it/s train_loss_… early_stoppi…
+                                0:00:00               0.409        1/10 0.36638 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.365                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.506                     
+                                                      train_loss_…              
+                                                      0.370                     
+stage 12/∞ ━━━━━━━━━━━━ 490/490 0:09:48 •    1.25it/s train_loss_… early_stoppi…
+                                0:00:00               0.323        0/10 0.36746 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.367                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.496                     
+                                                      train_loss_…              
+                                                      0.369                     
+stage 13/∞ ━━━━━━━━━━━━ 490/490 0:09:36 •    1.68it/s train_loss_… early_stoppi…
+                                0:00:00               0.378        1/10 0.36746 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.366                     
+                                                      val_freq_iu:              
+                                                      0.997                     
+                                                      val_bl_f1:                
+                                                      0.541                     
+                                                      train_loss_…              
+                                                      0.367                     
+stage 14/∞ ━━━━━━━━━━━━ 490/490 0:09:16 •    0.77it/s train_loss_… early_stoppi…
+                                0:00:00               0.398        0/10 0.36930 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.369                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.584                     
+                                                      train_loss_…              
+                                                      0.364                     
+stage 15/∞ ━━━━━━━━━━━━ 490/490 0:09:12 •    1.24it/s train_loss_… early_stoppi…
+                                0:00:00               0.365        0/10 0.36933 
+                                                      val_accurac…              
+                                                      0.998                     
+                                                      val_mean_ac…              
+                                                      0.998                     
+                                                      val_mean_iu:              
+                                                      0.369                     
+                                                      val_freq_iu:              
+                                                      0.997                     
+                                                      val_bl_f1:                
+                                                      0.551                     
+                                                      train_loss_…              
+                                                      0.365                     
+stage 16/∞ ━━━━━━━━━━━━ 490/490 0:09:11 •    0.67it/s train_loss_… early_stoppi…
+                                0:00:00               0.348        1/10 0.36933 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.368                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.534                     
+                                                      train_loss_…              
+                                                      0.363                     
+stage 17/∞ ━━━━━━━━━━━━ 490/490 0:09:11 •    0.85it/s train_loss_… early_stoppi…
+                                0:00:00               0.374        0/10 0.36960 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.370                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.570                     
+                                                      train_loss_…              
+                                                      0.362                     
+stage 18/∞ ━━━━━━━━━━━━ 490/490 0:09:13 •    0.87it/s train_loss_… early_stoppi…
+                                0:00:00               0.364        0/10 0.36989 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.370                     
+                                                      val_freq_iu:              
+                                                      0.997                     
+                                                      val_bl_f1:                
+                                                      0.555                     
+                                                      train_loss_…              
+                                                      0.358                     
+stage 19/∞ ━━━━━━━━━━━━ 490/490 0:09:24 •    1.26it/s train_loss_… early_stoppi…
+                                0:00:00               0.331        1/10 0.36989 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.370                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.571                     
+                                                      train_loss_…              
+                                                      0.358                     
+stage 20/∞ ━━━━━━━━━━━━ 490/490 0:09:16 •    1.20it/s train_loss_… early_stoppi…
+                                0:00:00               0.325        2/10 0.36989 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.368                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.579                     
+                                                      train_loss_…              
+                                                      0.357                     
+stage 21/∞ ━━━━━━━━━━━━ 490/490 0:09:15 •    1.54it/s train_loss_… early_stoppi…
+                                0:00:00               0.365        3/10 0.36989 
+                                                      val_accurac…              
+                                                      0.998                     
+                                                      val_mean_ac…              
+                                                      0.998                     
+                                                      val_mean_iu:              
+                                                      0.369                     
+                                                      val_freq_iu:              
+                                                      0.995                     
+                                                      val_bl_f1:                
+                                                      0.550                     
+                                                      train_loss_…              
+                                                      0.355                     
+stage 22/∞ ━━━━━━━━━━━━ 490/490 0:09:06 •    0.69it/s train_loss_… early_stoppi…
+                                0:00:00               0.381        4/10 0.36989 
+                                                      val_accurac…              
+                                                      0.998                     
+                                                      val_mean_ac…              
+                                                      0.998                     
+                                                      val_mean_iu:              
+                                                      0.369                     
+                                                      val_freq_iu:              
+                                                      0.996                     
+                                                      val_bl_f1:                
+                                                      0.568                     
+                                                      train_loss_…              
+                                                      0.353                     
+stage 23/∞ ━━━━━━━━━━━━ 490/490 0:09:14 •    1.25it/s train_loss_… early_stoppi…
+                                0:00:00               0.316        5/10 0.36989 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.367                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.571                     
+                                                      train_loss_…              
+                                                      0.353                     
+stage 24/∞ ━━━━━━━━━━━━ 490/490 0:09:08 •    1.06it/s train_loss_… early_stoppi…
+                                0:00:00               0.369        6/10 0.36989 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.368                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.561                     
+                                                      train_loss_…              
+                                                      0.350                     
+stage 25/∞ ━━━━━━━━━━━━ 490/490 0:09:11 •    0.87it/s train_loss_… early_stoppi…
+                                0:00:00               0.430        7/10 0.36989 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.368                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.541                     
+                                                      train_loss_…              
+                                                      0.352                     
+stage 26/∞ ━━━━━━━━━━━━ 490/490 0:09:19 •    1.21it/s train_loss_… early_stoppi…
+                                0:00:00               0.308        8/10 0.36989 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.367                     
+                                                      val_freq_iu:              
+                                                      0.997                     
+                                                      val_bl_f1:                
+                                                      0.569                     
+                                                      train_loss_…              
+                                                      0.348                     
+stage 27/∞ ━━━━━━━━━━━━ 490/490 0:09:14 •    0.71it/s train_loss_… early_stoppi…
+                                0:00:00               0.408        0/10 0.37130 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.371                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.558                     
+                                                      train_loss_…              
+                                                      0.346                     
+stage 28/∞ ━━━━━━━━━━━━ 490/490 0:09:01 •    0.85it/s train_loss_… early_stoppi…
+                                0:00:00               0.348        1/10 0.37130 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.368                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.582                     
+                                                      train_loss_…              
+                                                      0.344                     
+stage 29/∞ ━━━━━━━━━━━━ 490/490 0:09:10 •    1.34it/s train_loss_… early_stoppi…
+                                0:00:00               0.335        2/10 0.37130 
+                                                      val_accurac…              
+                                                      0.997                     
+                                                      val_mean_ac…              
+                                                      0.997                     
+                                                      val_mean_iu:              
+                                                      0.367                     
+                                                      val_freq_iu:              
+                                                      0.993                     
+                                                      val_bl_f1:                
+                                                      0.557                     
+                                                      train_loss_…              
+                                                      0.346                     
+stage 30/∞ ━━━━━━━━━━━━ 490/490 0:09:13 •    1.33it/s train_loss_… early_stoppi…
+                                0:00:00               0.438        3/10 0.37130 
+                                                      val_accurac…              
+                                                      0.998                     
+                                                      val_mean_ac…              
+                                                      0.998                     
+                                                      val_mean_iu:              
+                                                      0.367                     
+                                                      val_freq_iu:              
+                                                      0.996                     
+                                                      val_bl_f1:                
+                                                      0.566                     
+                                                      train_loss_…              
+                                                      0.344                     
+stage 31/∞ ━━━━━━━━━━━━ 490/490 0:09:07 •    0.86it/s train_loss_… early_stoppi…
+                                0:00:00               0.386        4/10 0.37130 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.371                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.582                     
+                                                      train_loss_…              
+                                                      0.341                     
+stage 32/∞ ━━━━━━━━━━━━ 490/490 0:09:01 •    1.27it/s train_loss_… early_stoppi…
+                                0:00:00               0.355        5/10 0.37130 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.365                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.583                     
+                                                      train_loss_…              
+                                                      0.342                     
+stage 33/∞ ━━━━━━━━━━━━ 490/490 0:08:59 •    1.06it/s train_loss_… early_stoppi…
+                                0:00:00               0.257        6/10 0.37130 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.367                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.579                     
+                                                      train_loss_…              
+                                                      0.338                     
+stage 34/∞ ━━━━━━━━━━━━ 490/490 0:09:06 •    0.41it/s train_loss_… early_stoppi…
+                                0:00:00               0.304        7/10 0.37130 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.367                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.581                     
+                                                      train_loss_…              
+                                                      0.339                     
+stage 35/∞ ━━━━━━━━━━━━ 490/490 0:09:06 •    0.70it/s train_loss_… early_stoppi…
+                                0:00:00               0.306        8/10 0.37130 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.367                     
+                                                      val_freq_iu:              
+                                                      0.997                     
+                                                      val_bl_f1:                
+                                                      0.604                     
+                                                      train_loss_…              
+                                                      0.335                     
+stage 36/∞ ━━━━━━━━━━━━ 490/490 0:08:57 •    1.84it/s train_loss_… early_stoppi…
+                                0:00:00               0.308        9/10 0.37130 
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.369                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.588                     
+                                                      train_loss_…              
+                                                      0.335                     
+stage 37/∞ ━━━━━━━━━━━━ 490/490 0:08:57 •    1.41it/s train_loss_… early_stoppi…
+                                0:00:00               0.246        10/10 0.37130
+                                                      val_accurac…              
+                                                      0.999                     
+                                                      val_mean_ac…              
+                                                      0.999                     
+                                                      val_mean_iu:              
+                                                      0.367                     
+                                                      val_freq_iu:              
+                                                      0.998                     
+                                                      val_bl_f1:                
+                                                      0.566                     
+                                                      train_loss_…              
+                                                      0.333                     
+Converting best model /mnt/d/github/ProtoSnap/weights/kraken/blla_cuneiform/checkpoint_27-0.3713.ckpt (score: 0.3713) to weights /mnt/d/github/ProtoSnap/weights/kraken/blla_cuneiform/best_0.3713.safetensors

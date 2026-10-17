@@ -1,6 +1,7 @@
 """Score the line model against hand-drawn text-line annotations (Dencker et al. 2020, Heidelberg Neo-Assyrian set).
 
   python -m line_cropping.eval.evaluate_heidelberg --weights weights/linemodel/run2/model.pt [--render 6] [--out <dir>]
+  python -m line_cropping.eval.evaluate_heidelberg --segments <dir>/<method>_segments --out <dir>    # another model's lines
 
 Data: data/heidelberg/line_annotations_{train,test}.csv (one row per polyline point: line_idx, x, y, segm_idx,
 tablet_CDLI; coordinates in the face crop) and tablet_segments_{train,test}.csv (each face's box in the composite
@@ -93,22 +94,25 @@ def truth_lines(polys, M):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--weights', required=True)
+    ap.add_argument('--weights', default=None, help='line model checkpoint (predicts on the fly)')
+    ap.add_argument('--segments', default=None, help='instead of --weights: folder of <face>.csv segment files (ax0, ay0, ax1, ay1) from another model')
     ap.add_argument('--out', default=None, help='default: tablet_data/heidelberg/eval_<run>')
     ap.add_argument('--tol', type=float, default=0.35)
     ap.add_argument('--render', type=int, default=6)
     ap.add_argument('--long-side', type=int, default=1024)
     a = ap.parse_args()
-    run = os.path.basename(os.path.dirname(a.weights))
+    if not a.weights and not a.segments:
+        raise SystemExit('give --weights or --segments')
+    run = os.path.basename(os.path.dirname(a.weights)) if a.weights else os.path.basename(os.path.normpath(a.segments))
     out = a.out or os.path.join(OUT_DATA, f'eval_{run}')
     os.makedirs(os.path.join(out, 'renders'), exist_ok=True)
     os.makedirs(os.path.join(OUT_DATA, 'faces'), exist_ok=True)
-    cfgp = os.path.join(os.path.dirname(a.weights), 'config.json')
-    cfg = json.load(open(cfgp)) if os.path.exists(cfgp) else {}
+    cfgp = os.path.join(os.path.dirname(a.weights), 'config.json') if a.weights else ''
+    cfg = json.load(open(cfgp)) if cfgp and os.path.exists(cfgp) else {}
     ro = {k: cfg.get(k, d) for k, d in (('kernel_thr', 0.5), ('band_thr', 0.4), ('min_area', 12), ('max_reach', 1.5), ('max_dev', 45.0),
                                          ('merge_dy', 0.5), ('end_thr', 0.2), ('max_ext', 3.0), ('clip_tablet', 1))}
     dev = 'cuda' if torch.cuda.is_available() else 'cpu'
-    model = load_model(a.weights, dev)
+    model = load_model(a.weights, dev) if a.weights else None
     faces = load_faces()
     rows, line_rows, skipped, renders = [], [], [], 0
     for f in faces:
@@ -120,10 +124,16 @@ def main():
         crop = im[max(0, y0):y1, max(0, x0):x1]
         cv2.imwrite(os.path.join(OUT_DATA, 'faces', f['face'] + '.jpg'), crop, [cv2.IMWRITE_JPEG_QUALITY, 95])
         H, W = crop.shape[:2]
-        maps, s = predict_face(model, crop, dev, a.long_side)
-        tab = tablet_mask_for(crop, maps.shape, s) if ro['clip_tablet'] else None
-        segs = read_lines(maps, s, ro['kernel_thr'], ro['band_thr'], ro['min_area'], ro['max_reach'], ro['max_dev'], ro['merge_dy'],
-                          ro['end_thr'], ro['max_ext'], tab)
+        if model is not None:
+            maps, s = predict_face(model, crop, dev, a.long_side)
+            tab = tablet_mask_for(crop, maps.shape, s) if ro['clip_tablet'] else None
+            segs = read_lines(maps, s, ro['kernel_thr'], ro['band_thr'], ro['min_area'], ro['max_reach'], ro['max_dev'], ro['merge_dy'],
+                              ro['end_thr'], ro['max_ext'], tab)
+        else:
+            sp = os.path.join(a.segments, f['face'] + '.csv')
+            if not os.path.exists(sp):     # the other model was not run on this face (e.g. test faces only)
+                continue
+            segs = [{k: float(v) for k, v in r.items() if k in ('ax0', 'ay0', 'ax1', 'ay1')} for r in csv.DictReader(open(sp))]
         # frame: rotate by the median angle of the truth lines (end to end)
         angs = [np.degrees(np.arctan2(p[-1, 1] - p[0, 1], p[-1, 0] - p[0, 0])) for p in f['polys'] if len(p) >= 2]
         ang = float(np.median(angs)) if angs else 0.0
@@ -184,7 +194,7 @@ def main():
                     covered_median=float(cov.median()), covered_ge_95=float((cov >= 0.95).mean()),
                     short_right_median_pitch=float(pd.to_numeric(mt.short_right_pitch).median()), short_left_median_pitch=float(pd.to_numeric(mt.short_left_pitch).median()),
                     overshoot_right_median_pitch=float(pd.to_numeric(mt.overshoot_right_pitch).median()), overshoot_left_median_pitch=float(pd.to_numeric(mt.overshoot_left_pitch).median()))
-    summary = dict(weights=a.weights, readout=ro, skipped_no_image=skipped, all=summ(R, Lr),
+    summary = dict(weights=a.weights or a.segments, readout=ro if a.weights else None, skipped_no_image=skipped, all=summ(R, Lr),
                    **{s: summ(R[R.split == s], Lr[Lr.split == s]) for s in ('train', 'test') if (R.split == s).any()})
     json.dump(summary, open(os.path.join(out, 'summary.json'), 'w'), indent=1)
     print(f"{len(rows)} faces scored ({len(skipped)} skipped, no photograph: {', '.join(skipped)})")
