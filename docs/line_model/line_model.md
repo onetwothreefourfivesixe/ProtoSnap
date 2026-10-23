@@ -214,7 +214,8 @@ below, with half a pitch of margin beyond the line's ends. Options, each tested 
 |---|---|---|
 | line ends from the fading band (`infer.py --end-thr 0.2 --clip-tablet 1`) | fewer lines cut short at the right end, fewer crops running into the background | on |
 | `--rotate-per-line` | each line cut in its own frame, rotated by its own angle (within 20 degrees of the face's) | off |
-| `--overlap 0.15` | neighbouring crops share 0.15 pitch of rows, never past the neighbour's band, so tall signs are not clipped | off (recommended) |
+| `--extend 0.2` | every crop boundary moves out by 0.2 pitch, uncapped: 98% of a line's signs inside instead of 81%, two thirds of lines whole, for a strip of the neighbours' signs (Appendix A.8) | off (recommended where neighbour content is tolerated) |
+| `--overlap 0.15` | neighbouring crops share 0.15 pitch of rows, never past the neighbour's band, so tall signs are not clipped | off |
 | `--trim-background` | crop ends trimmed back to the edge of the clay | off (for uses where any background is worse than a slightly cut line) |
 
 ![Face-level deskew versus per-line rotation on HS.2450](img/crops_rotation.jpg)
@@ -341,6 +342,13 @@ examples and the literature search are in `related_work.md`.
   faces, re-running only the read-out on stored maps, would tune them in minutes.
 - **Truth fitted from sign boxes.** eBL lines are straight and occasionally wrong (Figure 8); the hand-drawn lines are
   the only truth without this limit and cover one script.
+- **Crop height.** The signs of a line, by their eBL boxes, reach past the top and bottom of its crop on most lines
+  (84 and 93 percent of 944 export crops), because neighbouring lines interlock; ends are rarely cut. A pilot that fitted
+  ProtoSnap skeletons to every sign of 40 lines confirmed the direction but proved too unreliable on signs in context to
+  measure it (Appendix A.6). Line-shaped crops that bend around signs keep no more of a line than rectangles at the same
+  leakage of the neighbours' signs (Appendix A.7): the real choice is crop height. Calibrated on the eBL boxes, extending
+  crops 0.15-0.2 line spacings past the midpoint keeps 98-99 percent of a line's signs in every script
+  (`make_crops --extend 0.2`, Appendix A.8).
 
 ![A worn face with spurious detections, HS.2050](img/failure_HS2050.jpg)
 
@@ -866,6 +874,160 @@ These figures supersede the two tables above, which used the damaged face list.
 
 Run 3 is the better model for Neo-Assyrian, Neo-Babylonian and small faces and run 2 for Old Assyrian and Old
 Babylonian, with no overall winner. The stored outputs (A.3, "Moving the stored outputs") stay on run 2.
+
+### A.6 Pilot: rebuilding lines from ProtoSnap sign fits (19-20 Oct 2026)
+
+**Question.** If each annotated sign's font skeleton is fitted to the photograph with ProtoSnap, and a line's fitted
+skeletons are joined into its **wedge envelope**, does the envelope show where the crops cut writing off or waste space,
+and so how to improve the crops?
+
+**Method.** 40 lines from the 60-tablet export (test split): 20 Old Babylonian (Santakku font) and 20 Neo-Assyrian
+(Assurbanipal), each with at least 6 annotated signs of which at least 80 percent have a skeleton; at most two lines
+per tablet. Neo-Babylonian (skeletons for 4 percent of signs) and Old Assyrian (no font) could not be included. Each
+of the 357 signs was cut from the deskewed face around its eBL box with 30 percent padding, so a skeleton could reach
+past the box and past the crop, and fitted with the unchanged ProtoSnap (`run_test.py`, about 58 seconds per sign,
+6.5 hours in all). Fits with a ProtoSnap score below 0.5 were left out; the envelope is the 2.5th-97.5th percentile of
+the kept wedge points. Code: `line_cropping/protosnap/line_envelope_prep.py` and `line_envelope_analyze.py`; results in
+`tablet_data/protosnap_inputs/envelope_pilot/analysis/`.
+
+| result | value |
+|---|---|
+| fits with score >= 0.5 | 162 of 357 (45%); median score 0.49 |
+| lines with at least one kept fit | 36 of 40 |
+| kept skeleton extent / eBL box, width and height (median) | 1.07 / 0.96 |
+| lines whose wedges reach past the crop's top / bottom | 75% / 78%, by a median 0.18 / 0.17 pitch |
+| lines whose wedges reach past the crop's left / right end | 6% / 0% |
+| crop height / wedge envelope height (median) | 1.11 / 1.45 pitch |
+| slant of the line through the sign centres in the crop, bend from straight (median) | 1.5 degrees, 0.16 pitch |
+| share of other lines' eBL box area inside a crop (median) | 13% |
+
+The same question asked of the eBL boxes alone, on all 944 export crops with a known line spacing: the boxes of a
+line reach past its crop's top on 84 percent of lines and past the bottom on 93 percent (median 0.19 and 0.31 pitch),
+in every script; boxes are a median 1.19 pitch tall against crops of 1.03 pitch.
+
+![ProtoSnap fits joined into line envelopes](img/protosnap_envelopes.jpg)
+
+*Figure A8. Four pilot lines: crop in red, eBL boxes in grey, kept fits in green, fits below the score threshold in
+orange, envelope of the kept wedges in cyan. On K.4003 almost every fit failed; on NBC.5345 the kept fits follow the
+signs, and their tall vertical wedges run below the crop.*
+
+**What this means.**
+- **ProtoSnap is not a reliable wedge locator for signs in their line.** More than half of the fits failed the score
+  threshold, and the failures are visible: skeletons sprawl over neighbouring signs (orange in Figure A8). ProtoSnap
+  was built for a single, centred sign; a padded box on a tablet always holds parts of the neighbours.
+- **The kept fits largely reproduce the eBL boxes** (extent ratio about 1), because the target is cut around the box
+  and the skeleton is fitted inside it. So the envelope is not independent evidence of where the wedges are; at this
+  quality it says little that the boxes do not.
+- **The boxes themselves give the useful answer, at no cost:** writing reaches past the top and bottom of the crops on
+  most lines in every script, and hardly ever past the ends. Gap-bounded crops of about one line spacing are shorter
+  than the signs (about 1.2 spacings tall), because signs of neighbouring lines interlock vertically. The crops' weak
+  point is height, not width; slant (1.5 degrees) and bend (0.16 pitch) are small.
+- **Next steps for the crops, without ProtoSnap:** use the 150,000 eBL boxes directly to choose crop height and
+  overlap, measuring for each setting how many of a line's boxes it contains against how much of the neighbouring
+  lines' boxes it takes in (Test 4 did this with the predicted bands; the boxes are the closer measure of the writing);
+  and consider line-shaped crops that follow the line's band and mask the neighbours, instead of rectangles. If
+  ProtoSnap is used again, tighter targets (smaller padding) or fitting a whole line's signs jointly would be needed
+  before its envelopes can be trusted.
+
+### A.7 Line-shaped crops (20-21 Oct 2026)
+
+**Question.** A.6 found that the signs of a line reach past the top and bottom of its rectangular crop on most lines,
+because signs of neighbouring lines interlock. Can crops shaped to the line, bending around tall signs, hold more of
+their own line without taking in more of the neighbours?
+
+**Method.** `crops/seam_crops.py` replaces the straight boundary between two lines with a **seam**: the left-to-right
+path through the deskewed face that crosses the least writing (smoothed image gradient), found by dynamic programming,
+kept at least 0.2 pitch from both line centres and pulled gently towards the midpoint over blank clay. A line's crop is
+the region between its two seams, from its start to its end plus half a pitch; pixels outside the region are filled with
+the clay's colour, and the mask and seams are saved. Judged with `eval/box_containment.py` on the 436 test faces with
+coverage >= 0.9 (3,831 lines), using the eBL sign boxes: the share of a line's box area inside its crop, and the share
+of the box area inside a crop that belongs to other lines. Because eBL boxes are loose (A.6), line-shaped crops were also
+widened by a band shared with the neighbours (0.1-0.2 pitch beyond each seam), the counterpart of the rectangles'
+`--overlap`, so the two shapes can be compared at equal leakage.
+
+| crops (run 2 lines, test faces) | other lines' signs in crop (median) | own signs inside (median) | lines >= 90% inside | lines >= 95% inside | image per line |
+|---|---|---|---|---|---|
+| rectangles | 5% | 81% | 23% | 12% | 1.01 |
+| line-shaped, strict | 6% | 83% | 23% | 11% | 1.06 |
+| rectangles, overlap 0.15 | 10% | 90% | 48% | 29% | 1.18 |
+| line-shaped + 0.1 shared band | 11% | 92% | 56% | 31% | 1.25 |
+| line-shaped + 0.15 | 15% | 95% | 73% | 48% | 1.34 |
+| line-shaped + 0.2 | 19% | 97% | 84% | 64% | 1.44 |
+
+![Crop shape trade-off](img/crop_shape_tradeoff.png)
+
+*Figure A9. What a crop keeps of its own line against how much of the other lines it lets in, for rectangles and
+line-shaped crops. The two shapes lie on one curve.*
+
+**What this means.**
+- **The shape adds almost nothing.** The seams do bend (about a sixth of each seam's length lies more than 0.15 pitch
+  off a straight line), and line by line they help 21 percent of lines by more than five points and hurt 12 percent;
+  but at equal leakage of the neighbours' signs, line-shaped crops keep the same share of their own line as rectangles.
+- **Height is the trade-off.** Every gain in a line's own signs is paid for in the neighbours' signs, in either shape:
+  from 81 percent of a line's signs kept at 5 percent foreign, to 97 percent at 19 percent foreign.
+- **What line-shaped crops do offer** is masking (the clay outside the region is blanked, so a downstream model does
+  not see the neighbours' strokes outside the band) and a smooth way to go beyond the rectangles' 0.15 overlap, which is
+  capped at the neighbour's band edge (A.2, Test 4).
+- **The measure has a limit:** loose, overlapping eBL boxes make any strict boundary cut some boxes, so the strict
+  versions of both shapes look worse than the writing itself would. A tighter measure of where the wedges are would be
+  needed to see whether bending pays off where signs truly interlock.
+- **Choice of setting** is a downstream question: how much of the neighbouring line a reader (ProtoSnap, an OCR model)
+  tolerates for whole signs. The sign-box calibration proposed in A.6 would map this curve per script.
+
+### A.8 Crop height calibrated on the eBL sign boxes (21 Oct 2026)
+
+**Question.** A.6 and A.7 showed that crops are too short for the signs and that shape matters little: the choice is
+height. How tall should a crop be, per script, to hold its line's signs without taking in too much of the neighbours?
+
+**Method.** `eval/height_calibration.py` sweeps crop height and scores each setting with the eBL sign boxes: the share
+of a line's box area inside its crop, and the share of a crop's box area that belongs to other lines. Overlaps are
+computed exactly per box and column. Two sweeps on single-column faces with coverage >= 0.9: around the **truth lines**
+(all such faces, 790, 7,620 lines), with the crop at the line centre +- h line spacings; and around the **line model's
+lines** (run 2, 390 test faces, 3,778 lines), from the midpoint to each neighbour (today's crops) extended by e line
+spacings, without the band-edge cap of `--overlap`. The chosen setting was then built with the new `make_crops --extend`
+and scored with `eval/box_containment.py`, and 30 random lines were inspected side by side
+(`report/crop_height_samples.py`, output in `tablet_data/ebl_tablets/linemodel/crop_height_samples/`).
+
+| around the model's lines: extension e beyond the midpoint | own signs inside (median) | lines >= 95% inside | other lines' signs in crop (median) | crop holds half of another line |
+|---|---|---|---|---|
+| 0 (today) | 85% | 16% | 14% | 8.9% |
+| 0.1 | 95% | 49% | 22% | 9.6% |
+| **0.15** | **98%** | **67%** | **27%** | **10.2%** |
+| **0.2** | **99%** | **78%** | **31%** | **10.9%** |
+| 0.25 | 100% | 85% | 34% | 12.1% |
+| 0.3 | 100% | 88% | 38% | 15.3% |
+| 0.4 | 100% | 90% | 44% | 35.3% |
+
+Around the truth lines, a half-height of 0.5 line spacings (the midpoint) keeps 87 percent of a line's signs, 0.6 keeps
+97 percent and 0.65 keeps 99 percent with 77 percent of lines whole; crops start to hold half of a neighbour beyond
+about 0.75.
+
+![Crop height calibration per script](img/height_calibration.png)
+
+*Figure A10. Lines with at least 95 percent of their signs inside the crop against the other lines' share of the crop,
+per script, around the model's lines (left) and the truth lines (right).*
+
+**Check with real crops** (`make_crops --extend 0.2`, 436 test faces, 3,831 lines; this measure counts overlapping boxes
+once, so its foreign shares are lower than the calibration's):
+
+| crops | own signs inside (median) | lines >= 95% inside | other lines' signs in crop (median) | crop holds half of another line | image per line |
+|---|---|---|---|---|---|
+| today (gap-bounded) | 81% | 12% | 5% | 9.1% | 1.01 |
+| `--overlap 0.15` | 90% | 29% | 10% | 9.4% | 1.18 |
+| **`--extend 0.2`** | **98%** | **67%** | **19%** | **10.6%** | 1.41 |
+
+**What this means.**
+- **The signs of a line occupy about +-0.6 to 0.7 line spacings around its centre**, in every script: around the truth
+  lines the four scripts' curves nearly coincide. Today's crops stop at the midpoint (+-0.5) and so cut the tops and
+  bottoms of most lines' signs.
+- **Extending crops 0.15 to 0.2 line spacings beyond the midpoint** keeps 98 to 99 percent of a line's signs and makes
+  two thirds to three quarters of lines whole, for a strip of the neighbours' signs along the top and bottom edges.
+  Up to that point, crops holding half of another line stay near the level caused by the model's missed or merged lines
+  (about 9 percent, highest on Neo-Assyrian); from 0.3 it rises fast, so 0.25 is the upper limit.
+- **One setting serves every script.** Neo-Assyrian trails only around the model's lines, because of the model's line
+  errors on that script, not because its writing is taller.
+- **The setting is now an option** (`make_crops --extend 0.2`). Whether to use it is a downstream choice: a reader that
+  tolerates part of the neighbouring lines (or masks them) gains whole signs on most lines.
 
 ## Sources
 

@@ -6,7 +6,8 @@ it, and the crop runs from the midpoint of the gap to the line above to the midp
 restores the fixed strip (centre +- (0.5 + pad) x pitch). `--overlap f` lets neighbouring crops share f pitch beyond
 each boundary, capped at the edge of the neighbour's band (`--overlap-into g` lets it reach g of that band's height
 past the edge, for interlocking lines), so tall signs and slightly slanted lines are not clipped
-while no crop takes in half of the next line.
+while no crop takes in half of the next line. `--extend e` moves every boundary out by e pitch without that cap
+(0.15-0.2 recommended by the sign-box calibration, eval/height_calibration.py).
 
   python -m line_cropping.crops.make_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions --method det_n --out tablet_data/ebl_tablets/line_crops
 
@@ -155,6 +156,7 @@ def main():
     ap.add_argument('--bounds', choices=['gap', 'segments', 'midpoint', 'band'], default='gap', help="gap: from the gap above the line to the gap below, found from detector boxes; segments: from the predicted bands of the line model (<pred>/<method>_segments); midpoint: halfway between consecutive line centres (no boxes needed); band: centre +- (0.5+pad) pitch")
     ap.add_argument('--overlap', type=float, default=0.0, help='neighbouring crops share this many pitches beyond each boundary between lines, capped at the edge of the neighbour\'s band (see --overlap-into) so no crop takes in half of the next line (gap, segments and midpoint bounds; 0 = no overlap)')
     ap.add_argument('--overlap-into', type=float, default=0.0, help='with --overlap: how far past the edge of the neighbour\'s band a crop may reach, as a share of that band\'s height (0 = up to the edge; 0.25 = its outer quarter, for interlocking lines; clamped below 0.5)')
+    ap.add_argument('--extend', type=float, default=0.0, help='move every top and bottom boundary outward by this many pitches, with no cap (calibrated on the eBL sign boxes: 0.15-0.2 keeps 98-99%% of a line\'s signs, eval/height_calibration.py; --overlap is capped at the neighbour\'s band edge)')
     ap.add_argument('--trim-background', action='store_true', help='after adding the margin, trim each crop\'s left and right edges back to the edge of the clay')
     ap.add_argument('--rotate-per-line', action='store_true', help='with --bounds segments: cut each line in its own frame, rotated by that line\'s predicted angle (curved/warped faces); lines without a segment fall back to the face-level frame')
     ap.add_argument('--split', choices=['all', 'test', 'tune'], default='all', help='restrict to faces of this Phase 5 split (tablet_data/ebl_tablets/split.csv)')
@@ -192,6 +194,8 @@ def main():
         elif a.bounds == 'midpoint': bounds = line_bounds_midpoint(ys, pitch)
         elif a.bounds == 'segments': bounds = line_bounds_from_segments(os.path.join(a.pred, a.method + '_segments', f['face'] + '.csv'), W, H, skew, ys, pitch)
         else: bounds = None
+        if bounds is not None and a.extend > 0:
+            bounds = [(t - a.extend * pitch, b + a.extend * pitch) for t, b in bounds]
         if bounds is not None and a.overlap > 0:
             edges = {'gap': getattr(line_bounds_from_boxes, 'edges', None), 'segments': getattr(line_bounds_from_segments, 'edges', None)}.get(a.bounds)
             bounds = apply_overlap(bounds, ys, pitch, a.overlap, edges if edges is not None and len(edges) == len(ys) else None, a.overlap_into)

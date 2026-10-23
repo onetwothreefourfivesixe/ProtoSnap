@@ -15,6 +15,7 @@ tablet_data/kraken/
 external/
 protosnap_inputs/
 tablet_data/app_sessions/
+output/line_cropping
 
 # raw downloads under data/ (signs_snippets_metadata.json is small and stays tracked)
 data/cdli/
