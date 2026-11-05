@@ -39,7 +39,8 @@ def plot_loss(epoch_and_loss, filePath):
 def plot_loss_parts(rows, filePath):
     """The three loss components: kernel and band (BCE + Dice each) and orientation (L1, weighted 0.5 in the total)."""
     plot.figure(figsize=(6, 4))
-    for key, label in (('kernel', 'kernel (BCE + Dice)'), ('band', 'band (BCE + Dice)'), ('orient', 'orientation (L1)')):
+    for key, label in (('kernel', 'kernel (BCE + Dice)'), ('band', 'band (BCE + Dice)'), ('orient', 'orientation (L1)'), ('height', 'height (L1)')):
+        if key not in rows[0]: continue
         plot.plot(_epochs(rows, key), _col(rows, key), marker='o', ms=3, label=label)
     _finish('Loss components', 'loss', filePath, legend=True)
 
@@ -75,7 +76,7 @@ def plot_dashboard(rows, filePath):
     """All of the above on one page: loss, loss parts, validation recall/precision, selection score."""
     fig, ax = plot.subplots(2, 2, figsize=(11, 7))
     ax[0, 0].plot(_epochs(rows, 'loss'), _col(rows, 'loss'), marker='o', ms=3); ax[0, 0].set_title('training loss')
-    for key in ('kernel', 'band', 'orient'): ax[0, 1].plot(_epochs(rows, key), _col(rows, key), marker='o', ms=3, label=key)
+    for key in [k for k in ('kernel', 'band', 'orient', 'height') if k in rows[0]]: ax[0, 1].plot(_epochs(rows, key), _col(rows, key), marker='o', ms=3, label=key)
     ax[0, 1].set_title('loss components'); ax[0, 1].legend()
     ax[1, 0].plot(_epochs(rows, 'val_recall'), _col(rows, 'val_recall'), marker='o', ms=3, label='recall'); ax[1, 0].plot(_epochs(rows, 'val_precision'), _col(rows, 'val_precision'), marker='o', ms=3, label='precision')
     ax[1, 0].set_ylim(0, 1.02); ax[1, 0].set_title('validation, lines within 0.35 pitch'); ax[1, 0].legend()

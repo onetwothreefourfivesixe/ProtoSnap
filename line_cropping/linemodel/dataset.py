@@ -34,15 +34,18 @@ def heidelberg_items(split='train'):
     return items
 
 
-def build_index(min_cov=0.9, val_frac=0.1, seed=0, include_oa=True, include_heidelberg=False):
-    items = []
+def build_index(min_cov=0.9, val_frac=0.1, seed=0, include_oa=True, include_heidelberg=False, include_heights=False):
+    items = []; heights = collections.defaultdict(dict)
+    if include_heights:      # eBL lines only: the other sources have no sign boxes (truth/line_heights.py)
+        for r in csv.DictReader(open(f'{EBL}/faces/line_heights.csv')):
+            if r['valid'] == '1': heights[r['face']][int(r['line_index'])] = (float(r['up']), float(r['down']))
     faces = {f['face']: f for f in csv.DictReader(open(f'{EBL}/faces/faces.csv'))} if os.path.exists(f'{EBL}/faces/faces.csv') else {}
     split = {r['face']: r['split'] for r in csv.DictReader(open(f'{EBL}/split.csv'))} if os.path.exists(f'{EBL}/split.csv') else {}
     for fid, f in faces.items():
         if split.get(fid) != 'tune' or not f['coverage'] or float(f['coverage']) < min_cov: continue
         lp = os.path.join(f'{EBL}/faces/lines', fid + '.csv')
         if not os.path.exists(lp): continue
-        items.append(dict(face=fid, tablet=f['tablet'], file=f['file'], source='ebl-' + f['script'], segments=read_segments(lp)))
+        items.append(dict(face=fid, tablet=f['tablet'], file=f['file'], source='ebl-' + f['script'], segments=read_segments(lp, heights.get(fid))))
     if include_oa and os.path.exists(f'{OA}/ground_truth/labels.csv'):
         acc = {f['face']: f for f in csv.DictReader(open(f'{OA}/prepared/faces_accepted.csv'))}
         by = collections.defaultdict(list)
@@ -64,7 +67,9 @@ def transform_segments(segs, M):
     out = []
     for s in segs:
         p0 = M @ np.array([s['ax0'], s['ay0'], 1.0]); p1 = M @ np.array([s['ax1'], s['ay1'], 1.0]); sc = np.sqrt(abs(M[0, 0] * M[1, 1] - M[0, 1] * M[1, 0]))
-        out.append(dict(s, ax0=p0[0], ay0=p0[1], ax1=p1[0], ay1=p1[1], thickness=s['thickness'] * sc))
+        q = dict(s, ax0=p0[0], ay0=p0[1], ax1=p1[0], ay1=p1[1], thickness=s['thickness'] * sc)
+        if 'up' in s: q['up'], q['down'] = s['up'] * sc, s['down'] * sc
+        out.append(q)
     return out
 
 

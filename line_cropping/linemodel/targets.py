@@ -10,6 +10,9 @@ Target maps, at 1/`stride` of the image (default stride 4), channels:
   2,3 orient sin(2*theta), cos(2*theta) of the line direction, painted inside the band (0 elsewhere)
   4 ignore   1 where the truth is unreliable: gaps between consecutive lines wider than `ignore_gap` (1.5) pitches
              and one pitch beyond the first and last line of a block. Ignored pixels carry no loss.
+  5,6 height log(1 + d / stride), inside the band: d = distance from this pixel straight up (5) and down (6) to the edge
+             of the line's signs, for lines with `up` and `down` (truth/line_heights.py); see height_decode
+  7 height valid  1 where channels 5,6 hold a height (the Old Assyrian and Heidelberg lines have no sign boxes)
 
   python -m line_cropping.linemodel.targets --preview 12   # overlays in tablet_data/ebl_tablets/linemodel/target_previews/
 """
@@ -20,11 +23,19 @@ import numpy as np, cv2
 STRIDE = 4
 
 
-def read_segments(path):
+def height_decode(v, stride=STRIDE):
+    """Channels 5,6 (or the model's height outputs) -> distance in pixels of the image the maps were made from."""
+    return (np.exp(np.clip(v, 0, 8)) - 1) * stride
+
+
+def read_segments(path, heights=None):
+    """heights: {line_index: (up, down)} from line_heights.csv; those lines also get 'up' and 'down'."""
     out = []
     for l in csv.DictReader(open(path, encoding='utf-8')):
-        out.append(dict(ax0=float(l['ax0']), ay0=float(l['ay0']), ax1=float(l['ax1']), ay1=float(l['ay1']), thickness=float(l['thickness']),
-                        column=l.get('column', 'single'), line_index=int(float(l.get('line_index', 0)))))
+        s = dict(ax0=float(l['ax0']), ay0=float(l['ay0']), ax1=float(l['ax1']), ay1=float(l['ay1']), thickness=float(l['thickness']),
+                 column=l.get('column', 'single'), line_index=int(float(l.get('line_index', 0))))
+        if heights and s['line_index'] in heights: s['up'], s['down'] = heights[s['line_index']]
+        out.append(s)
     return out
 
 
@@ -75,8 +86,8 @@ def _band_polygon(s, thickness):
 
 
 def render_targets(segs, W, H, stride=STRIDE, shrink=0.4, ignore_gap=1.5, band_frac=0.7):
-    """Paint the five target maps for a face of size W x H. Returns float32 array (5, H/stride, W/stride)."""
-    h, w = int(np.ceil(H / stride)), int(np.ceil(W / stride)); T = np.zeros((5, h, w), np.float32)
+    """Paint the target maps for a face of size W x H. Returns float32 array (8, H/stride, W/stride)."""
+    h, w = int(np.ceil(H / stride)), int(np.ceil(W / stride)); T = np.zeros((8, h, w), np.float32)
     sc = 1.0 / stride
     # painted widths are bounded by the block's pitch so neighbouring bands never merge: band <= band_frac x pitch,
     # kernel = shrink x band. (eBL sign boxes are as tall as the pitch, so the raw thickness would overlap.)
@@ -94,6 +105,11 @@ def render_targets(segs, W, H, stride=STRIDE, shrink=0.4, ignore_gap=1.5, band_f
         cv2.fillPoly(T[1], [poly], 1.0); cv2.fillPoly(T[0], [kern], 1.0)
         th = np.arctan2(s['ay1'] - s['ay0'], s['ax1'] - s['ax0']); m = np.zeros((h, w), np.uint8); cv2.fillPoly(m, [poly], 1)
         T[2][m > 0] = np.sin(2 * th); T[3][m > 0] = np.cos(2 * th)
+        T[7][m > 0] = 0
+        if 'up' in s:
+            yy, xx = np.nonzero(m); py, px = (yy + 0.5) * stride, (xx + 0.5) * stride
+            yl = s['ay0'] + (px - s['ax0']) * (s['ay1'] - s['ay0']) / max(s['ax1'] - s['ax0'], 1e-6)   # the line's height at this column
+            T[5][yy, xx] = np.log1p(np.maximum(s['up'] + py - yl, 0) / stride); T[6][yy, xx] = np.log1p(np.maximum(s['down'] - py + yl, 0) / stride); T[7][yy, xx] = 1
     # ignore: wide gaps between consecutive lines of a block, and one pitch beyond the block's first/last line
     blocks = collections.defaultdict(list)
     for col, lines in blocks0.items():

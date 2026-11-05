@@ -4,8 +4,8 @@
       [--runs output/line_cropping/envelope_pilot_{script}] [--min-score 0.5] [--render 12] [--out <inputs>/analysis]
 
 For every sign target fitted by ProtoSnap (step 1: line_envelope_prep.py), the fitted skeleton points (dst_points_100.pt,
-512 x 512 frame of the stretched target, y flipped) are mapped back into the deskewed face, the frame the crop was cut
-in. Fits whose ProtoSnap score (agg_score.pt, 0-1) is below --min-score are left out of the envelopes and reported.
+512 x 512 frame of the stretched target, y flipped) are mapped back into the frame the crop was cut in
+(crops/crop_frame.py). Fits whose ProtoSnap score (agg_score.pt, 0-1) is below --min-score are left out of the envelopes and reported.
 
 Per sign: the skeleton's extent against the eBL box (how loose the boxes are). Per line, with all kept skeletons:
   clip_top / clip_bottom / clip_left / clip_right   share of skeleton points outside that crop edge
@@ -28,6 +28,8 @@ import os
 import cv2
 import numpy as np
 import torch
+
+from line_cropping.crops.crop_frame import box_in_frame, crop_matrix
 
 IMG = 512
 
@@ -95,12 +97,13 @@ def main():
             slant = float(np.degrees(np.arctan(k))); bend = float(np.max(np.abs(cen[:, 1] - (k * cen[:, 0] + b)))) / pitch
         else:
             slant = bend = float('nan')
-        # neighbour intrusion: eBL boxes of signs from other lines on the same face (deskewed frame) inside this crop
+        # neighbour intrusion: eBL boxes of signs from other lines on the same face, in the crop's frame, inside this crop
+        tilted = t0.get('line_angle_deg') not in ('', None); Mc = crop_matrix(t0, int(f['width']), int(f['height'])) if tilted else None
         nb_area = nb_in = 0.0
         for s in all_signs[t0['face']]:
             if s['crop_id'] == cid:
                 continue
-            x0, y0, x1, y1 = (float(s[k]) for k in ('deskew_x0', 'deskew_y0', 'deskew_x1', 'deskew_y1'))
+            x0, y0, x1, y1 = box_in_frame(Mc, *(float(s[k]) for k in ('face_x0', 'face_y0', 'face_x1', 'face_y1'))) if tilted else (float(s[k]) for k in ('deskew_x0', 'deskew_y0', 'deskew_x1', 'deskew_y1'))
             ix = max(0.0, min(x1, cx1) - max(x0, cx0)); iy = max(0.0, min(y1, cy1) - max(y0, cy0))
             if ix * iy > 0:
                 nb_in += ix * iy; nb_area += (x1 - x0) * (y1 - y0)
@@ -138,13 +141,13 @@ def main():
     print(json.dumps(summary, indent=1))
     # renders: the lines with the most wedges cut first, then the rest
     order = sorted(L, key=lambda r: -(r['clip_top'] + r['clip_bottom'] + r['clip_left'] + r['clip_right']))[:a.render]
-    rot_cache = {}
+    img_cache = {}
     for r in order:
         items = by_line[r['crop_id']]; t0 = items[0]['t']; f = faces[t0['face']]
-        if t0['face'] not in rot_cache:
-            im = cv2.imread(os.path.join(a.export, f['image'])); H, W = im.shape[:2]
-            M = cv2.getRotationMatrix2D((W / 2, H / 2), float(f['skew_deg']), 1.0); rot_cache = {t0['face']: cv2.warpAffine(im, M, (W, H))}
-        rot = rot_cache[t0['face']].copy(); pitch = float(f['line_pitch_px'])
+        if t0['face'] not in img_cache:
+            img_cache = {t0['face']: cv2.imread(os.path.join(a.export, f['image']))}
+        im = img_cache[t0['face']]; H, W = im.shape[:2]
+        rot = cv2.warpAffine(im, crop_matrix(t0, W, H), (W, H)); pitch = float(f['line_pitch_px'])
         cx0, cy0, cx1, cy1 = (int(float(t0[k])) for k in ('crop_x0', 'crop_y0', 'crop_x1', 'crop_y1'))
         for it in items:
             t = it['t']; cv2.rectangle(rot, (int(t['box_x0']), int(t['box_y0'])), (int(t['box_x1']), int(t['box_y1'])), (170, 170, 170), 1)

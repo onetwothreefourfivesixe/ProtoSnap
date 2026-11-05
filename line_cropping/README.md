@@ -379,7 +379,7 @@ segment per component. Knobs to tune on the val split: `--kernel-thr`, `--band-t
 A local web page for trying the line model on any photograph:
 
 ```
-MPLBACKEND=Agg .venv/bin/python -m line_cropping.app.server [--weights weights/linemodel/run1/model.pt] [--port 8770]
+MPLBACKEND=Agg .venv/bin/python -m line_cropping.app.server [--weights weights/linemodel/run6_heights_s1/model.pt] [--port 8770]
 ```
 
 then open http://localhost:8770. Upload a tablet photograph (drag and drop or file picker); the app finds the tablet's

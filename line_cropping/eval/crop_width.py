@@ -4,7 +4,7 @@
       [--min-cov 0.9] [--worst 0.1] [--render 16] [--out <dir>]
 
 For every truth line (eBL oriented segments, faces with annotation coverage >= --min-cov) whose centre falls inside
-exactly one crop, both are compared in the crop's frame (the face rotated by the crop's skew). The true extent is the
+exactly one crop, both are compared in the crop's frame (crops/crop_frame.py). The true extent is the
 segment between the outermost sign centres, widened by half a sign (0.5 x band thickness) on each side to reach the
 sign edges. Per line:
   inside  share of the true width inside the crop            (1.0 = nothing cut off)
@@ -17,7 +17,6 @@ fully annotated lines (>= --full-signs signs); background overhang is the truth-
 With --pred, each crop is also matched to its predicted segment (nearest centre) to record whether it was built by
 merging fragments, and every line is given a cause label for the worst --worst share by excess (see classify()).
 Writes <out>/lines.csv, <out>/summary.json, and <out>/worst/<face>__L<nn>.jpg renders of the worst cases.
-Crops cut in per-line frames (--rotate-per-line) are measured in the face frame and so slightly overstate excess.
 """
 import argparse
 import collections
@@ -28,6 +27,7 @@ import os
 import cv2
 import numpy as np
 
+from line_cropping.crops.crop_frame import crop_matrix
 from line_cropping.paths import EBL
 
 
@@ -104,16 +104,21 @@ def measure(crops, faces=os.path.join(EBL, 'faces', 'faces.csv'), pred=None, met
             continue
         W, H = int(f['width']), int(f['height'])
         skew = float(cs[0]['skew_deg'])
-        M = cv2.getRotationMatrix2D((W / 2, H / 2), skew, 1.0)
         img = cv2.imread(f['file'])
-        rot = cv2.warpAffine(img, M, (W, H), borderValue=(0, 0, 0)) if img is not None else None
-        truth = load_truth(face, W, H, M)
-        segs = load_segments(pred, method, face, M) if pred else []
-        for t in truth:
-            hit = [c for c in cs if float(c['y0']) <= t['yc'] <= float(c['y1'])]
+        frames, last = {}, [None, None]                 # truth and segments per distinct frame; only the last rotated face is kept
+        for c in cs:
+            M = crop_matrix(c, W, H); key = M.tobytes()
+            if key not in frames:
+                frames[key] = (M, load_truth(face, W, H, M), load_segments(pred, method, face, M) if pred else [])
+        per_crop = [frames[crop_matrix(c, W, H).tobytes()] for c in cs]
+        for k in range(len(per_crop[0][1])):
+            hit = [i for i, c in enumerate(cs) if float(c['y0']) <= per_crop[i][1][k]['yc'] <= float(c['y1'])]
             if len(hit) != 1:
                 continue
-            c = hit[0]
+            c = cs[hit[0]]; M, truth, segs = per_crop[hit[0]]; t = truth[k]
+            if last[0] != M.tobytes():
+                last = [M.tobytes(), cv2.warpAffine(img, M, (W, H), borderValue=(0, 0, 0)) if img is not None else None]
+            rot = last[1]
             cx0, cx1 = float(c['x0']), float(c['x1'])
             pitch = float(c['pitch_px'])
             tw = t['x1'] - t['x0']
@@ -151,7 +156,8 @@ def measure(crops, faces=os.path.join(EBL, 'faces', 'faces.csv'), pred=None, met
                              crop_w_pitch=round((cx1 - cx0) / pitch, 2), truth_w_pitch=round(tw / pitch, 2), truth_n_signs=t['n_signs'],
                              merged=seg['merged'] if seg else 1, other_column_same_height=bool(other), bg_overhang_pitch=round(bg_pitch, 3),
                              crop_x0=round(cx0), crop_x1=round(cx1), crop_y0=round(float(c['y0'])), crop_y1=round(float(c['y1'])),
-                             truth_x0=round(t['x0']), truth_x1=round(t['x1']), truth_yc=round(t['yc']), skew=skew))
+                             truth_x0=round(t['x0']), truth_x1=round(t['x1']), truth_yc=round(t['yc']), skew=skew,
+                             line_angle_deg=c.get('line_angle_deg', ''), line_cx=c.get('line_cx', ''), line_cy=c.get('line_cy', '')))
     if not rows:
         return [], {}
     ex = np.array([r['excess'] for r in rows])
@@ -214,7 +220,7 @@ def render_worst(rows, out_dir, n=16, faces=os.path.join(EBL, 'faces', 'faces.cs
         f = faces[r['face']]
         img = cv2.imread(f['file'])
         H, W = img.shape[:2]
-        M = cv2.getRotationMatrix2D((W / 2, H / 2), r['skew'], 1.0)
+        M = crop_matrix(dict(r, skew_deg=r['skew']), W, H)
         rot = cv2.warpAffine(img, M, (W, H), borderValue=(0, 0, 0))
         pad = int(1.5 * r['pitch'])
         y0, y1 = max(0, r['crop_y0'] - pad), min(H, r['crop_y1'] + pad)

@@ -4,7 +4,8 @@ Truth segments are mapped into the same deskewed frame as the predictions (rotat
 the run's skew angle). A predicted line matches a truth line if their centre heights differ by less than
 `tol` x truth pitch. Reports recall, precision (only on faces with coverage >= 0.9, since unannotated lines
 would otherwise count as false positives), first-line error in pitch units (only where the topmost truth line
-is line 1 or 1'), and count agreement, split by script, method and resolution.
+is line 1 or 1'), and count agreement, split by script, method and resolution. Pieces with the same column and line index
+within `tol` x pitch of each other are one truth line. A face with no predicted line scores recall 0 and fails its first line.
 
   python -m line_cropping.eval.evaluate_lines --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions
 """
@@ -12,13 +13,22 @@ import argparse, csv, os, collections
 import numpy as np, cv2
 
 
-def truth_in_frame(lines_csv, W, H, skew):
-    M = cv2.getRotationMatrix2D((W / 2, H / 2), skew, 1.0); out = []
+def truth_in_frame(lines_csv, W, H, skew, merge_within=None):
+    """(y, label, column, sparse) per truth row, top to bottom. merge_within (pixels): rows with the same column and line index
+    closer than this become one line, at their mean height weighted by length."""
+    M = cv2.getRotationMatrix2D((W / 2, H / 2), skew, 1.0); by = collections.defaultdict(list)
     for l in csv.DictReader(open(lines_csv)):
         mx = (float(l['ax0']) + float(l['ax1'])) / 2; my = (float(l['ay0']) + float(l['ay1'])) / 2
         y = M[1, 0] * mx + M[1, 1] * my + M[1, 2]
-        out.append((y, l['line_label'], l['column'], l['sparse'] == 'True'))
-    return sorted(out)
+        by[(l['column'], l['line_index'])].append((y, l['line_label'], l['column'], l['sparse'] == 'True', abs(float(l['ax1']) - float(l['ax0'])) + 1))
+    out = []
+    for rows in by.values():
+        rows.sort(); cur = [rows[0]]
+        for t in rows[1:]:
+            if merge_within is not None and t[0] - cur[0][0] < merge_within: cur.append(t)
+            else: out.append(cur); cur = [t]
+        out.append(cur)
+    return sorted((float(np.average([t[0] for t in c], weights=[t[4] for t in c])),) + c[0][1:4] for c in out)
 
 
 def main():
@@ -32,18 +42,20 @@ def main():
         truth = truth_in_frame(os.path.join(os.path.dirname(a.faces), 'lines', r['face'] + '.csv'), W, H, float(r['skew_deg']))
         if len(truth) < 2: continue
         ty = np.array([t[0] for t in truth]); tp = float(f['pitch_px']) if f['pitch_px'] else float(np.median(np.diff(ty)))
+        truth = truth_in_frame(os.path.join(os.path.dirname(a.faces), 'lines', r['face'] + '.csv'), W, H, float(r['skew_deg']), a.tol * tp)
+        if len(truth) < 2: continue
+        ty = np.array([t[0] for t in truth])
         py = np.array([float(x['y_deskewed']) for x in csv.DictReader(open(os.path.join(a.pred, r['method'], r['face'] + '.csv')))])
-        if len(py) == 0: continue
         tol = a.tol * tp
         used = set(); hit = 0
-        for y in ty:
+        for y in ty if len(py) else []:
             d = np.abs(py - y); j = int(np.argmin(d))
             if d[j] < tol and j not in used: used.add(j); hit += 1
         cov = float(f['coverage']) if f['coverage'] else np.nan
         first_ok = truth[0][1] in ("1", "1'")
         rows.append(dict(face=r['face'], script=f['script'], method=r['method'], n_truth=len(ty), n_pred=len(py), n_atf=r['n_atf'],
-                         recall=hit / len(ty), precision=(len(used) / len(py)) if cov >= 0.9 else np.nan,
-                         first_err=abs(py[0] - ty[0]) / tp if first_ok else np.nan, count_ok=(r['n_atf'] != '' and len(py) == int(r['n_atf'])),
+                         recall=hit / len(ty), precision=(len(used) / len(py)) if cov >= 0.9 and len(py) else np.nan,
+                         first_err=(abs(py[0] - ty[0]) / tp if len(py) else np.inf) if first_ok else np.nan, count_ok=(r['n_atf'] != '' and len(py) == int(r['n_atf'])),
                          px_per_line=tp, coverage=cov))
     with open(os.path.join(a.pred, 'evaluation.csv'), 'w', newline='') as fh:
         w = csv.DictWriter(fh, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)

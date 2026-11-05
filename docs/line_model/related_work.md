@@ -12,26 +12,29 @@ the humanities, retrained on our training faces. The line model itself is descri
   trained on 410 hand-drawn Neo-Assyrian lines. Everything else detects signs or wedges (lines then have to be built
   by grouping, as our first pipeline does), works on 3D scans, or is not about segmentation (section 4).
 - **General document segmenters can be retrained.** Kraken's segmenter fails on tablets out of the box (recall 0.03)
-  but, retrained on our 490 training faces, becomes the strongest alternative.
-- **On the eBL test faces** the line model and Kraken are close: Kraken finds two more lines in a hundred (recall 0.89
-  against 0.87-0.88) and the line model has six to seven points more precision (0.87 against 0.81) and places the
-  first line better (79-86 against 80 percent overall; 52-59 against 46 percent on Neo-Assyrian). **On the hand-drawn
-  Neo-Assyrian lines** the line model is clearly ahead (0.96-0.98 / 0.93-0.94 against 0.88 / 0.86). The Dencker
-  network trails both on precision.
-- **Practicalities favour the line model:** about forty times faster than Kraken (0.17 against 6.8 seconds per face
-  on the same GPU), no separate environment, and no extra step to join the side-by-side pieces into which Kraken splits
+  but, retrained on our training faces (490 with seed 0), becomes the strongest alternative.
+- **On the eBL test faces** run 6 of the line model (with heights) and Kraken are level on recall (0.94 against 0.93), and the line
+  model has seven to nine points more precision (0.89-0.91 against 0.82) and places the first line better (86-87 against 81
+  percent overall; 54-60 against 48 percent on Neo-Assyrian). Run 3 was closer: 0.91-0.92 recall, 0.88 precision, 80-87
+  percent. **On the hand-drawn Neo-Assyrian lines** the line model is ahead on recall and precision (run 6: 0.97-0.98 / 0.96-1.00; run 4: 0.99 / 0.91-0.93;
+  run 3: 0.96-0.98 / 0.93-0.94; Kraken: 0.88 / 0.86), on 9 faces. The Dencker network, given each face's true line spacing,
+  comes close to run 3 on eBL (0.89 / 0.86) and is furthest behind on the hand-drawn lines.
+- **Practicalities favour the line model:** much faster than Kraken (stored timings of 0.07-0.09 seconds per face, against
+  6.8 seconds noted at the time and not stored), no separate environment, and no extra step to join the side-by-side pieces into which Kraken splits
   a third of its lines.
 
 ## 1. Comparison at a glance
 
 | line finder | trained on | eBL test (about 760 faces): recall / precision | first line within 0.5 pitch (all / Neo-Assyrian) | Heidelberg test, hand-drawn: recall / precision | seconds per face |
 |---|---|---|---|---|---|
-| **line model** (run 3, seeds 0 / 1) | our 490 faces | 0.87-0.88 / 0.87 | 79-86% / 52-59% | 0.96-0.98 / 0.93-0.94 | 0.17 |
-| **Kraken**, retrained, line pieces joined | the same 490 faces | 0.89 / 0.81 | 80% / 46% | 0.88 / 0.86 | 6.8 |
-| Kraken, retrained, raw output | the same 490 faces | 0.90 / 0.57 | 80% / 46% | 0.89 / 0.65 | 6.8 |
+| **line model** (run 6 with heights, seeds 0 / 1) | our faces (490 with seed 0, 507 with seed 1) | 0.94 / 0.89-0.91 | 86-87% / 54-60% | 0.97-0.98 / 0.96-1.00 | 0.07 |
+| line model (run 4, seeds 0 / 1) | the same | 0.92-0.94 / 0.89-0.91 | 82-86% / 50-54% | 0.99 / 0.91-0.93 | 0.09 |
+| line model (run 3, seeds 0 / 1) | the same | 0.91-0.92 / 0.88 | 80-87% / 52-61% | 0.96-0.98 / 0.93-0.94 | 0.07 |
+| **Kraken**, retrained, line pieces joined | run 3 seed 0's 490 faces | 0.93 / 0.82 | 81% / 48% | 0.88 / 0.86 | 6.8 |
+| Kraken, retrained, raw output | run 3 seed 0's 490 faces | 0.93 / 0.57 | 81% / 46% | 0.89 / 0.65 | 6.8 |
 | Kraken, default model (no retraining) | manuscripts and print | | | 0.03 / 0.33 | |
-| Dencker et al. line network, rebuilt | 32 Heidelberg faces (their recipe) | 0.85 / 0.78 | 74% / 45% | 0.83 / 0.72 | |
-| detector route with the transliteration's line count (`det_n`), for reference | eBL sign boxes | 0.91 / 0.91 | 90% / | | |
+| Dencker et al. line network, rebuilt | 32 Heidelberg faces (their recipe) | 0.89 / 0.86 | 73% / 43% | 0.83 / 0.72 | |
+| detector route with the transliteration's line count (`det_n`), for reference, on 487 NA and OB faces only (run 6 heights seed 1 on those faces: 0.95 / 0.91, 89%) | eBL sign boxes | 0.94 / 0.91 | 90% / 74% | | |
 
 ![Three line models per script](img/models_by_script.png)
 
@@ -40,23 +43,23 @@ per script and on the hand-drawn Heidelberg lines.*
 
 ![Three models on the same faces](img/models_examples.jpg)
 
-*Figure 2. Four test faces drawn at random, each read by the three models (green = truth line, red = prediction; per
-face recall R and precision P). "Kraken raw" shows its habit of returning one line as several side-by-side pieces (20
-pieces for 15 lines on P336128), which "Kraken joined" merges with the line model's own rule. HS.2052 shows the line
-model's typical error, two slanted false lines across a worn face; CBS.1505 shows all three handling a broken face,
-the Dencker network missing the lowest lines.*
+*Figure 2. Four test faces drawn at random, each read by the three models (the line model is the default, `run6_heights_s1`; green = truth line,
+red = prediction; per face recall R and precision P). "Kraken raw" shows its habit of returning one line as several side-by-side pieces (20
+pieces for 15 lines on P336128), which "Kraken joined" merges with the line model's own rule. HS.2069 shows a flaw of the eBL truth: its top green line
+slants across two lines of writing and some lines have no green line, so correct lines count as false and every model's precision is low. CBS.1505 shows all
+three handling a broken face, the Dencker network missing the lowest lines.*
 
 **Line model against Kraken, per script** (eBL test faces; positive = line model higher):
 
 | | all | Neo-Assyrian | Neo-Babylonian | Old Assyrian | Old Babylonian | small faces | Heidelberg (hand-drawn) |
 |---|---|---|---|---|---|---|---|
-| recall | -0.02 | -0.02 | 0.00 | -0.03 | -0.02 | -0.01 | +0.10 |
-| precision | +0.06 | +0.12 | +0.04 | +0.04 | +0.06 | -0.02 | +0.08 |
-| first line within 0.5 pitch | +6 pts | +13 pts | +3 pts | +3 pts | +6 pts | -5 pts | 0 pts |
+| recall | +0.02 | -0.01 | +0.02 | +0.01 | +0.04 | -0.10 | +0.09 |
+| precision | +0.09 | +0.12 | +0.08 | +0.05 | +0.10 | +0.04 | +0.14 |
+| first line within 0.5 pitch | +7 pts | +12 pts | +4 pts | 0 pts | +9 pts | 0 pts | 0 pts |
 
-(run 3 seed 0 against Kraken with pieces joined.) Kraken trades precision for a little recall on every eBL script and
-is slightly better on small faces' precision and first line (33 faces); the line model is ahead everywhere on the
-hand-drawn lines and on Neo-Assyrian precision and first-line placement.
+(`run6_heights_s1`, the default, against Kraken with pieces joined.) The line model leads on precision on every set, and on recall the two are within
+0.04 on the eBL scripts. The small-face column rests on 12 faces (4 for precision, 5 for first line) and should not be read closely, and the
+Heidelberg column on 9 faces.
 
 ## 2. Head-to-head: Kraken's baseline segmenter retrained on our data (15 Oct 2026)
 
@@ -79,22 +82,22 @@ reported both raw and with the same join applied (`kraken_seg.py merge`, using `
 
 | eBL test faces (761) | all: recall / precision | Neo-Assyrian | Neo-Babylonian | Old Assyrian | Old Babylonian | fewer than 60 px per line | first line within 0.5 pitch (all / NA) | seconds per face |
 |---|---|---|---|---|---|---|---|---|
-| Kraken retrained, raw | 0.90 / 0.57 | 0.89 / 0.65 | 0.90 / 0.55 | 0.93 / 0.56 | 0.90 / 0.58 | 0.85 / 0.61 | 80% / 46% | 6.8 |
-| Kraken retrained, pieces joined | 0.89 / 0.81 | 0.87 / 0.77 | 0.88 / 0.82 | 0.92 / 0.85 | 0.89 / 0.80 | 0.82 / 0.78 | 80% / 46% | |
-| line model run 2 | 0.87 / 0.88 | 0.81 / 0.92 | 0.85 / 0.85 | 0.92 / 0.91 | 0.89 / 0.88 | 0.76 / 0.70 | 84% / 50% | 0.17 |
-| line model run 3, seed 0 | 0.87 / 0.87 | 0.85 / 0.89 | 0.88 / 0.87 | 0.89 / 0.89 | 0.87 / 0.86 | 0.81 / 0.76 | 86% / 59% | 0.17 |
+| Kraken retrained, raw | 0.92 / 0.58 | 0.91 / 0.65 | 0.92 / 0.56 | 0.92 / 0.55 | 0.92 / 0.58 | 0.78 / 0.65 | 81% / 46% | 6.8 |
+| Kraken retrained, pieces joined | 0.91 / 0.82 | 0.90 / 0.77 | 0.91 / 0.83 | 0.92 / 0.84 | 0.91 / 0.81 | 0.77 / 0.70 | 81% / 48% | |
+| line model run 2 | 0.90 / 0.89 | 0.86 / 0.92 | 0.88 / 0.88 | 0.91 / 0.90 | 0.92 / 0.89 | 0.70 / 0.72 | 86% / 54% | 0.17 |
+| line model run 3, seed 0 | 0.90 / 0.88 | 0.89 / 0.90 | 0.92 / 0.89 | 0.89 / 0.88 | 0.90 / 0.87 | 0.70 / 0.74 | 87% / 61% | 0.17 |
 
 **What this means.**
 - **Kraken's stock model does not work on tablet photographs** (recall 0.03): it is a manuscript and print model.
-- **Retrained on the same faces, Kraken is the strongest baseline so far** and close to the line model on eBL: two
-  points more recall (0.89 against 0.87), six to seven points less precision (0.81 against 0.87-0.88), once its line
-  pieces are joined. Without the join its precision is 0.57.
+- **Retrained on the same faces, Kraken is the strongest baseline so far** and close to the line model on eBL: one or two
+  points more recall (0.91 against 0.89-0.90), six points less precision (0.82 against 0.88), once its line
+  pieces are joined. Without the join its precision is 0.58.
 - **The line model leads on the hand-drawn Neo-Assyrian lines** (0.96-0.98 / 0.93-0.94 against 0.88 / 0.86) and on
-  placing the first line (86 against 80 percent on eBL; Neo-Assyrian 59 against 46 percent).
-- **Kraken is slightly better on small faces' precision** (0.78 against 0.76) and finds a few more lines everywhere;
-  its extra lines are mostly the cost of that recall.
-- **The line model is about forty times faster** (0.17 against 6.8 seconds per face on the same GPU) and needs no
-  separate environment.
+  placing the first line on Neo-Assyrian (52-61 against 48 percent); overall the two are about level (80-87 against 81 percent).
+- **Kraken finds a few more lines on most scripts;** its extra lines are mostly the cost of that recall. The column for
+  faces under 60 px per line rests on 12 faces and should not be read closely.
+- **The line model is much faster** (stored timings of 0.07-0.09 seconds per face, against 6.8 seconds noted at the time
+  and not stored) and needs no separate environment.
 
 ## 3. Head-to-head: Dencker et al.'s line network against the line model (14 Oct 2026)
 
@@ -119,23 +122,26 @@ scale for free. Scoring is the line model's: `evaluate_heidelberg.py --segments`
 
 | eBL test faces (about 755) | all: recall / precision | Neo-Assyrian | Neo-Babylonian | Old Assyrian | Old Babylonian | fewer than 60 px per line | first line within 0.5 pitch (all / NA) |
 |---|---|---|---|---|---|---|---|
-| Dencker, no count | 0.85 / 0.78 | 0.86 / 0.81 | 0.84 / 0.74 | 0.87 / 0.88 | 0.84 / 0.76 | 0.81 / 0.46 | 74% / 45% |
-| Dencker, with transliteration count | 0.80 / 0.82 | 0.86 / 0.85 | 0.77 / 0.82 | 0.86 / 0.89 | 0.77 / 0.79 | 0.73 / 0.59 | 72% / 43% |
-| line model run 2 | 0.87 / 0.88 | 0.81 / 0.92 | 0.85 / 0.85 | 0.92 / 0.91 | 0.89 / 0.88 | 0.76 / 0.70 | 84% / 50% |
-| line model run 3, seed 0 | 0.87 / 0.87 | 0.85 / 0.89 | 0.88 / 0.87 | 0.89 / 0.89 | 0.87 / 0.86 | 0.81 / 0.76 | 86% / 59% |
+| Dencker, no count | 0.88 / 0.86 | 0.85 / 0.79 | 0.89 / 0.85 | 0.87 / 0.86 | 0.89 / 0.86 | 0.80 / 0.76 | 73% / 43% |
+| Dencker, with transliteration count | 0.86 / 0.88 | 0.84 / 0.83 | 0.87 / 0.89 | 0.86 / 0.88 | 0.87 / 0.89 | 0.79 / 0.80 | 75% / 43% |
+| line model run 2 | 0.90 / 0.89 | 0.86 / 0.92 | 0.88 / 0.88 | 0.91 / 0.90 | 0.92 / 0.89 | 0.70 / 0.72 | 86% / 54% |
+| line model run 3, seed 0 | 0.90 / 0.88 | 0.89 / 0.90 | 0.92 / 0.89 | 0.89 / 0.88 | 0.90 / 0.87 | 0.70 / 0.74 | 87% / 61% |
 
 **What this means.**
-- **The line model is ahead on both test sets.** On the Heidelberg test faces, the Dencker network's home ground, the
-  line model finds 12 to 18 more lines in a hundred at 16 to 22 points more precision, even run 2, which never saw a
-  Heidelberg face. On the eBL test faces it leads on precision by 6 to 10 points at equal or better recall.
-- **The Dencker network transfers surprisingly well in recall.** Trained on 32 Neo-Assyrian faces only, it finds 84
-  to 87 percent of lines in every script without a count, and on eBL Neo-Assyrian matches run 3's recall (0.86 against
-  0.85). It loses on precision: extra lines on small faces (precision 0.46 below 60 px per line) and on the Old and
-  Neo-Babylonian faces.
+- **The line model is clearly ahead on the hand-drawn lines, narrowly on eBL.** On the Heidelberg test faces, the Dencker
+  network's home ground, the line model finds 12 to 18 more lines in a hundred at 16 to 22 points more precision, even
+  run 2, which never saw a Heidelberg face. On the eBL test faces it leads by one to two points of recall and two to
+  three of precision, within seed variation, and by 7 to 14 points on the first line. These eBL runs tell the network
+  each face's true line spacing to set its scale (its setting), which a new tablet does not come with; the line model
+  needs none. Before the spacing correction (`line_model.md`, Appendix A.9) this network ran at the wrong scale on a
+  quarter of the faces and looked eight points worse on precision.
+- **The Dencker network transfers surprisingly well in recall.** Trained on 32 Neo-Assyrian faces only, it finds 85
+  to 89 percent of lines in every script without a count. Its weakest eBL precision is on Neo-Assyrian (0.79), the one
+  script it was trained on, where the line model reaches 0.90-0.92.
 - **The transliteration count does not help it on eBL:** keeping only as many lines as the transliteration has trades
-  five points of recall for four of precision, because when the count is right the strongest Hough peaks are still
+  two points of recall for two of precision, because when the count is right the strongest Hough peaks are still
   not always the real lines.
-- **Neither model places the first Neo-Assyrian line well** (Dencker 43 to 45 percent, the line model 50 to 59).
+- **Neither model places the first Neo-Assyrian line well** (Dencker 43 percent, the line model 52 to 61).
 
 Caveats: a re-implementation retrained on 388 of their 410 lines, not their released model; a simplified version of
 their post-processing (their line grouping also uses transliteration line lengths); straight lines only, by design;

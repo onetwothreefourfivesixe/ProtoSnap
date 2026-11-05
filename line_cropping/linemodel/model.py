@@ -2,7 +2,8 @@
 
 Encoder (torchvision resnet34, ImageNet weights): stem stride 2 (64 ch), layer1 stride 4 (64), layer2 stride 8 (128),
 layer3 stride 16 (256), layer4 stride 32 (512). Decoder: upsample x2, concatenate the skip of that resolution, two
-3x3 conv+BN+ReLU; three steps back to stride 4; 1x1 head -> 4 channels (kernel logit, band logit, sin2t, cos2t).
+3x3 conv+BN+ReLU; three steps back to stride 4; 1x1 head -> 4 channels (kernel logit, band logit, sin2t, cos2t), or 6
+with the two height channels (run 4; targets.py).
 """
 import torch, torch.nn as nn, torch.nn.functional as F, torchvision
 
@@ -27,7 +28,7 @@ class LineUNet(nn.Module):
 
 
 def line_loss(out, T):
-    """out: (B,4,h,w) logits/values; T: (B,5,h,w) targets. Returns total, dict of parts."""
+    """out: (B,4 or 6,h,w) logits/values; T: (B,8,h,w) targets. Returns total, dict of parts."""
     kern_t, band_t, ign = T[:, 0], T[:, 1], T[:, 4]; valid = 1.0 - ign
     def bce_dice(logit, tgt):
         bce = (F.binary_cross_entropy_with_logits(logit, tgt, reduction='none') * valid).sum() / valid.sum().clamp(min=1)
@@ -35,5 +36,8 @@ def line_loss(out, T):
         return bce + dice
     lk, lb = bce_dice(out[:, 0], kern_t), bce_dice(out[:, 1], band_t)
     m = band_t * valid; lo = ((out[:, 2] - T[:, 2]).abs() + (out[:, 3] - T[:, 3]).abs()) * m; lo = lo.sum() / m.sum().clamp(min=1)
-    total = lk + lb + 0.5 * lo
-    return total, dict(kernel=float(lk), band=float(lb), orient=float(lo))
+    total = lk + lb + 0.5 * lo; parts = dict(kernel=float(lk), band=float(lb), orient=float(lo))
+    if out.shape[1] > 4:
+        m = band_t * valid * T[:, 7]; lh = ((out[:, 4] - T[:, 5]).abs() + (out[:, 5] - T[:, 6]).abs()) * m; lh = lh.sum() / m.sum().clamp(min=1)
+        total = total + lh; parts['height'] = float(lh)
+    return total, parts

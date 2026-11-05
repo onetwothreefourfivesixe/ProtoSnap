@@ -1,7 +1,7 @@
 """Line Splitter: a local web app to upload a tablet photograph, split it into line crops with the line model,
 and compare the crops with the original.
 
-  MPLBACKEND=Agg .venv/bin/python -m line_cropping.app.server [--weights weights/linemodel/run1/model.pt] [--port 8770]
+  MPLBACKEND=Agg .venv/bin/python -m line_cropping.app.server [--weights weights/linemodel/run6_heights_s1/model.pt] [--port 8770]
 then open http://localhost:8770
 
 Standard library only (no web framework). Uploads and results are kept per session in tablet_data/app_sessions/<id>/
@@ -26,7 +26,7 @@ import torch
 
 from line_cropping.app.pipeline import detect_views, split_view
 from line_cropping.linemodel.infer import load_model
-from line_cropping.paths import APP_SESSIONS
+from line_cropping.paths import APP_SESSIONS, LINE_WEIGHTS
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 STATIC = os.path.join(HERE, 'static')
@@ -191,7 +191,7 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--weights', default='weights/linemodel/run1/model.pt')
+    ap.add_argument('--weights', default=LINE_WEIGHTS)
     ap.add_argument('--port', type=int, default=8770)
     ap.add_argument('--host', default='127.0.0.1')
     a = ap.parse_args()

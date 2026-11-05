@@ -135,7 +135,16 @@ def build_lines(annotations, W, H, atf=None):
         L.sort(key=lambda l: l['line_index'])
         ys = np.array([l['cy'] for l in L]); idx = np.array([l['line_index'] for l in L])
         d = np.diff(ys); gap = np.diff(idx)
-        pitch = float(np.median(d[gap == 1])) if (gap == 1).sum() >= 2 else (float(np.median(d / gap)) if len(d) else float('nan'))
+        # measured from the line positions: eBL's line index steps irregularly (1,1,3,4,4,6 on one tablet; a third of faces
+        # are not 1 per text line), so it cannot say how many lines a gap spans. Pieces of one line (under 0.3 sign heights) are not gaps
+        # With under 5 lines annotated they may be far apart, so a gap too big for the signs gives way to their height (spacing is 0.93 box heights on well-annotated blocks)
+        sign_h = float(np.median([l['sign_h'] for l in L]))
+        ygap = np.diff(np.sort(ys)); ygap = ygap[ygap > 0.3 * sign_h]
+        pitch = float(np.median(ygap)) if len(ygap) else float('nan')
+        if len(ygap) and len(ygap) < 4 and pitch > 1.5 * sign_h:
+            pitch = 0.93 * sign_h
+        # the old index-based value, kept only because prepare_faces cuts faces with it (face crops stay as they are)
+        margin = float(np.median(d[gap == 1])) if (gap == 1).sum() >= 2 else (float(np.median(d / gap)) if len(d) else float('nan'))
         bx0 = min(l['x0'] for l in L); bx1 = max(l['x1'] for l in L)
         good = [l['tilt_deg'] for l in L if l['tilt_deg'] == l['tilt_deg'] and l['n_signs'] >= 3]
         blk_tilt = float(np.median(good)) if good else 0.0
@@ -143,7 +152,7 @@ def build_lines(annotations, W, H, atf=None):
             l['block_x0'] = bx0; l['block_x1'] = bx1; l['is_first_line'] = l is L[0]; l['is_last_line'] = l is L[-1]
             l['sparse'] = l['n_signs'] <= 2
             _oriented(l, blk_tilt)
-        blocks[key] = dict(side=key[0], object=key[1], column=key[2], n_lines=len(L), pitch_px=pitch,
+        blocks[key] = dict(side=key[0], object=key[1], column=key[2], n_lines=len(L), pitch_px=pitch, face_margin_px=margin,
                            median_tilt_deg=(float(np.nanmedian([l['tilt_deg'] for l in L])) if any(l['tilt_deg'] == l['tilt_deg'] for l in L) else float('nan')),
                            block_x0=bx0, block_y0=min(l['y0'] for l in L), block_x1=bx1, block_y1=max(l['y1'] for l in L),
                            first_line_index=L[0]['line_index'], first_line_label=L[0]['line_label'], first_line_primed=L[0]['primed'],

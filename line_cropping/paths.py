@@ -12,6 +12,7 @@ EBL = os.path.join(DATA_ROOT, 'ebl_tablets')            # eBL downloads, ground 
 OA = os.path.join(DATA_ROOT, 'fat-cross_processed')     # CDLI Old Assyrian faces and everything derived from them
 APP_SESSIONS = os.path.join(DATA_ROOT, 'app_sessions')  # Line Splitter uploads and results
 PROTOSNAP_INPUTS = os.path.join(DATA_ROOT, 'protosnap_inputs')  # line crops prepared as ProtoSnap targets (protosnap_prep)
+LINE_WEIGHTS = 'weights/linemodel/run6_heights_s1/model.pt'     # the line model the method runs with unless --weights says otherwise
 
 
 def rewrite_tables(old_prefixes, new_root=DATA_ROOT, top=DATA_ROOT, dry_run=False):

@@ -11,10 +11,10 @@ eligible when its script has a ProtoSnap font (OB: Santakku, NA: Assurbanipal), 
 and at least 80% of them have a skeleton in that font, so the envelope covers most of the line. --per-script lines are
 drawn at random (seeded), at most two per tablet.
 
-Each target is cut from the face rotated by the crop's skew (the frame the crops were cut from), around the sign's
+Each target is cut from the face rotated into its crop's frame (crops/crop_frame.py), around the sign's
 box with --pad of its width and height added on every side, so a fitted skeleton can reach outside the eBL box and
 outside the crop. Writes per script <out>/<script>/signs/<target>.png, samples.csv (the columns run_test.py reads) and
-targets.csv (target -> line, sign, box, crop and the target's position in the deskewed face, for step 2).
+targets.csv (target -> line, sign, and the box, crop and target positions in the crop's frame, for step 2).
 """
 import argparse
 import collections
@@ -25,6 +25,7 @@ import random
 import cv2
 import numpy as np
 
+from line_cropping.crops.crop_frame import crop_matrix
 from line_cropping.protosnap.protosnap_prep import sign_hex
 
 FONT = {'OB': 'Santakku', 'NA': 'Assurbanipal'}
@@ -76,15 +77,14 @@ def main():
         for cid in pick:
             c = crops[cid]; fc = faces[c['face']]
             if c['face'] not in rot_cache:
-                im = cv2.imread(os.path.join(E, fc['image'])); H, W = im.shape[:2]
-                M = cv2.getRotationMatrix2D((W / 2, H / 2), float(fc['skew_deg']), 1.0)
-                rot_cache = {c['face']: cv2.warpAffine(im, M, (W, H), borderValue=tuple(int(v) for v in np.median(im.reshape(-1, 3), 0)))}
-            rot = rot_cache[c['face']]; H, W = rot.shape[:2]
+                im = cv2.imread(os.path.join(E, fc['image'])); rot_cache = {c['face']: (im, tuple(int(v) for v in np.median(im.reshape(-1, 3), 0)))}
+            im, border = rot_cache[c['face']]; H, W = im.shape[:2]
+            rot = cv2.warpAffine(im, crop_matrix(c, W, H), (W, H), borderValue=border)
             for s in signs[cid]:
                 h = sign_hex(s['sign_name'])
                 if not h or h not in skel[f] or h not in name_of[f]:
                     continue
-                x0, y0, x1, y1 = (float(s[k]) for k in ('deskew_x0', 'deskew_y0', 'deskew_x1', 'deskew_y1'))
+                x0, y0, x1, y1 = float(s['crop_x0']) + int(c['x0']), float(s['crop_y0']) + int(c['y0']), float(s['crop_x1']) + int(c['x0']), float(s['crop_y1']) + int(c['y0'])
                 pw, ph = (x1 - x0) * a.pad, (y1 - y0) * a.pad
                 tx0, ty0 = int(max(0, x0 - pw)), int(max(0, y0 - ph)); tx1, ty1 = int(min(W, x1 + pw)), int(min(H, y1 + ph))
                 if tx1 - tx0 < 8 or ty1 - ty0 < 8:
@@ -95,7 +95,8 @@ def main():
                 targets.append(dict(target=fn[:-4], crop_id=cid, face=c['face'], tablet=c['tablet'], script=sc, line_no=c['line_no'], sign_id=s['sign_id'],
                                     sign=s['sign_name'], hex=h, box_x0=round(x0), box_y0=round(y0), box_x1=round(x1), box_y1=round(y1),
                                     target_x0=tx0, target_y0=ty0, target_x1=tx1, target_y1=ty1,
-                                    crop_x0=c['x0'], crop_y0=c['y0'], crop_x1=c['x1'], crop_y1=c['y1'], skew_deg=fc['skew_deg']))
+                                    crop_x0=c['x0'], crop_y0=c['y0'], crop_x1=c['x1'], crop_y1=c['y1'], skew_deg=fc['skew_deg'],
+                                    line_angle_deg=c.get('line_angle_deg', ''), line_cx=c.get('line_cx', ''), line_cy=c.get('line_cy', '')))
         for name, rows in (('samples.csv', samples), ('targets.csv', targets)):
             with open(os.path.join(d, name), 'w', newline='', encoding='utf-8') as fh:
                 w = csv.DictWriter(fh, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)

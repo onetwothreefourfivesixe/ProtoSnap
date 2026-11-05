@@ -1,6 +1,6 @@
 """Phase 7 inference and read-out: face image -> line segments -> predictions in the pipeline's format.
 
-  .venv/bin/python -m line_cropping.linemodel.infer --weights weights/linemodel/run1/model.pt \
+  .venv/bin/python -m line_cropping.linemodel.infer --weights weights/linemodel/run6_heights_s1/model.pt \
       --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions --method unet [--split test]
 
 Read-out (optional end refinement: --end-thr extends line ends along the band, --clip-tablet trims ends over
@@ -11,16 +11,16 @@ component's band pixels gives the segment and its thickness. Predictions are wri
 (faces_run.csv + <method>/<face>.csv with y_deskewed/x0/x1 in the frame rotated by the face's median line angle), so
 evaluate_lines.py / phase5_eval.py score them unchanged, plus <method>_segments/<face>.csv with the raw segments.
 """
-from line_cropping.paths import EBL
-import argparse, csv, os, time
+from line_cropping.paths import EBL, LINE_WEIGHTS
+import argparse, collections, csv, os, time
 import numpy as np, cv2, torch
 from line_cropping.linemodel.model import LineUNet
-from line_cropping.linemodel.targets import STRIDE
+from line_cropping.linemodel.targets import STRIDE, height_decode
 from line_cropping.lines.lines_from_boxes import force_n
 
 
 def load_model(weights, dev):
-    m = LineUNet(pretrained=False); m.load_state_dict(torch.load(weights, map_location=dev)); return m.to(dev).eval()
+    sd = torch.load(weights, map_location=dev); m = LineUNet(pretrained=False, out_ch=sd['head.weight'].shape[0]); m.load_state_dict(sd); return m.to(dev).eval()
 
 
 @torch.no_grad()
@@ -31,7 +31,7 @@ def predict_face(model, path_or_img, dev, long_side=1024, pad=32):
     x = torch.from_numpy(cv2.cvtColor(r, cv2.COLOR_BGR2RGB)).permute(2, 0, 1).float().div(255)[None].to(dev)
     with torch.autocast(dev, dtype=torch.float16, enabled=dev == 'cuda'): out = model(x).float()[0].cpu().numpy()
     out = out[:, :h // STRIDE + (1 if h % STRIDE else 0), :w // STRIDE + (1 if w % STRIDE else 0)]
-    maps = np.concatenate([1 / (1 + np.exp(-out[:2])), out[2:4]]); return maps, s     # (4, h/4, w/4), scale image->resized
+    maps = np.concatenate([1 / (1 + np.exp(-out[:2])), out[2:]]); return maps, s     # (4 or 6, h/4, w/4), scale image->resized
 
 
 def tablet_mask_for(img, maps_shape, scale):
@@ -96,7 +96,8 @@ def _tab_share(tab, p, n, hw, k=7):
 
 def read_lines(maps, scale, kernel_thr=0.5, band_thr=0.4, min_area=12, max_reach=1.5, max_dev=45.0, merge_dy=0.5,
                end_thr=0.0, max_ext=3.0, tab=None):
-    """maps (4,h,w) at stride 4 of the resized image; returns segments in ORIGINAL face pixels.
+    """maps (4 or 6,h,w) at stride 4 of the resized image; returns segments in ORIGINAL face pixels. With height channels
+    each segment also gets up and down: how far the line's signs reach from the segment, the median over its band pixels.
     end_thr > 0 extends each line's ends while the band probability stays above it (up to max_ext x the median kernel
     height per end); tab (tablet mask from tablet_mask_for) trims ends that sit over the studio background."""
     kern = (maps[0] > kernel_thr).astype(np.uint8); band = (maps[1] > band_thr).astype(np.uint8) | kern
@@ -123,6 +124,11 @@ def read_lines(maps, scale, kernel_thr=0.5, band_thr=0.4, min_area=12, max_reach
         if d[0] < 0: d = -d
         t = (P - c) @ d; perp = np.abs((P - c) @ Vt[1]); a, b = c + d * t.min(), c + d * t.max(); th = 2 * (perp.mean() * 2)
         segs.append(dict(ax0=a[0] * f, ay0=a[1] * f, ax1=b[0] * f, ay1=b[1] * f, thickness=max(th * f, 2.0), area=int(len(xx)), score=float(maps[0][kl == k].mean())))
+        if maps.shape[0] > 4:
+            yl = c[1] + (xx - c[0]) * d[1] / max(abs(d[0]), 1e-6)     # the segment's height at each pixel's column, in map rows
+            # segments sit half a map pixel above the truth (map rows are counted from their top edge, targets painted at their centre); up and down correct for it
+            segs[-1]['up'] = max(0.0, float(np.median(height_decode(maps[4][yy, xx]) + (yl - yy) * STRIDE)) - STRIDE / 2) / scale
+            segs[-1]['down'] = max(0.0, float(np.median(height_decode(maps[5][yy, xx]) + (yy - yl) * STRIDE)) + STRIDE / 2) / scale
     # text lines on one face share a direction: drop segments more than max_dev degrees off the median angle
     if len(segs) >= 3:
         angs = np.array([np.degrees(np.arctan2(s['ay1'] - s['ay0'], s['ax1'] - s['ax0'])) for s in segs]); med = np.median(angs)
@@ -163,6 +169,9 @@ def merge_fragments(segs, merge_dy=0.5, max_overlap=0.3):
         us = [rot(x, y)[0] for x, y in pts]; a, b = pts[int(np.argmin(us))], pts[int(np.argmax(us))]
         out.append(dict(ax0=a[0], ay0=a[1], ax1=b[0], ay1=b[1], thickness=max(s['seg']['thickness'] for s in g),
                         area=sum(s['seg']['area'] for s in g), score=float(np.mean([s['seg']['score'] for s in g])), merged=len(g)))
+        if 'up' in g[0]['seg']:
+            ar = [s['seg']['area'] for s in g]
+            out[-1]['up'], out[-1]['down'] = float(np.average([s['seg']['up'] for s in g], weights=ar)), float(np.average([s['seg']['down'] for s in g], weights=ar))
     return out
 
 
@@ -192,14 +201,37 @@ def reconcile_count(rows, n, pitch):
     return out
 
 
+def truth_line_heights(truth_segs, M, tol=0.35):
+    """One height per truth line in the frame M, and the pitch (None for a single line). Segments of a drawn chain (Heidelberg)
+    are one line. Pieces with the same column and line_index (eBL) are one line if within tol x pitch of each other: farther
+    apart, they are separate rows of writing."""
+    by = collections.defaultdict(list)
+    for s in truth_segs:
+        y = float((M @ np.array([(s['ax0'] + s['ax1']) / 2, (s['ay0'] + s['ay1']) / 2, 1.0]))[1])
+        by[(s.get('column', 'single'), s.get('line_index', 0))].append((y, abs(s['ax1'] - s['ax0']) + 1, 'chain' in s))
+    mean = lambda v: float(np.average([p[0] for p in v], weights=[p[1] for p in v]))
+    ty = np.sort([mean(v) for v in by.values()]); pitch = float(np.median(np.diff(ty))) if len(ty) > 1 else None
+    if pitch is None: return ty, None
+    out = []
+    for v in by.values():
+        if v[0][2]: out.append(mean(v)); continue
+        v = sorted(v); cur = [v[0]]
+        for p in v[1:]:
+            if p[0] - cur[0][0] < tol * pitch: cur.append(p)
+            else: out.append(mean(cur)); cur = [p]
+        out.append(mean(cur))
+    return np.sort(out), pitch
+
+
 def score_against_truth(pred_segs, truth_segs, file=None, tol=0.35, W=None, H=None):
     """Line recall/precision: predicted vs truth centre heights in the truth's deskewed frame, match within tol x pitch."""
     if W is None:
         im = cv2.imread(file, cv2.IMREAD_GRAYSCALE); H, W = im.shape
     ang, T = segments_to_lines(truth_segs, W, H)
     if not T: return float('nan'), float('nan')
-    ty = np.array([r['y'] for r in T]); pitch = float(np.median(np.diff(ty))) if len(ty) > 1 else T[0]['thickness'] * 1.5
-    M = cv2.getRotationMatrix2D((W / 2, H / 2), ang, 1.0); py = np.array([(M @ np.array([(s['ax0'] + s['ax1']) / 2, (s['ay0'] + s['ay1']) / 2, 1.0]))[1] for s in pred_segs])
+    M = cv2.getRotationMatrix2D((W / 2, H / 2), ang, 1.0); ty, pitch = truth_line_heights(truth_segs, M)
+    if pitch is None: pitch = T[0]['thickness'] * 1.5
+    py = np.array([(M @ np.array([(s['ax0'] + s['ax1']) / 2, (s['ay0'] + s['ay1']) / 2, 1.0]))[1] for s in pred_segs])
     if len(py) == 0: return 0.0, float('nan')
     used = set(); hit = 0
     for y in ty:
@@ -209,7 +241,7 @@ def score_against_truth(pred_segs, truth_segs, file=None, tol=0.35, W=None, H=No
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument('--weights', required=True); ap.add_argument('--faces', required=True); ap.add_argument('--out', required=True)
+    ap = argparse.ArgumentParser(); ap.add_argument('--weights', default=LINE_WEIGHTS); ap.add_argument('--faces', required=True); ap.add_argument('--out', required=True)
     ap.add_argument('--method', default='unet'); ap.add_argument('--split', choices=['all', 'test', 'tune'], default='all'); ap.add_argument('--n-col', default='atf_lines_side')
     ap.add_argument('--long-side', type=int, default=1024); ap.add_argument('--kernel-thr', type=float, default=None, help='default: the training run\'s config.json, else 0.5'); ap.add_argument('--band-thr', type=float, default=None, help='default: config.json, else 0.4'); ap.add_argument('--min-area', type=int, default=None, help='default: config.json, else 12');
     ap.add_argument('--max-reach', type=float, default=None, help='band pixels join a kernel only within this many kernel heights (default: config.json, else 1.5)')
@@ -243,7 +275,7 @@ def main():
             ys0 = [r['y'] for r in rows]; p0 = float(np.median(np.diff(ys0))) if len(ys0) > 1 else (rows[0]['thickness'] * 1.5 if rows else 0)
             rows = reconcile_count(rows, n_atf, p0)
         with open(os.path.join(a.out, a.method + '_segments', f['face'] + '.csv'), 'w', newline='') as fh:
-            w = csv.DictWriter(fh, fieldnames=['ax0', 'ay0', 'ax1', 'ay1', 'thickness', 'area', 'score', 'merged'], extrasaction='ignore', restval=1); w.writeheader(); w.writerows([{k2: round(v, 2) if isinstance(v, float) else v for k2, v in s.items()} for s in segs])
+            w = csv.DictWriter(fh, fieldnames=['ax0', 'ay0', 'ax1', 'ay1', 'thickness', 'area', 'score', 'merged'] + (['up', 'down'] if maps.shape[0] > 4 else []), extrasaction='ignore', restval=1); w.writeheader(); w.writerows([{k2: round(v, 2) if isinstance(v, float) else v for k2, v in s.items()} for s in segs])
         with open(os.path.join(a.out, a.method, f['face'] + '.csv'), 'w', newline='') as fh:
             w = csv.writer(fh); w.writerow(['line_no', 'y_deskewed', 'x0', 'x1', 'inserted'])
             for i, r in enumerate(rows, 1): w.writerow([i, round(r['y'], 1), round(r['x0']), round(r['x1']), int(r.get('inserted', False))])

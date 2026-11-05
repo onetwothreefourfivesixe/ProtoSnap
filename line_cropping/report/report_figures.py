@@ -4,10 +4,10 @@
 
 Reads the stored per-face scores (evaluation.csv of each prediction set in tablet_data/ebl_tablets/linemodel/compare/,
 and the Heidelberg summaries) and the stored predictions, so the figures always match the tables. Writes:
-  runs_by_script.png        run 1, run 2, run 3 (two seeds) per script: recall, precision, first line
+  runs_by_script.png        run 1, run 2, then runs 3, 4 and 6 (two seeds each) per script: recall, precision, first line
   training_curves.png       validation recall and precision per epoch for every run
-  runs_examples.jpg         the same test faces read by run 1, run 2 and run 3
-  models_by_script.png      Dencker line network, Kraken (retrained) and the line model: one panel per metric (recall,
+  runs_examples.jpg         the same test faces read by runs 1, 2, 3, 4 and the default model
+  models_by_script.png      Dencker line network, Kraken (retrained) and the default line model: one panel per metric (recall,
                             precision, first line), grouped bars per script and for the Heidelberg hand-drawn lines
   models_examples.jpg       the same test faces read by the three models
 Example faces are drawn at random (seeded) from test faces with annotation coverage >= 0.9 and 6 to 16 lines (>= 0.8 and
@@ -23,10 +23,11 @@ import cv2
 import numpy as np
 import pandas as pd
 
-from line_cropping.paths import EBL, DATA_ROOT
+from line_cropping.paths import EBL, DATA_ROOT, LINE_WEIGHTS
 
 CMP = os.path.join(EBL, 'linemodel', 'compare')
 HEID = os.path.join(DATA_ROOT, 'heidelberg')
+DEFAULT_RUN = os.path.basename(os.path.dirname(LINE_WEIGHTS))
 SURF, TXT, TXT2, MUTED, GRID, BASE = '#fcfcfb', '#0b0b0b', '#52514e', '#898781', '#e1e0d9', '#c3c2b7'
 def read_eval(path):
     # keep_default_na=False: the script code 'NA' (Neo-Assyrian) must not be read as a missing value
@@ -89,30 +90,34 @@ def dot_panels(path, title, legend, rows, series, metrics, note):
     axes[0].set_ylim(-0.6, len(rows) - 0.4)
     fig.suptitle(title, x=0.01, ha='left', fontsize=14, fontweight='bold', color=TXT, y=0.99)
     fig.legend(handles=[Line2D([], [], marker='o', ls='', color=c, markersize=8, label=lab) for lab, c in legend],
-               loc='upper left', bbox_to_anchor=(0.005, 0.93), ncol=len(legend), frameon=False, fontsize=9.5, labelcolor=TXT)
+               loc='upper left', bbox_to_anchor=(0.005, 0.95), ncol=min(3, len(legend)), frameon=False, fontsize=9.5, labelcolor=TXT)
     fig.text(0.01, 0.01, note, fontsize=8, color=MUTED, va='bottom')
     fig.subplots_adjust(left=0.17, right=0.985, top=0.78, bottom=0.17, wspace=0.12)
     fig.savefig(path, dpi=160, facecolor=SURF); plt.close(fig); print('->', path)
 
 
 def runs_by_script(out):
-    blues = ['#9ec5f2', '#5b9ae6', '#1f5fb4']        # one hue, light -> dark: run 1 -> run 3
+    blues = ['#bdd8f6', '#8cb9ee', '#5b9ae6', '#2a78d6', '#0d3f85']        # one hue, light -> dark: run 1 -> run 6
     r1 = script_stats(f'{CMP}/run1/evaluation.csv', 'unet'); r2 = script_stats(f'{CMP}/run2/evaluation.csv', 'unet')
     a = script_stats(f'{CMP}/run3_full_s0/evaluation.csv', 'unet'); b = script_stats(f'{CMP}/run3_full_s1/evaluation.csv', 'unet')
-    r3 = {k: {m: (a[k][m], b[k][m]) for m in ('recall', 'precision', 'first')} for k in a}
+    two = lambda a, b: {k: {m: (a[k][m], b[k][m]) for m in ('recall', 'precision', 'first')} for k in a}
+    r3 = two(a, b)
+    r4 = two(script_stats(f'{CMP}/run4_s0/evaluation.csv', 'unet'), script_stats(f'{CMP}/run4_s1/evaluation.csv', 'unet'))
+    r6 = two(script_stats(f'{CMP}/run6_heights_s0/evaluation.csv', 'unet'), script_stats(f'{CMP}/run6_heights_s1/evaluation.csv', 'unet'))
     dot_panels(os.path.join(out, 'runs_by_script.png'), 'Line model runs on the eBL test faces',
                [('run 1 (302 training faces)', blues[0]), ('run 2 (+ eBL Old Assyrian, Neo-Babylonian; 464)', blues[1]),
-                ('run 3 (+ hand-drawn Neo-Assyrian lines; 490), bar = range of two seeds', blues[2])],
-               SCRIPTS, [('run 1', blues[0], r1), ('run 2', blues[1], r2), ('run 3', blues[2], r3)],
+                ('run 3 (+ hand-drawn Neo-Assyrian lines; 490-507)', blues[2]), ('run 4 (+ height outputs)', blues[3]), ('run 6 (+ validation fixes)', blues[4])],
+               SCRIPTS, [('run 1', blues[0], r1), ('run 2', blues[1], r2), ('run 3', blues[2], r3), ('run 4', blues[3], r4), ('run 6', blues[4], r6)],
                [('recall', 'Line recall'), ('precision', 'Line precision'), ('first', 'First line within half a pitch')],
                'Same read-out for every run. Recall: share of truth lines found within 0.35 pitch; precision only on faces with >= 90% of signs annotated. '
-               'About 760 test faces (NA 160, NB 183, OA 90, OB 327, small 89).')
+               'Bar = range of two seeds; dot = their mean. About 760 test faces (NA 160, NB 183, OA 91, OB 327, small 12).')
 
 
 def training_curves(out):
     import matplotlib.pyplot as plt
     plt.rcParams.update({'font.family': 'DejaVu Sans', 'font.size': 10, 'text.color': TXT})
-    runs = [('run1', 'run 1', '#9ec5f2', '-'), ('run2', 'run 2', '#5b9ae6', '-'), ('run3_full_s0', 'run 3, seed 0', '#1f5fb4', '-'), ('run3_full_s1', 'run 3, seed 1', '#1f5fb4', '--')]
+    runs = [('run1', 'run 1', '#9ec5f2', '-'), ('run2', 'run 2', '#5b9ae6', '-'), ('run3_full_s0', 'run 3, seed 0', '#1f5fb4', '-'), ('run3_full_s1', 'run 3, seed 1', '#1f5fb4', '--'),
+            ('run6_heights_s0', 'run 6 heights, seed 0', '#eb6834', '-'), ('run6_heights_s1', 'run 6 heights, seed 1', '#eb6834', '--')]
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.2), facecolor=SURF)
     for ax, (col, lab) in zip(axes, (('val_recall', 'Validation recall'), ('val_precision', 'Validation precision'))):
         ax.set_facecolor(SURF)
@@ -127,8 +132,8 @@ def training_curves(out):
         ax.set_ylim(0.4, 1.0); ax.set_xlabel('epoch', color=TXT2); ax.set_title(lab, loc='left', fontsize=11.5, fontweight='bold')
     axes[0].legend(frameon=False, fontsize=9, loc='lower right')
     fig.text(0.01, 0.01, 'Dot = saved checkpoint (best validation recall + precision). Validation slices differ between runs (they are redrawn as data are added), '
-             'so curves compare shape, not level.', fontsize=8, color=MUTED)
-    fig.subplots_adjust(left=0.06, right=0.99, top=0.88, bottom=0.2, wspace=0.18)
+             'so curves compare shape, not level.\nRuns 1 to 3 were validated in training mode and read lower than run 6, which was validated after the fix (Appendix A.12).', fontsize=8, color=MUTED)
+    fig.subplots_adjust(left=0.06, right=0.99, top=0.88, bottom=0.23, wspace=0.18)
     p = os.path.join(out, 'training_curves.png'); fig.savefig(p, dpi=160, facecolor=SURF); plt.close(fig); print('->', p)
 
 
@@ -137,12 +142,12 @@ def models_by_script(out):
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
     kr = script_stats(f'{CMP}/kraken/evaluation.csv', 'kraken_ft_merged'); dk = script_stats(f'{CMP}/dencker/evaluation.csv', 'dencker_none')
-    us = script_stats(f'{CMP}/run3_full_s0/evaluation.csv', 'unet')
+    us = script_stats(f'{CMP}/{DEFAULT_RUN}/evaluation.csv', 'unet')
     kr['heid'] = heid_stats(f'{HEID}/kraken/eval_ft_merged/summary.json'); dk['heid'] = heid_stats(f'{HEID}/dencker/eval_none/summary.json')
-    us['heid'] = heid_stats(f'{HEID}/eval_run3_full_s0/summary.json')
+    us['heid'] = heid_stats(f'{HEID}/eval_{DEFAULT_RUN}/summary.json')
     groups = [('all', 'All\nscripts'), ('NA', 'Neo-\nAssyrian'), ('NB', 'Neo-\nBabylonian'), ('OA', 'Old\nAssyrian'), ('OB', 'Old\nBabylonian'),
               ('small', 'Small faces\n(< 60 px/line)'), ('heid', 'Hand-drawn\nNeo-Assyrian lines')]
-    models = [('line model (run 3)', '#2a78d6', us, True), ('Kraken, retrained, pieces joined', '#eb6834', kr, True), ('Dencker et al. network, rebuilt', MUTED, dk, False)]
+    models = [('line model (default, run 6)', '#2a78d6', us, True), ('Kraken, retrained, pieces joined', '#eb6834', kr, True), ('Dencker et al. network, rebuilt', MUTED, dk, False)]
     metrics = [('recall', 'Recall', 'share of the truth lines that were found (within 0.35 line spacing)'),
                ('precision', 'Precision', 'share of the predicted lines that are real lines (faces with >= 90% of signs annotated)'),
                ('first', 'First line placed', 'share of faces whose top predicted line is within half a line spacing of the first truth line')]
@@ -171,8 +176,8 @@ def models_by_script(out):
     fig.suptitle('Three line models on the same test faces', x=0.01, ha='left', fontsize=15, fontweight='bold', color=TXT, y=0.995)
     fig.legend(handles=[Line2D([], [], color=c, lw=6, label=n) for n, c, _, _ in models], loc='upper left', bbox_to_anchor=(0.005, 0.975),
                ncol=3, frameon=False, fontsize=10, labelcolor=TXT)
-    fig.text(0.01, 0.008, 'eBL test faces: about 760 (NA 160, NB 183, OA 90, OB 327; small faces 89). '
-             'Hand-drawn lines: the 9 held-out Heidelberg test faces.\nKraken and the line model were trained on the same 490 faces, the Dencker network on 32 Heidelberg faces; '
+    fig.text(0.01, 0.008, 'eBL test faces: about 760 (NA 160, NB 183, OA 91, OB 327; small faces 12). '
+             'Hand-drawn lines: the 9 held-out Heidelberg test faces.\nThe line model was trained on 507 faces (seed 1), Kraken on 490 (seed 0), the Dencker network on 32 Heidelberg faces; '
              'Kraken\'s side-by-side line pieces were joined with the line model\'s own rule.', fontsize=8, color=MUTED, va='bottom')
     fig.subplots_adjust(left=0.06, right=0.99, top=0.9, bottom=0.11, hspace=0.42)
     path = os.path.join(out, 'models_by_script.png'); fig.savefig(path, dpi=160, facecolor=SURF); plt.close(fig); print('->', path)
@@ -248,7 +253,7 @@ def truth_ebl(face):
 
 
 def runs_examples(out, seed):
-    sets = [('run1', 'run 1'), ('run2', 'run 2'), ('run3_full_s0', 'run 3')]
+    sets = [('run1', 'run 1'), ('run2', 'run 2'), ('run3_full_s0', 'run 3'), ('run4_s0', 'run 4'), (DEFAULT_RUN, 'run 6')]
     ev = {d: read_eval(f'{CMP}/{d}/evaluation.csv').query("method == 'unet'").set_index('face') for d, _ in sets}
     rows, heads = [], []
     for face, f in ebl_examples(seed, ['OA', 'NB', 'NA'], [f'{CMP}/{d}/unet_segments' for d, _ in sets]):
@@ -276,7 +281,7 @@ def models_examples(out, seed):
     cols = [('Dencker', 'dencker_none'), ('Kraken raw', 'kraken_ft'), ('Kraken joined', 'kraken_ft_merged'), ('line model', 'unet')]
     rows, heads = [], []
     ebl_dirs = {'dencker_none': (f'{CMP}/dencker', 'dencker_none'), 'kraken_ft': (f'{CMP}/kraken', 'kraken_ft'),
-                'kraken_ft_merged': (f'{CMP}/kraken', 'kraken_ft_merged'), 'unet': (f'{CMP}/run3_full_s0', 'unet')}
+                'kraken_ft_merged': (f'{CMP}/kraken', 'kraken_ft_merged'), 'unet': (f'{CMP}/{DEFAULT_RUN}', 'unet')}
     ev = {m: read_eval(f'{d}/evaluation.csv').query(f"method == '{mm}'").set_index('face') for m, (d, mm) in ebl_dirs.items()}
     for face, f in ebl_examples(seed + 1, ['OB', 'NB'], [f'{d}/{mm}_segments' for d, mm in ebl_dirs.values()]):
         img = cv2.imread(f['file']); t = truth_ebl(face); r = []
@@ -287,9 +292,9 @@ def models_examples(out, seed):
     ann = pd.read_csv('data/heidelberg/line_annotations_test.csv')
     hfaces = sorted(f for f in {f'{t}__s{s}' for t, s in zip(ann.tablet_CDLI, ann.segm_idx)} if os.path.exists(os.path.join(HEID, 'faces', f + '.jpg')))
     random.seed(seed + 2); tabs = sorted({f.rsplit('__s', 1)[0] for f in hfaces}); hpick = [random.choice([f for f in hfaces if f.startswith(t + '__s')]) for t in random.sample(tabs, 2)]
-    ours = our_heid_segments(hpick, 'weights/linemodel/run3_full_s0/model.pt')
+    ours = our_heid_segments(hpick, LINE_WEIGHTS)
     hdirs = {'dencker_none': (f'{HEID}/dencker/dencker_none_segments', f'{HEID}/dencker/eval_none'), 'kraken_ft': (f'{HEID}/kraken/kraken_ft_segments', f'{HEID}/kraken/eval_ft'),
-             'kraken_ft_merged': (f'{HEID}/kraken/kraken_ft_merged_segments', f'{HEID}/kraken/eval_ft_merged'), 'unet': (None, f'{HEID}/eval_run3_full_s0')}
+             'kraken_ft_merged': (f'{HEID}/kraken/kraken_ft_merged_segments', f'{HEID}/kraken/eval_ft_merged'), 'unet': (None, f'{HEID}/eval_{DEFAULT_RUN}')}
     hev = {m: pd.read_csv(f'{e}/faces.csv').set_index('face') for m, (_, e) in hdirs.items()}
     for face in hpick:
         tab, si = face.rsplit('__s', 1); g = ann[(ann.tablet_CDLI == tab) & (ann.segm_idx == int(si))]

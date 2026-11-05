@@ -2,7 +2,7 @@
 
 For each crop with an ATF line label (OB by default): tokenise the eBL ATF line into sign names (values are
 mapped to signs with a frequency table built from data/ebl/signs_snippets_metadata.json; logograms and determinatives
-are taken as sign names), take the detector boxes whose centres fall inside the crop (in the deskewed frame),
+are taken as sign names), take the detector boxes whose centres fall inside the crop (in the crop's own frame),
 sort them left to right, align the ATF sign sequence to the box sequence (Needleman-Wunsch: +2 for equal sign
 name, 0 for a different name, -1 per gap), and for every ATF sign matched to a box that has a Santakku
 prototype and skeleton, save the box region as a ProtoSnap target image.
@@ -11,6 +11,7 @@ Outputs: <out>/signs/<face>__L<nn>__S<kk>__<hex>.png, <out>/samples.csv (fn,file
 columns run_test.py reads) and <out>/alignment.csv (per ATF sign: matched box, detector class, truth IoU).
   python -m line_cropping.protosnap.protosnap_prep --script OB --font Santakku --out tablet_data/protosnap_inputs/OB [--limit-crops 300]
 """
+from line_cropping.crops.crop_frame import crop_matrix, line_row
 from line_cropping.paths import EBL, PROTOSNAP_INPUTS
 import argparse, csv, json, os, re, collections, unicodedata
 import numpy as np, cv2
@@ -109,7 +110,7 @@ def main():
     for c in crops: by_face[c['face']].append(c)
     samples, align_rows = [], []; stats = collections.Counter(); frag_cache = {}; rot_cache = {}
     for face, cs in by_face.items():
-        f = faces[face]; W, H = int(f['width']), int(f['height']); skew = float(cs[0]['skew_deg']); M = cv2.getRotationMatrix2D((W / 2, H / 2), skew, 1.0)
+        f = faces[face]; W, H = int(f['width']), int(f['height'])
         frag = json.load(open(os.path.join(EBL, f['script'], f['tablet'], 'fragment.json'), encoding='utf-8'))
         # ATF lines of this side, in order
         lines_atf = []; cur = None
@@ -124,7 +125,7 @@ def main():
         boxes = []
         for d in det:
             b = [float(d['x0']), float(d['y0']), float(d['x1']), float(d['y1'])]; cx, cy = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2
-            rc = M @ np.array([cx, cy, 1.0]); boxes.append(dict(box=b, rx=rc[0], ry=rc[1], sign=d['sign'], score=float(d['score'])))
+            boxes.append(dict(box=b, centre=np.array([cx, cy, 1.0]), sign=d['sign'], score=float(d['score'])))
         # truth sign boxes (eBL annotations) for alignment scoring
         truth = []
         annp = os.path.join(EBL, f['script'], f['tablet'], 'annotations.json')
@@ -142,7 +143,11 @@ def main():
             i = int(c['line_no']) - 1
             if i >= len(lines_atf): continue
             signs = atf_line_signs(lines_atf[i], vmap)
-            inb = sorted([b for b in boxes if float(c['y0']) <= b['ry'] <= float(c['y1']) and abs(b['ry'] - float(c['y_center'])) < 0.5 * float(c['pitch_px'])], key=lambda b: b['rx'])
+            Mc = crop_matrix(c, W, H); mid = line_row(c); inb = []
+            for b in boxes:
+                rc = Mc @ b['centre']
+                if float(c['y0']) <= rc[1] <= float(c['y1']) and abs(rc[1] - mid) < 0.5 * float(c['pitch_px']): inb.append((rc[0], len(inb), b))
+            inb = [b for _, _, b in sorted(inb, key=lambda t: t[:2])]
             stats['lines'] += 1; stats['atf_signs'] += len(signs); stats['boxes'] += len(inb)
             if not inb or not signs: continue
             if clf is not None:

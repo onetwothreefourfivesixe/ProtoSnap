@@ -144,7 +144,8 @@ def ebl():
         if not lines: continue
         pv = [float(b['pitch_px']) for b in bs if b['pitch_px'] and np.isfinite(float(b['pitch_px']))]
         pitch = float(np.median(pv)) if pv else np.nan
-        margin = pitch if pitch == pitch else 1.5 * float(np.median([float(l['thickness']) for l in lines]))
+        mv = [float(b['face_margin_px']) for b in bs if b.get('face_margin_px') and np.isfinite(float(b['face_margin_px']))]   # not pitch: see ebl_ground_truth
+        margin = float(np.median(mv)) if mv else 1.5 * float(np.median([float(l['thickness']) for l in lines]))
         x0 = min(float(l['ax0']) for l in lines) - margin; x1 = max(float(l['ax1']) for l in lines) + margin
         y0 = min(min(float(l['ay0']), float(l['ay1'])) - float(l['thickness']) for l in lines) - margin
         y1 = max(max(float(l['ay0']), float(l['ay1'])) + float(l['thickness']) for l in lines) + margin

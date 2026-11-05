@@ -2,13 +2,14 @@
 
 ProtoSnap saves the fitted skeleton as dst_points_<itr>.pt in the 512 x 512 frame of the (stretched) target image,
 with y flipped for plotting. This tool undoes the flip, maps the points through the padded sign box that the target
-was cut from (alignment.csv, same padding as protosnap_prep.py) into face pixels, rotates them into the deskewed
-frame of the face's line crops, and draws them.
+was cut from (alignment.csv, same padding as protosnap_prep.py) into face pixels, rotates them into the frame of
+their line crop (crops/crop_frame.py), and draws them.
 
   python -m line_cropping.protosnap.overlay_results --run output/line_cropping/phase6_OB --samples tablet_data/protosnap_inputs/OB/samples_run40.csv \
       --alignment tablet_data/protosnap_inputs/OB/alignment.csv --out output/line_cropping/phase6_OB/overlays
 Writes <out>/faces/<face>.jpg, <out>/lines/<face>__L<nn>.jpg, <out>/line_contact_sheet.jpg, <out>/index.csv.
 """
+from line_cropping.crops.crop_frame import crop_matrix
 from line_cropping.paths import EBL
 import argparse, csv, os, collections
 import numpy as np, cv2, torch
@@ -61,13 +62,13 @@ def main():
             X0, Y0, X1, Y1 = it['box']; cv2.rectangle(ov, (X0, Y0), (X1, Y1), (0, 255, 0), 3); draw_skeleton(ov, it['pts'], it['con'], it['labels'], 3)
             cv2.putText(ov, it['name'], (X0, max(20, Y0 - 8)), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 2, cv2.LINE_AA)
         sc = min(1.0, 1600 / max(H, W)); cv2.imwrite(os.path.join(a.out, 'faces', face + '.jpg'), cv2.resize(ov, None, fx=sc, fy=sc), [cv2.IMWRITE_JPEG_QUALITY, 85])
-        # --- line overlays (deskewed gap crops) ---
+        # --- line overlays (each in its crop's frame) ---
         by_line = collections.defaultdict(list)
         for it in items: by_line[it['line_no']].append(it)
         for ln, its in by_line.items():
             c = crops.get((face, ln))
             if c is None: continue
-            skew = float(c['skew_deg']); M = cv2.getRotationMatrix2D((W / 2, H / 2), skew, 1.0)
+            M = crop_matrix(c, W, H)
             cx0, cy0 = int(c['x0']), int(c['y0']); crop = cv2.imread(c['crop'])
             if crop is None: continue
             up = 2 if crop.shape[0] < 300 else 1

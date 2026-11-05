@@ -9,15 +9,20 @@ past the edge, for interlocking lines), so tall signs and slightly slanted lines
 while no crop takes in half of the next line. `--extend e` moves every boundary out by e pitch without that cap
 (0.15-0.2 recommended by the sign-box calibration, eval/height_calibration.py).
 
+With --bounds segments or heights each line is cut along its own predicted tilt, rotated about the line's midpoint
+(--no-rotate-per-line cuts every line in the deskewed face instead). A line more than 20 degrees off the face's skew
+falls back to the deskewed face, as do all lines of a face whose segment count differs from its line count.
+
   python -m line_cropping.crops.make_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions --method det_n --out tablet_data/ebl_tablets/line_crops
 
 For each face with a prediction: rotate the face by the run's skew, then cut, for line i at centre y_i, the rows
 [y_i - (0.5 + pad) * pitch, y_i + (0.5 + pad) * pitch] (pad 0.5 by default, i.e. a crop two pitches tall: eBL sign boxes are
 about as tall as the line pitch, so a shorter crop cuts the wedges of most lines) and the columns [x0 - margin, x1 + margin] of that line
 (pitch = median gap between the predicted lines; margin = 0.5 pitch). Crops are saved as
-<out>/<face>/<face>__L<nn>.jpg and listed in <out>/crops.csv with their rectangle in the deskewed face, the skew,
+<out>/<face>/<face>__L<nn>.jpg and listed in <out>/crops.csv with their rectangle, the skew,
 the face's offset in the original photo, and the ATF line label when the predicted count equals the ATF count
-for that side (else blank, with `atf_aligned` = False).
+for that side (else blank, with `atf_aligned` = False). The rectangle is in the deskewed face, unless line_angle_deg is
+filled: then it is in the frame of the original face rotated by line_angle_deg about (line_cx, line_cy).
 """
 from line_cropping.paths import EBL
 import argparse, csv, os, json, re
@@ -81,6 +86,22 @@ def line_bounds_midpoint(ys, pitch):
     return out
 
 
+def line_bounds_from_heights(seg_csv, W, H, skew, ys, pitch, scale=1.0):
+    """Crop boundaries from the height channels (a model trained with --heights): each line's own reach above and below
+    its centre in the deskewed frame, scaled by `scale`. Neighbouring crops may overlap. Lines with no segment match fall
+    back to midpoints, as in line_bounds_from_segments."""
+    import csv as _csv
+    R = list(_csv.DictReader(open(seg_csv)))
+    if R and 'up' not in R[0]: raise SystemExit(f'{seg_csv} has no heights: --bounds heights needs a model trained with --heights')
+    if len(R) != len(ys): return line_bounds_midpoint(ys, pitch)
+    M = cv2.getRotationMatrix2D((W / 2, H / 2), skew, 1.0); out = []
+    for r in R:
+        p0 = M @ np.array([float(r['ax0']), float(r['ay0']), 1.0]); p1 = M @ np.array([float(r['ax1']), float(r['ay1']), 1.0]); c = (p0[1] + p1[1]) / 2
+        out.append((c, c - max(scale * float(r['up']), 0.25 * pitch), c + max(scale * float(r['down']), 0.25 * pitch)))     # a bad height never loses the line
+    out.sort()
+    return [(t, b) for _, t, b in out]
+
+
 def line_bounds_from_segments(seg_csv, W, H, skew, ys, pitch, pad_frac=0.06):
     """Crop boundaries from predicted oriented segments with a thickness (the line model's *_segments files): each
     line's top/bottom = its band edges in the deskewed frame; boundary between lines = midpoint of the gap between
@@ -121,14 +142,16 @@ def apply_overlap(bounds, ys, pitch, overlap, edges=None, into=0.0):
     return out
 
 
-def crop_along_segment(img, seg, top_off, bot_off, margin):
+def crop_along_segment(img, seg, top_off, bot_off, margin, trim=False):
     """Cut a line in its own frame: rotate the face about the segment's midpoint by the segment's angle, then take
     rows [mid_y + top_off, mid_y + bot_off] and columns [x0 - margin, x1 + margin] of the rotated image. top_off/
-    bot_off are signed offsets from the line centre (negative above). Returns the crop and its rectangle+angle."""
+    bot_off are signed offsets from the line centre (negative above). trim: as --trim-background. Returns the crop and
+    its rectangle+angle."""
     H, W = img.shape[:2]; cx, cy = (seg['ax0'] + seg['ax1']) / 2, (seg['ay0'] + seg['ay1']) / 2
     ang = np.degrees(np.arctan2(seg['ay1'] - seg['ay0'], seg['ax1'] - seg['ax0'])); L = ((seg['ax1'] - seg['ax0']) ** 2 + (seg['ay1'] - seg['ay0']) ** 2) ** 0.5
     M = cv2.getRotationMatrix2D((cx, cy), ang, 1.0); rot = cv2.warpAffine(img, M, (W, H), flags=cv2.INTER_LINEAR, borderValue=(0, 0, 0))
     X0, X1 = int(max(0, cx - L / 2 - margin)), int(min(W, cx + L / 2 + margin)); Y0, Y1 = int(max(0, cy + top_off)), int(min(H, cy + bot_off))
+    if trim and Y1 - Y0 >= 4 and X1 - X0 >= 4: X0, X1 = trim_to_tablet(rot, X0, Y0, X1, Y1)
     return rot[Y0:Y1, X0:X1], dict(x0=X0, y0=Y0, x1=X1, y1=Y1, angle=float(ang), cx=float(cx), cy=float(cy))
 
 
@@ -153,16 +176,20 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--faces', required=True); ap.add_argument('--pred', required=True); ap.add_argument('--method', default='det_n')
     ap.add_argument('--out', required=True); ap.add_argument('--pad', type=float, default=0.5); ap.add_argument('--margin', type=float, default=0.5)
     ap.add_argument('--quality', type=int, default=92); ap.add_argument('--limit', type=int, default=None)
-    ap.add_argument('--bounds', choices=['gap', 'segments', 'midpoint', 'band'], default='gap', help="gap: from the gap above the line to the gap below, found from detector boxes; segments: from the predicted bands of the line model (<pred>/<method>_segments); midpoint: halfway between consecutive line centres (no boxes needed); band: centre +- (0.5+pad) pitch")
+    ap.add_argument('--bounds', choices=['gap', 'segments', 'midpoint', 'band', 'heights'], default='gap', help="heights: each line's own height from the model's height channels; gap: from the gap above the line to the gap below, found from detector boxes; segments: from the predicted bands of the line model (<pred>/<method>_segments); midpoint: halfway between consecutive line centres (no boxes needed); band: centre +- (0.5+pad) pitch")
     ap.add_argument('--overlap', type=float, default=0.0, help='neighbouring crops share this many pitches beyond each boundary between lines, capped at the edge of the neighbour\'s band (see --overlap-into) so no crop takes in half of the next line (gap, segments and midpoint bounds; 0 = no overlap)')
     ap.add_argument('--overlap-into', type=float, default=0.0, help='with --overlap: how far past the edge of the neighbour\'s band a crop may reach, as a share of that band\'s height (0 = up to the edge; 0.25 = its outer quarter, for interlocking lines; clamped below 0.5)')
     ap.add_argument('--extend', type=float, default=0.0, help='move every top and bottom boundary outward by this many pitches, with no cap (calibrated on the eBL sign boxes: 0.15-0.2 keeps 98-99%% of a line\'s signs, eval/height_calibration.py; --overlap is capped at the neighbour\'s band edge)')
+    ap.add_argument('--height-scale', type=float, default=1.0, help='with --bounds heights: multiply each line\'s predicted reach, to trade whole signs against other lines\' signs')
+    ap.add_argument('--no-images', action='store_true', help='write crops.csv only, no image files (for scoring; keeps file counts down on shared scratch)')
+    ap.add_argument('--shift', type=float, default=0.0, help='move every top and bottom boundary down by this many pitches (the line model\'s lines sit about 0.06 pitch above the middle of the signs)')
     ap.add_argument('--trim-background', action='store_true', help='after adding the margin, trim each crop\'s left and right edges back to the edge of the clay')
-    ap.add_argument('--rotate-per-line', action='store_true', help='with --bounds segments: cut each line in its own frame, rotated by that line\'s predicted angle (curved/warped faces); lines without a segment fall back to the face-level frame')
+    ap.add_argument('--rotate-per-line', action=argparse.BooleanOptionalAction, default=True, help='with --bounds segments or heights: cut each line along its own predicted tilt; lines without a usable segment fall back to the deskewed face')
     ap.add_argument('--split', choices=['all', 'test', 'tune'], default='all', help='restrict to faces of this Phase 5 split (tablet_data/ebl_tablets/split.csv)')
     ap.add_argument('--atf-source', choices=['ebl', 'cdli'], default='ebl', help='where the ATF line labels come from: eBL fragment.json (eBL faces) or the CDLI dump (faces.csv needs a p_number column)')
     ap.add_argument('--det', default=f'{EBL}/detections', help='detector boxes used for gap bounds')
     a = ap.parse_args(); os.makedirs(a.out, exist_ok=True)
+    write_crop = (lambda path, im: None) if a.no_images else (lambda path, im: cv2.imwrite(path, im, [cv2.IMWRITE_JPEG_QUALITY, a.quality]))
     faces = list(csv.DictReader(open(a.faces)))
     if a.split != 'all' and os.path.exists(f'{EBL}/split.csv'):
         fs = {r['face'] for r in csv.DictReader(open(f'{EBL}/split.csv')) if r['split'] == a.split}; faces = [f for f in faces if f['face'] in fs]
@@ -181,7 +208,7 @@ def main():
         if not np.isfinite(pitch) or pitch <= 2: pitch = float(r['pitch_px'])
         half = (0.5 + a.pad) * pitch; mx = a.margin * pitch
         segs_by_line = {}
-        if a.rotate_per_line and a.bounds == 'segments':
+        if a.rotate_per_line and a.bounds in ('segments', 'heights'):
             sp = os.path.join(a.pred, a.method + '_segments', f['face'] + '.csv')
             if os.path.exists(sp):
                 M0 = cv2.getRotationMatrix2D((W / 2, H / 2), skew, 1.0); segl = []
@@ -193,9 +220,12 @@ def main():
         if a.bounds == 'gap': bounds = line_bounds_from_boxes(os.path.join(a.det, f['face'] + '.csv'), W, H, skew, ys, pitch)
         elif a.bounds == 'midpoint': bounds = line_bounds_midpoint(ys, pitch)
         elif a.bounds == 'segments': bounds = line_bounds_from_segments(os.path.join(a.pred, a.method + '_segments', f['face'] + '.csv'), W, H, skew, ys, pitch)
+        elif a.bounds == 'heights': bounds = line_bounds_from_heights(os.path.join(a.pred, a.method + '_segments', f['face'] + '.csv'), W, H, skew, ys, pitch, a.height_scale)
         else: bounds = None
         if bounds is not None and a.extend > 0:
             bounds = [(t - a.extend * pitch, b + a.extend * pitch) for t, b in bounds]
+        if bounds is not None and a.shift:
+            bounds = [(t + a.shift * pitch, b + a.shift * pitch) for t, b in bounds]
         if bounds is not None and a.overlap > 0:
             edges = {'gap': getattr(line_bounds_from_boxes, 'edges', None), 'segments': getattr(line_bounds_from_segments, 'edges', None)}.get(a.bounds)
             bounds = apply_overlap(bounds, ys, pitch, a.overlap, edges if edges is not None and len(edges) == len(ys) else None, a.overlap_into)
@@ -213,7 +243,8 @@ def main():
                     rec = json.loads(l); main.cdli[rec['p_number']] = rec['atf']
             labels = atf_labels_for_side(main.cdli.get(f.get('p_number', ''), ''), f['side'])
         aligned = len(labels) == len(lines) and len(labels) > 0
-        d = os.path.join(a.out, f['face']); os.makedirs(d, exist_ok=True); n_faces += 1
+        d = os.path.join(a.out, f['face']); n_faces += 1
+        if not a.no_images: os.makedirs(d, exist_ok=True)
         for i, l in enumerate(lines, 1):
             y = float(l['y_deskewed']); x0 = float(l['x0']) - mx; x1 = float(l['x1']) + mx
             if bounds is not None: ylo, yhi = bounds[i - 1]
@@ -222,17 +253,17 @@ def main():
             if a.trim_background and Y1 - Y0 >= 4 and X1 - X0 >= 4:
                 X0, X1 = trim_to_tablet(rot, X0, Y0, X1, Y1)
             if X1 - X0 < 4 or Y1 - Y0 < 4: continue
-            name = f"{f['face']}__L{i:02d}.jpg"; line_angle = ''
+            name = f"{f['face']}__L{i:02d}.jpg"; line_angle = line_cx = line_cy = ''
             sg = segs_by_line.get(i); sg_ang = np.degrees(np.arctan2(sg['ay1'] - sg['ay0'], sg['ax1'] - sg['ax0'])) if sg else None
-            if sg is not None and abs(((sg_ang + skew) + 90) % 180 - 90) <= 20:   # per-line frame only within 20 deg of the face skew
-                cimg, rect = crop_along_segment(img, segs_by_line[i], ylo - y, yhi - y, mx)
+            if sg is not None and abs(((sg_ang - skew) + 90) % 180 - 90) <= 20:   # per-line frame only within 20 deg of the face skew
+                cimg, rect = crop_along_segment(img, segs_by_line[i], ylo - y, yhi - y, mx, a.trim_background)
                 if cimg.size and cimg.shape[0] >= 4 and cimg.shape[1] >= 4:
-                    cv2.imwrite(os.path.join(d, name), cimg, [cv2.IMWRITE_JPEG_QUALITY, a.quality]); X0, Y0, X1, Y1 = rect['x0'], rect['y0'], rect['x1'], rect['y1']; line_angle = round(rect['angle'], 2)
-                else: cv2.imwrite(os.path.join(d, name), rot[Y0:Y1, X0:X1], [cv2.IMWRITE_JPEG_QUALITY, a.quality])
-            else: cv2.imwrite(os.path.join(d, name), rot[Y0:Y1, X0:X1], [cv2.IMWRITE_JPEG_QUALITY, a.quality])
+                    write_crop(os.path.join(d, name), cimg); X0, Y0, X1, Y1 = rect['x0'], rect['y0'], rect['x1'], rect['y1']; line_angle, line_cx, line_cy = round(rect['angle'], 3), round(rect['cx'], 2), round(rect['cy'], 2)
+                else: write_crop(os.path.join(d, name), rot[Y0:Y1, X0:X1])
+            else: write_crop(os.path.join(d, name), rot[Y0:Y1, X0:X1])
             rows.append(dict(crop=os.path.join(d, name), face=f['face'], tablet=f.get('tablet', f.get('p_number', '')), script=f.get('script', ''), side=f['side'], line_no=i, n_lines=len(lines),
                              atf_line=labels[i - 1] if aligned else '', atf_aligned=aligned, y_center=round(y, 1), x0=X0, y0=Y0, x1=X1, y1=Y1, pitch_px=round(pitch, 1),
-                             skew_deg=skew, line_angle_deg=line_angle, face_w=W, face_h=H, photo_crop_x0=f.get('crop_x0', ''), photo_crop_y0=f.get('crop_y0', ''), n_boxes=l.get('n_boxes', '')))
+                             skew_deg=skew, line_angle_deg=line_angle, line_cx=line_cx, line_cy=line_cy, face_w=W, face_h=H, photo_crop_x0=f.get('crop_x0', ''), photo_crop_y0=f.get('crop_y0', ''), n_boxes=l.get('n_boxes', '')))
         if a.limit and n_faces >= a.limit: break
     with open(os.path.join(a.out, 'crops.csv'), 'w', newline='', encoding='utf-8') as fh:
         w = csv.DictWriter(fh, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)

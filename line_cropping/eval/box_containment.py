@@ -5,8 +5,8 @@
 
 For every face of --split with sign-annotation coverage >= --min-cov that every crop set covers, the eBL sign boxes are
 mapped into the deskewed face (the frame each crop set was cut in) and grouped by transliteration line. A crop set is
-either rectangles (crops.csv x0..y1) or line-shaped crops with a mask (crops.csv 'mask' column, seam_crops.py). Areas
-are counted on a pixel grid (every second pixel). Each truth line is given the crop that holds most of its box area.
+either rectangles (crops.csv x0..y1), rectangles along a line's own tilt (line_angle_deg filled, make_crops.py), or
+line-shaped crops with a mask (crops.csv 'mask' column, seam_crops.py). Areas are counted on a pixel grid (every second pixel). Each truth line is given the crop that holds most of its box area.
   own_in_crop     share of the line's box area inside its crop (1 = every sign whole)
   foreign_share   share of the box area inside a crop that belongs to other lines (0 = none of the neighbours' signs)
   half_neighbour  the crop holds at least half of some other line's box area
@@ -71,6 +71,13 @@ def crop_masks(rows, W, H, grow=0.0):
             ys, xs = np.nonzero(mk)
             ys, xs = (ys + y0) // STEP, (xs + x0) // STEP
             ok = (ys >= 0) & (ys < h) & (xs >= 0) & (xs < w); m[ys[ok], xs[ok]] = True
+        elif r.get('line_angle_deg'):                   # rectangle in the line's own frame: test the grid points in that frame
+            Ml = cv2.getRotationMatrix2D((float(r['line_cx']), float(r['line_cy'])), float(r['line_angle_deg']), 1.0)
+            Ms = cv2.getRotationMatrix2D((W / 2, H / 2), float(r['skew_deg']), 1.0)
+            A = np.vstack([Ml, [0, 0, 1]]) @ np.vstack([cv2.invertAffineTransform(Ms), [0, 0, 1]])
+            yy, xx = np.mgrid[0:h, 0:w] * STEP
+            u, v = A[0, 0] * xx + A[0, 1] * yy + A[0, 2], A[1, 0] * xx + A[1, 1] * yy + A[1, 2]
+            m = (u >= x0) & (u < x1) & (v >= y0) & (v < y1)
         else:
             m[max(0, y0) // STEP:max(0, y1) // STEP, max(0, x0) // STEP:max(0, x1) // STEP] = True
         out.append(m)

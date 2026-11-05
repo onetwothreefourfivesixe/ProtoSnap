@@ -4,7 +4,7 @@ This report covers the line model built for the line-cropping pipeline (its Phas
 data and ground truth behind it, the model and how its output becomes line crops, how it is evaluated, and what it
 achieves against earlier runs and against other line finders. It is written for readers who know OCR and object
 detection; terms specific to the project are defined where they first appear. The work ran from late September to
-mid-October 2026; the order of experiments is kept in Appendix A, and the main text is organised by topic. The rest of
+early November 2026; the order of experiments is kept in Appendix A, and the main text is organised by topic. The rest of
 the pipeline is described in `docs/line_cropping/pipeline_overview.md`, the published alternatives in
 `related_work.md`, and the code is in `line_cropping/linemodel/`.
 
@@ -13,43 +13,53 @@ the pipeline is described in `docs/line_cropping/pipeline_overview.md`, the publ
 - **What was built.** A U-Net with a ResNet-34 encoder that reads a photographed tablet face and predicts where its
   text lines are, as bands with a direction, without a transliteration or a sign detector. A read-out turns the
   bands into line segments, and the crop step cuts one image per line.
-- **Data.** 490 training faces across four scripts: Old Babylonian (OB), Neo-Assyrian (NA), Neo-Babylonian (NB) and
-  Old Assyrian (OA). Line truth comes from eBL sign boxes grouped by transliteration line, from hand-marked Old Assyrian
-  lines, and from hand-drawn Neo-Assyrian lines published by Dencker et al. (2020).
-- **Results on held-out test faces** (about 760 eBL faces; the current model, run 3):
+- **Data.** 490 training faces with seed 0 (507 with seed 1) across four scripts: Old Babylonian (OB), Neo-Assyrian (NA),
+  Neo-Babylonian (NB) and Old Assyrian (OA). Line truth comes from eBL sign boxes grouped by transliteration line, from
+  hand-marked Old Assyrian lines, and from hand-drawn Neo-Assyrian lines published by Dencker et al. (2020).
+- **Results on held-out test faces** (about 760 eBL faces; the current model, run 6 with heights; `run6_heights_s1` is the default):
 
   | | recall | precision | first line within half a pitch |
   |---|---|---|---|
-  | all scripts | 0.87-0.88 | 0.87 | 79-86% |
-  | Neo-Assyrian / Neo-Babylonian / Old Assyrian / Old Babylonian | 0.84-0.85 / 0.88 / 0.89 / 0.87-0.89 | 0.89-0.90 / 0.87-0.88 / 0.87-0.89 / 0.86 | 52-59% / 81% / 66-89% / 88-93% |
-  | hand-drawn Neo-Assyrian lines (9 faces never trained on) | 0.96-0.98 | 0.93-0.94 | 89% |
+  | all scripts | 0.94 | 0.89-0.91 | 86-87% |
+  | Neo-Assyrian / Neo-Babylonian / Old Assyrian / Old Babylonian | 0.90-0.92 / 0.94-0.95 / 0.89-0.93 / 0.97 | 0.89 / 0.90-0.91 / 0.90 / 0.89-0.91 | 54-60% / 82-83% / 82-86% / 96% |
+  | hand-drawn Neo-Assyrian lines (9 faces never trained on) | 0.97-0.98 | 0.96-1.00 | 89% |
 
-  Ranges are the two training seeds. Recall is the share of truth lines found, precision the share of predicted lines
-  that are real (section 5).
-- **Progress over the three runs.** Adding eBL Old Assyrian and Neo-Babylonian data (run 2) lifted all-script recall
-  from 0.81 to 0.87 and precision from 0.81 to 0.88, Old Assyrian from 0.61 to 0.92 recall. Adding hand-drawn
-  Neo-Assyrian lines (run 3) raised Neo-Assyrian recall from 0.81 to 0.84-0.85 and small faces from 0.76 to 0.81, at a
-  small cost on Old Assyrian and Old Babylonian; overall it ties with run 2.
-- **Crops.** With the line ends set from where the predicted band fades, 95 percent of fully annotated lines sit
-  whole in their crop (against 60 percent for the detector route), and no crop holds half of a neighbouring line.
-- **Against other line finders.** The line model beats a rebuilt Dencker et al. line network on both test sets and
-  Kraken's segmenter retrained on the same faces on precision, first-line placement and the hand-drawn lines; Kraken
-  finds two lines more in a hundred on eBL. The detector route with the transliteration's line count still has the
-  best eBL scores (0.91 / 0.91) but needs a transliteration (section 6.4).
-- **Open problems.** Placing the first line of Neo-Assyrian fragments (52-59 percent), false lines on worn faces,
-  seed-to-seed variation of several points on the smaller scripts, and line truth that is itself fitted from sign
-  boxes (section 7).
+  Ranges are the two training seeds; the default is seed 1. Recall is the share of truth
+  lines found, precision the share of predicted lines that are real (section 5). Neo-Assyrian precision rests on about 25
+  faces, and the hand-drawn row on 9 faces from 5 tablets, where one face moves first-line placement by 11 points.
+- **Progress over the runs.** Adding eBL Old Assyrian and Neo-Babylonian data (run 2) lifted all-script recall
+  from 0.85 to 0.91 and precision from 0.82 to 0.89, Old Assyrian from 0.60 to 0.90 recall. Adding hand-drawn
+  Neo-Assyrian lines (run 3) lifted the hand-drawn test lines and Neo-Babylonian recall, at a small cost on Old Assyrian
+  and Old Babylonian; overall it ties with run 2. Height outputs (run 4) missed their main aim, crops that follow each line's height (A.10),
+  and their apparent gain on lines did not hold: after the validation fixes, models with and without them
+  score the same within noise (run 6, A.13). Those fixes did reduce crops holding half of another line. These scores use the corrected line spacing
+  and scoring (Appendix A.9, A.12).
+- **Crops.** With the recommended settings (`--bounds segments --extend 0.2 --shift 0.06`, cut along each line's tilt) on
+  `run6_heights_s1`, 68 percent of lines keep at least 95 percent of their sign boxes in the crop, a crop's median share of other
+  lines' signs is 17 percent, and 5.5 percent of crops hold half of another line (`run4_s0`: 70, 18 and 7.9; A.13). Crop height trades these against
+  each other. Lengthwise, line ends are mostly solved: on run 2 crops, 95 percent of fully annotated lines were not cut
+  short along their length (section 6.3).
+- **Against other line finders.** On the same faces, the line model beats Kraken's segmenter retrained on the same data on
+  precision (0.89-0.91 against 0.82), first-line placement and recall and precision on the hand-drawn lines, and is level on eBL recall. A rebuilt
+  Dencker et al. line network, given each face's true line spacing, comes close to run 3 on eBL (0.89 / 0.86) but is well
+  behind on the hand-drawn lines. On the 487 faces it was run on, the detector route with the transliteration's line count
+  is level with `run6_heights_s1` on recall and precision (0.94 / 0.91 against 0.95 / 0.91) and ahead on Neo-Assyrian first lines
+  (74 against 60 percent), but it needs a transliteration, and its detector was trained on a superset of these annotations
+  (section 6.4).
+- **Open problems.** Placing the first line of Neo-Assyrian fragments (54-60 percent), false lines on worn faces,
+  seed-to-seed variation of several points on the smaller scripts, line truth that is itself fitted from sign
+  boxes, and what these scores leave out, such as multi-column faces (section 7).
 
 ![Line model runs per script](img/runs_by_script.png)
 
-*Figure 1. The three runs on the eBL test faces, per script: recall, precision and first-line placement. Run 3's bar
-spans its two training seeds.*
+*Figure 1. Runs 1, 2, 3, 4 and 6 (with heights) on the eBL test faces, per script: recall, precision and first-line placement. Bars
+for runs 3, 4 and 6 span their two training seeds, and the dot is their mean. Run 5 is not drawn; its scores are in Appendix A.12.*
 
 ## 1. Problem and approach
 
 The pipeline's first line finder infers lines from detected signs: the eBL Deformable DETR detector [1] finds sign
 boxes, the boxes are clustered by height into lines, and the transliteration's line count **N** reconciles the
-result. On eBL photographs with a transliteration it reaches 0.91 line recall. Its two dependencies are exactly what a
+result. On eBL photographs with a transliteration it reaches 0.94 line recall. Its two dependencies are exactly what a
 new tablet lacks: without N, count agreement drops to 25 percent, and where the detector finds too few signs, as on
 low-resolution photographs, the route fails. The line model predicts lines from the face image directly, so neither a
 transliteration nor a sign detector is needed at line-finding time; both remain available as optional refinements.
@@ -85,13 +95,13 @@ is the median distance between consecutive lines on a face and is the unit for a
 | source | what an annotator drew | how a truth line is made | used for |
 |---|---|---|---|
 | eBL sign annotations (OB, NA, OA, NB) | a box around each sign, with the transliteration line it belongs to | least-squares straight segment through the centres of one line's boxes (`truth/ebl_ground_truth.py`) | training and the main test set |
-| Old Assyrian Line Marker labels (CDLI photographs) | a mark at each line's height on 79 faces | horizontal segment across the face at that height, thickness 0.6 pitch | training |
+| Old Assyrian Line Marker labels (CDLI photographs) | a mark at each line's height on 88 faces (7 or 4 of them held out for validation, depending on the seed) | horizontal segment across the face at that height, thickness 0.6 pitch | training |
 | Heidelberg line annotations, Dencker et al. 2020 (NA) | each text line as a polyline from end to end, 618 lines on 50 faces | the polyline itself, as a chain of short segments | training (32 faces) and an independent test (9 faces) |
 
-The eBL truth has two known limits. A line spans only the signs that were boxed, and annotation is partial (a median
-of 86 percent of a face's lines). Only faces with **coverage**, the share of transliteration lines that have boxes, of
+The eBL truth has two known limits. A line spans only the signs that were boxed, and annotation is partial on some scripts (median
+coverage is 1.0 on OB, OA and NB, but 0.12 on NA). Only faces with **coverage**, the share of transliteration lines that have boxes, of
 at least 0.9 are used, and precision is scored only on them. And a line is always straight, and occasionally wrong
-where boxes of neighbouring lines were mislabelled (Figure 8, K.9654). The Heidelberg lines have neither limit, which
+where boxes of neighbouring lines were mislabelled (HS.2069 in `related_work.md`, Figure 2). The Heidelberg lines have neither limit, which
 is why they serve as the independent check.
 
 ![Hand-drawn Heidelberg line annotations](img/heidelberg_line_annotations.jpg)
@@ -101,15 +111,19 @@ slope; on the cracked tablet on the right a line is drawn as separate pieces eit
 
 ### 2.2 Training sets
 
-Training uses only faces of the Phase 5 **tune** split; the **test** split is never trained on. New faces were added
-to the split by tablet, so a tablet's obverse and reverse are always on the same side (`eval/extend_split.py`). A tenth
-of the training tablets are held out as a validation slice that chooses the checkpoint.
+Training uses only faces of the Phase 5 **tune** split; the **test** split is never trained on. Faces added later (the OA and NB faces)
+were split by tablet, so their obverse and reverse are on the same side (`eval/extend_split.py`). The original NA and OB
+split was made by face, not by tablet, so a test face can share a tablet with a training face: this applies to 158 of the 966
+test faces (146 OB, 12 NA). It barely affects scores (`run4_s0`: recall 0.937 and precision 0.911 on the clean tablets, 0.939
+and 0.918 on the shared ones), so the split was kept. A tenth of the training tablets are held out as a validation slice that
+chooses the checkpoint. The slice depends on the seed, so seeds also differ in their training faces.
 
 | run | eBL OB | eBL NA | eBL OA | eBL NB | OA hand labels | Heidelberg NA | training / validation faces |
 |---|---|---|---|---|---|---|---|
 | run 1 | 205 | 16 | - | - | 81 | - | 302 / 38 |
 | run 2 | 202 | 20 | 93 | 70 | 79 | - | 464 / 60 |
-| run 3 | 208 | 21 | 86 | 68 | 81 | 26 | 490 / 66 |
+| run 3 and run 4, seed 0 | 208 | 21 | 86 | 68 | 81 | 26 | 490 / 66 |
+| run 3 and run 4, seed 1 | 205 | 20 | 101 | 70 | 84 | 27 | 507 / 49 |
 
 Run 2's Old Assyrian and Neo-Babylonian faces come from 311 eBL tablets chosen from the eBL annotation export of
 11 Sep 2026 (`data/ebl/annotations_11.09.2026/`) for having at least 50 sign boxes with a line position
@@ -179,8 +193,8 @@ line recall plus precision is kept, so selection uses the measure the project ca
 
 ![Validation curves of all runs](img/training_curves.png)
 
-*Figure 5. Validation recall and precision per epoch for every run; the dot marks the saved checkpoint. Validation
-slices differ between runs, so the curves compare shape, not level. All runs level off after about 15 to 20 epochs.*
+*Figure 5. Validation recall and precision per epoch for runs 1 to 3 and run 6 with heights; the dot marks the saved checkpoint. Validation
+slices differ between runs, so the curves compare shape, not level, and run 6 reads higher mainly because of the validation fixes (A.12).*
 
 ## 4. From maps to lines and crops
 
@@ -213,8 +227,9 @@ below, with half a pitch of margin beyond the line's ends. Options, each tested 
 | option | effect | default |
 |---|---|---|
 | line ends from the fading band (`infer.py --end-thr 0.2 --clip-tablet 1`) | fewer lines cut short at the right end, fewer crops running into the background | on |
-| `--rotate-per-line` | each line cut in its own frame, rotated by its own angle (within 20 degrees of the face's) | off |
+| `--rotate-per-line` | each line cut along its own tilt, rotated by its own angle (within 20 degrees of the face's); about 2 points more whole lines at the same crop size (A.11) | on with segment or height bounds; `--no-rotate-per-line` for the deskewed face |
 | `--extend 0.2` | every crop boundary moves out by 0.2 pitch, uncapped: 98% of a line's signs inside instead of 81%, two thirds of lines whole, for a strip of the neighbours' signs (Appendix A.8) | off (recommended where neighbour content is tolerated) |
+| `--shift 0.06` | every crop boundary moves down by 0.06 pitch, because the model's lines sit slightly above the middle of the signs: with `--extend 0.2`, 70% of lines whole instead of 67%, 60% instead of 52% on Neo-Assyrian, at no cost (Appendix A.9) | off |
 | `--overlap 0.15` | neighbouring crops share 0.15 pitch of rows, never past the neighbour's band, so tall signs are not clipped | off |
 | `--trim-background` | crop ends trimmed back to the edge of the clay | off (for uses where any background is worse than a slightly cut line) |
 
@@ -226,12 +241,14 @@ scale; the right-hand labels give each line's own angle.*
 ## 5. How it is evaluated
 
 **Test sets.** (1) The eBL test split: about 760 faces with at least two truth lines, never trained on (NA 160,
-NB 183, OA 90, OB 327); results are also given for **small faces**, those with fewer than 60 pixels between lines.
+NB 183, OA 90, OB 327); results are also given for **small faces**, those with fewer than 60 pixels between lines (12 test faces).
 (2) The 9 Heidelberg test faces with hand-drawn lines (99 lines), never trained on by any run; every line on them is
 drawn, so precision is valid on every face, and line ends can be checked.
 
 **Line measures** (`eval/evaluate_lines.py`, `eval/evaluate_heidelberg.py`). A predicted line matches a truth line when
-their centre heights differ by less than 0.35 pitch, one prediction per truth line. **Recall** is the share of truth
+their centre heights differ by less than 0.35 pitch, one prediction per truth line. Pitch is the median gap between the
+face's annotated lines (with fewer than five annotated lines, the sign height where those gaps are too wide for the
+signs; Appendix A.9). **Recall** is the share of truth
 lines matched; **precision** the share of predicted lines matched, on faces with coverage of at least 0.9 only;
 **first line** the share of faces whose top predicted line is within half a pitch of truth line 1; **count match** the
 share of faces where the number of lines equals the transliteration's.
@@ -241,52 +258,53 @@ lines (at least five signs) whose part on the clay lies at least 95 percent insi
 far a crop runs beyond the tablet into the background. **Neighbour intrusion**: share of another line's band inside a
 crop; half or more is the "half of the neighbouring line" failure.
 
-**Variation.** Retraining with a different seed moves per-script recall or precision by up to three points and
-first-line placement on the smaller scripts by up to twelve (Old Assyrian: 23). Differences smaller than that are not
-treated as real.
+**Variation.** Retraining with a different seed moves per-script recall or precision by up to four points and
+first-line placement by up to nine (Old Assyrian: 24 with run 3, 5 with run 4). Seeds also differ in their training and
+validation faces, so this slightly overstates pure training randomness. Differences smaller than that are not treated as real.
 
 ## 6. Results
 
-### 6.1 The three runs compared
+### 6.1 The runs compared
 
-| eBL test faces | run 1 | run 2 | run 3, seed 0 | run 3, seed 1 |
-|---|---|---|---|---|
-| all: recall / precision | 0.81 / 0.81 | 0.87 / 0.88 | 0.87 / 0.87 | 0.88 / 0.87 |
-| all: first line within 0.5 pitch | 76% | 84% | 86% | 79% |
-| Neo-Assyrian: recall / precision, first line | 0.82 / 0.91, 49% | 0.81 / 0.92, 50% | 0.85 / 0.89, 59% | 0.84 / 0.90, 52% |
-| Neo-Babylonian: recall / precision, first line | 0.79 / 0.83, 65% | 0.85 / 0.85, 82% | 0.88 / 0.87, 81% | 0.88 / 0.88, 81% |
-| Old Assyrian: recall / precision, first line | 0.61 / 0.60, 73% | 0.92 / 0.91, 89% | 0.89 / 0.89, 89% | 0.89 / 0.87, 66% |
-| Old Babylonian: recall / precision, first line | 0.87 / 0.87, 88% | 0.89 / 0.88, 91% | 0.87 / 0.86, 93% | 0.89 / 0.86, 88% |
-| small faces: recall / precision | 0.71 / 0.70 | 0.76 / 0.70 | 0.81 / 0.76 | 0.81 / 0.72 |
-| Heidelberg test: recall / precision | | 0.95 / 0.90 | 0.98 / 0.94 | 0.96 / 0.93 |
-| Heidelberg test: line count right, overshoot past the drawn ends | | 11%, 0.6 pitch | 56%, 0.5 | 44%, 0.5 |
+| eBL test faces | run 1 | run 2 | run 3, seed 0 | run 3, seed 1 | run 4, seed 0 | run 4, seed 1 | run 6 heights, seed 0 | run 6 heights, seed 1 (default) |
+|---|---|---|---|---|---|---|---|---|
+| all: recall / precision | 0.85 / 0.82 | 0.91 / 0.89 | 0.92 / 0.88 | 0.91 / 0.88 | 0.94 / 0.91 | 0.92 / 0.89 | 0.94 / 0.89 | 0.94 / 0.91 |
+| all: first line within 0.5 pitch | 76% | 86% | 87% | 80% | 86% | 82% | 86% | 87% |
+| Neo-Assyrian: recall / precision, first line | 0.86 / 0.91, 50% | 0.87 / 0.92, 53% | 0.90 / 0.90, 61% | 0.87 / 0.91, 52% | 0.91 / 0.91, 54% | 0.90 / 0.87, 50% | 0.92 / 0.89, 54% | 0.90 / 0.89, 60% |
+| Neo-Babylonian: recall / precision, first line | 0.84 / 0.86, 66% | 0.90 / 0.88, 86% | 0.94 / 0.89, 82% | 0.92 / 0.89, 81% | 0.94 / 0.90, 81% | 0.92 / 0.89, 80% | 0.95 / 0.90, 82% | 0.94 / 0.91, 83% |
+| Old Assyrian: recall / precision, first line | 0.60 / 0.59, 71% | 0.90 / 0.90, 88% | 0.89 / 0.88, 89% | 0.87 / 0.87, 64% | 0.91 / 0.93, 86% | 0.91 / 0.90, 81% | 0.89 / 0.90, 82% | 0.93 / 0.90, 86% |
+| Old Babylonian: recall / precision, first line | 0.93 / 0.89, 89% | 0.94 / 0.89, 93% | 0.92 / 0.87, 95% | 0.94 / 0.88, 91% | 0.96 / 0.91, 95% | 0.93 / 0.88, 92% | 0.97 / 0.89, 96% | 0.97 / 0.91, 96% |
+| small faces (12): recall / precision | 0.67 / 0.71 | 0.76 / 0.73 | 0.77 / 0.74 | 0.75 / 0.74 | 0.81 / 0.96 | 0.83 / 0.92 | 0.87 / 0.87 | 0.73 / 0.74 |
+| Heidelberg test: recall / precision | | 0.95 / 0.90 | 0.98 / 0.94 | 0.96 / 0.93 | 0.99 / 0.93 | 0.99 / 0.91 | 0.98 / 0.96 | 0.97 / 1.00 |
+| Heidelberg test: line count right, overshoot past the drawn ends | | 11%, 0.6 pitch | 56%, 0.5 | 44%, 0.5 | 33%, 0.6 | 44%, 0.6 | 44%, 0.6 | 78%, 0.6 |
 
-All rows use the same read-out and the same test faces (run 1 was not scored on Heidelberg).
+All rows use the same read-out, the same 761 test faces and the scoring of A.12; prose below this table and figures for run 1 to run 3 may round differently. Run 1 was not scored on Heidelberg. Neo-Assyrian precision rests on about 25 faces, small-face precision on 4 and small-face first line on 5 or 6, so those differences are one or two faces' worth. On Heidelberg, run 4's first line falls to 67 percent from run 3's 89, which is 2 of the 9 faces.
 
 ![The runs on the same faces](img/runs_examples.jpg)
 
-*Figure 8. Three test faces drawn at random, read by each run (green = truth line, red = prediction). NBC.1741 shows
-the Old Assyrian jump from run 1 (recall 0.10) to runs 2 and 3 (1.00). K.9654 shows a flaw of the eBL truth: two green
-truth lines cross where sign boxes of neighbouring lines were assigned to the wrong line; all three runs read the
-face correctly and lose the point to the truth.*
+*Figure 8. Three test faces drawn at random, read by each run (green = truth line, red = prediction; run 6 is the default, `run6_heights_s1`).
+NBC.1741 shows the Old Assyrian jump from run 1 (recall 0.10) to every later run (1.00). On YBC.4083 runs 3 and 4 miss one of ten lines
+that runs 2 and 6 find, and on the fragment K.7917 only run 2 misses one: differences of this size between runs are common on single faces.*
 
 - **Run 2 is the large step.** Old Assyrian goes from the worst script to one of the best: run 1's hand-labelled CDLI
   Old Assyrian faces did not carry over to eBL's Old Assyrian photographs; the eBL truth did. Neo-Babylonian gains six
   points of recall, and Old Babylonian, the script with most data, gains rather than losing.
-- **Run 3 moves accuracy between scripts rather than adding to it.** It gains on Neo-Assyrian (recall 0.81 to
-  0.84-0.85), Neo-Babylonian, small faces and the hand-drawn lines (count right 11 to 44-56 percent, lines stopping
-  closer to their real ends), and loses about three points of Old Assyrian recall and two of Old Babylonian
-  precision; overall it ties with run 2.
-- **First-line placement on Neo-Assyrian stays the weakest result** (49 to 59 percent across runs): the eBL
+- **Run 3 moves accuracy between scripts rather than adding to it.** It gains on Neo-Babylonian recall (0.88 to
+  0.90-0.92) and the hand-drawn lines (count right 11 to 44-56 percent, lines stopping closer to their real ends), with
+  Neo-Assyrian recall rising in one seed only (0.86 to 0.86-0.89), and loses two to three points of Old Assyrian recall
+  and one to two of Old Babylonian recall and precision; overall it ties with run 2.
+- **Run 6 changes the crops more than the lines.** Lines score about the same as `run4_s0`, but fewer crops hold half of another line
+  (A.13). The default's one clear weak spot is the 12 small faces (0.73 / 0.74 against `run4_s0`'s 0.81 / 0.96), though precision there rests on 4 faces.
+- **First-line placement on Neo-Assyrian stays the weakest result** (50 to 61 percent across runs): the eBL
   Neo-Assyrian test faces are mostly broken British Museum fragments whose first surviving line is often damaged.
 
 ### 6.2 Against hand-drawn lines
 
 On the Heidelberg faces the model does better than against the eBL truth for the same script: run 2, which never saw a
-Heidelberg face, finds 95 lines in 100 at 0.90 precision, against 0.81 / 0.92 on eBL Neo-Assyrian. The sets differ
+Heidelberg face, finds 95 lines in 100 at 0.90 precision, against 0.86 / 0.92 on eBL Neo-Assyrian. The sets differ
 (State Archives letters photographed for CDLI against mostly K. fragments), so this does not prove the eBL truth is at
 fault, but it shows that the Neo-Assyrian weakness is not an inability to see Neo-Assyrian lines. Predicted lines
-cover the whole drawn line on 91 to 94 percent of lines and are never short at either end; they run on past the drawn
+cover the whole drawn line on 92 to 95 percent of lines (runs 2 and 3) and are never short at either end; they run on past the drawn
 ends by about half a pitch with run 3 (0.6 with run 2). The annotators stopped at about the centre of the first and
 last sign, which accounts for roughly half a sign; the rest is the model carrying lines onto the edge of the clay.
 Details in Appendix A.4.
@@ -309,38 +327,65 @@ and 2). Run 2's lines reach further, so almost every line is now whole, at a lit
 the share of lines whose whole band lies inside one crop (4 to 10 percent; the measure counts residual slant as
 height, so it stays low) without any crop taking half a neighbour (Test 4).
 
+These measures concern length, and the band-based neighbour measure. They do not mean that a line's signs are whole: by their
+sign boxes, only 12 percent of lines on these same crops keep at least 95 percent of their signs, and 9.1 percent of crops hold half
+of another line (A.9). Crop height is what decides that (A.8); the current settings are in A.11 and the current scores in A.13.
+
 ### 6.4 Compared with other line finders
 
 | line finder (eBL test faces) | needs a transliteration | recall | precision | first line within 0.5 pitch | Heidelberg test recall / precision |
 |---|---|---|---|---|---|
-| detector route with the line count (`det_n`) | yes | 0.91 | 0.91 | 90% | |
-| **line model, run 3** | no | 0.87-0.88 | 0.87 | 79-86% | 0.96-0.98 / 0.93-0.94 |
-| Kraken segmenter, retrained on the same 490 faces, pieces joined | no | 0.89 | 0.81 | 80% | 0.88 / 0.86 |
-| Dencker et al. line network, rebuilt and retrained | no | 0.85 | 0.78 | 74% | 0.83 / 0.72 |
+| detector route with the line count (`det_n`), on 487 NA and OB faces only, see below | yes | 0.94 | 0.91 | 90% | |
+| **line model, run 6 with heights** | no | 0.94 | 0.89-0.91 | 86-87% | 0.97-0.98 / 0.96-1.00 |
+| line model, run 4 | no | 0.92-0.94 | 0.89-0.91 | 82-86% | 0.99 / 0.91-0.93 |
+| line model, run 3 | no | 0.91-0.92 | 0.88 | 80-87% | 0.96-0.98 / 0.93-0.94 |
+| Kraken segmenter, retrained on run 3 seed 0's 490 faces, pieces joined | no | 0.93 | 0.82 | 81% | 0.88 / 0.86 |
+| Dencker et al. line network, rebuilt and retrained, given each face's true line spacing | no | 0.89 | 0.86 | 73% | 0.83 / 0.72 |
 
 ![Three line models per script](img/models_by_script.png)
 
 *Figure 9. The line model, Kraken and the Dencker network on the same test faces, per script and on the hand-drawn
 Heidelberg lines.*
 
-Among models that need no transliteration, the line model has the best precision and first-line placement and the
-best scores on the hand-drawn lines, and is about forty times faster than Kraken (0.17 against 6.8 seconds per face);
-Kraken finds two more lines in a hundred on eBL. The detector route remains ahead on eBL when a transliteration is
-available, at the cost of needing it and a sign detector that works on the photograph. The comparison, the side-by-side
+Among models that need no transliteration, the default `run6_heights_s1` has the best first-line placement on eBL, precision level with `run4_s0`,
+recall level with Kraken's on eBL, and the best precision on the hand-drawn lines, where its recall is behind run 4's and its first-line placement level with Kraken's (89 percent, on 9 faces). It
+is also much faster: stored timings give 0.07 to 0.09 seconds per face for prediction and read-out; Kraken's 6.8 seconds was noted
+at the time and is not stored, so no exact factor is claimed. The Dencker network is close on eBL recall and precision only because it is told each face's line spacing, which a new tablet does not come with. 
+
+The `det_n` row is not like-for-like with those above it, because it was only run on the NA and OB test faces. On those 487 faces:
+
+| same 487 faces | recall | precision | first line within 0.5 pitch | Neo-Assyrian first line |
+|---|---|---|---|---|
+| detector route with the line count (`det_n`) | 0.94 | 0.91 | 90% | 74% |
+| line model, run 6 heights seed 1 (default) | 0.95 | 0.91 | 89% | 60% |
+| line model, run 6 heights seed 0 | 0.95 | 0.89 | 88% | 54% |
+| line model, run 4 seed 0 | 0.94 | 0.91 | 88% | 54% |
+| line model, run 4 seed 1 | 0.92 | 0.88 | 84% | 50% |
+| line model, run 3 seed 0 | 0.91 | 0.88 | 88% | 61% |
+| Kraken, pieces joined | 0.93 | 0.80 | 80% | 48% |
+
+So `run6_heights_s1` is level with the detector route on recall and precision, without needing a transliteration or a sign detector;
+the detector route stays ahead on Neo-Assyrian first lines, and on precision against the other seed. Its detector was also trained on a superset of
+these annotations (`line_cropping/README.md`), and the overlap with these test faces is not known, so its scores may be flattered.
+It also needs a sign detector that works on the photograph. The comparison, the side-by-side
 examples and the literature search are in `related_work.md`.
 
 ## 7. Limitations and next steps
 
-- **First line of Neo-Assyrian fragments** (52-59 percent). More intact Neo-Assyrian lines (run 3) did not fix it.
+- **First line of Neo-Assyrian fragments** (54-60 percent with run 6). More intact Neo-Assyrian lines (run 3) did not fix it.
   Next: a per-face check of the top line against the tablet edge, or hand-labelled Neo-Assyrian fragments.
 - **Worn faces.** Cracks and edge texture can be read as lines (Figure 10). The angle guard removes near-vertical ones;
-  slanted ones remain (HS.2052 in `related_work.md`, Figure 2). A per-face confidence score would flag such faces.
-- **Seed variation.** Several points on the smaller scripts, partly because the checkpoint is chosen on about 60
+  slanted ones remain. A per-face confidence score would flag such faces.
+- **Seed variation.** Several points on the smaller scripts, partly because the checkpoint is chosen on 49 to 66
   validation faces. Next: average the predictions of several runs (run 2 is stronger on Old Assyrian and Old
-  Babylonian, run 3 on Neo-Assyrian, Neo-Babylonian and small faces), which needs no training.
+  Babylonian, run 3 on Neo-Babylonian), which needs no training.
+- **What these scores leave out.** The test faces are all single-column, so multi-column tablets are untested. A line counts
+  as found on its height alone, so a short fragment can match a whole line. Crop settings (`--extend`, `--shift`) and the spacing
+  guard (A.9) were chosen after seeing test scores, so those results are somewhat optimistic. The test set has been used across
+  all runs, and `run6_heights_s1` was picked partly on it.
 - **Read-out thresholds** (kernel 0.5, band 0.4, minimum area 12) were set by hand. A grid sweep on the validation
   faces, re-running only the read-out on stored maps, would tune them in minutes.
-- **Truth fitted from sign boxes.** eBL lines are straight and occasionally wrong (Figure 8); the hand-drawn lines are
+- **Truth fitted from sign boxes.** eBL lines are straight and occasionally wrong (HS.2069 in `related_work.md`, Figure 2); the hand-drawn lines are
   the only truth without this limit and cover one script.
 - **Crop height.** The signs of a line, by their eBL boxes, reach past the top and bottom of its crop on most lines
   (84 and 93 percent of 944 export crops), because neighbouring lines interlock; ends are rarely cut. A pilot that fitted
@@ -348,7 +393,8 @@ examples and the literature search are in `related_work.md`.
   measure it (Appendix A.6). Line-shaped crops that bend around signs keep no more of a line than rectangles at the same
   leakage of the neighbours' signs (Appendix A.7): the real choice is crop height. Calibrated on the eBL boxes, extending
   crops 0.15-0.2 line spacings past the midpoint keeps 98-99 percent of a line's signs in every script
-  (`make_crops --extend 0.2`, Appendix A.8).
+  (`make_crops --extend 0.2`, Appendix A.8), and moving them down by 0.06 spacings makes three more lines in a hundred whole
+  (`--shift 0.06`, Appendix A.9).
 
 ![A worn face with spurious detections, HS.2050](img/failure_HS2050.jpg)
 
@@ -357,22 +403,22 @@ annotated line.*
 
 ## 8. Status and how to run
 
-**Models.** `weights/linemodel/run2/` (used by the stored predictions and crops), `run3_full_s0/` and `run3_full_s1/`
-(run 3); each holds `model.pt`, `history.csv`, `config.json` and `plots/`. **Stored outputs.**
-`tablet_data/ebl_tablets/predictions/unet` and `line_crops_unet` are on run 2 (test split); `predictions/unet_n`,
-`line_crops_unet_n`, `line_crops_unet_rot` and the Line Splitter app are still on run 1 (Appendix A.3). Earlier
-versions are in `tablet_data/ebl_tablets/linemodel/archive/`. **Report figures** are regenerated with
+**Models.** `weights/linemodel/run6_heights_s1/` is the default (`paths.LINE_WEIGHTS`), used by `infer.py` and the Line Splitter app.
+Also kept: the other run 6 models (A.13), `run4_s0/`, `run4_s1/`, `run5_s0/` (A.11), `run2/`, `run3_full_s0/` and `run3_full_s1/`; each holds `model.pt`, `history.csv`,
+`config.json` and `plots/`. **Stored outputs.** `tablet_data/ebl_tablets/predictions/unet` and `line_crops_unet` come from the default model (test split, 966 faces, 10,739 crops,
+`--bounds segments --extend 0.2 --shift 0.06`, cut along each line's tilt). `predictions/unet_n`, `line_crops_unet_n` and `line_crops_unet_rot` are still on run 1 (Appendix A.3).
+Scripts that compare crops with face coordinates read each crop in its own frame (`crops/crop_frame.py`). `tablet_data/exports/line_crops_60_run6` holds the default's tilted crops (60 tablets, 114 faces, 1,116 crops, 8,106 signs). `tablet_data/exports/line_crops_60` and the ProtoSnap results made from it are older, hold level crops, and are still the default of the `protosnap/line_envelope_*` scripts. `tablet_data/exports/line_signs` holds every eBL truth line with its signs in reading order (`report/export_line_signs.py`), `tablet_data/exports/line_signs_run6` holds the default model's crops on the test faces with the signs inside them (`report/export_model_line_signs.py`), and `ground_truth/full_line_annotations.csv` lists which tablets have every line annotated (`truth/full_line_annotations.py`). Run 2's outputs and earlier versions are in `tablet_data/ebl_tablets/linemodel/archive/`. **Report figures** are regenerated with
 `MPLBACKEND=Agg .venv/bin/python -m line_cropping.report.report_figures`.
 
 ```
 python -m line_cropping.linemodel.targets --preview 12
 python -m line_cropping.ingest.download_ebl --scripts OA NB --annotations-dump data/ebl/annotations_11.09.2026/annotations_11.09.2026.json
 python -m line_cropping.truth.ebl_ground_truth && python -m line_cropping.faces.prepare_faces ebl && python -m line_cropping.eval.extend_split
-MPLBACKEND=Agg .venv/bin/python -m line_cropping.linemodel.train --epochs 40 --heidelberg --out weights/linemodel/run3_full_s0
-.venv/bin/python -m line_cropping.linemodel.infer --weights weights/linemodel/run3_full_s0/model.pt --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions --split test [--use-n]
+MPLBACKEND=Agg .venv/bin/python -m line_cropping.linemodel.train --epochs 40 --seed 1 --heidelberg --heights --out weights/linemodel/run6_heights_s1
+.venv/bin/python -m line_cropping.linemodel.infer --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions --split test [--use-n]
 .venv/bin/python -m line_cropping.eval.evaluate_lines --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions
-.venv/bin/python -m line_cropping.eval.evaluate_heidelberg --weights weights/linemodel/run3_full_s0/model.pt
-.venv/bin/python -m line_cropping.crops.make_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions --method unet --bounds segments --split test [--overlap 0.15] [--rotate-per-line] --out tablet_data/ebl_tablets/line_crops_unet
+.venv/bin/python -m line_cropping.eval.evaluate_heidelberg --weights weights/linemodel/run6_heights_s1/model.pt
+.venv/bin/python -m line_cropping.crops.make_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions --method unet --bounds segments --extend 0.2 --shift 0.06 --split test [--overlap 0.15] [--rotate-per-line] --out tablet_data/ebl_tablets/line_crops_unet
 .venv/bin/python -m line_cropping.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops_unet/crops.csv --split test
 .venv/bin/python -m line_cropping.report.export_tablets --zip     # 60 tablets with line crops and sign boxes, for other pipelines
 ```
@@ -381,7 +427,8 @@ MPLBACKEND=Agg .venv/bin/python -m line_cropping.linemodel.train --epochs 40 --h
 
 The experiments in the order they were run, with their full tables. Later sections supersede earlier numbers where
 they differ (for example, run 1's first results below use the read-out of the time and only the NA and OB test faces
-that existed then; section 6.1 scores every run with the same read-out on the full test set).
+that existed then; section 6.1 scores every run with the same read-out on the full test set). Line scores in A.1 to A.8
+are as recorded at the time, before the line spacing was corrected (A.9); sections 1 to 8 use the corrected scores.
 
 ### A.1 Run 1: first results (29 Sep 2026)
 
@@ -1028,6 +1075,339 @@ once, so its foreign shares are lower than the calibration's):
   errors on that script, not because its writing is taller.
 - **The setting is now an option** (`make_crops --extend 0.2`). Whether to use it is a downstream choice: a reader that
   tolerates part of the neighbouring lines (or masks them) gains whole signs on most lines.
+
+### A.9 Corrected line spacing, and a downward crop shift (1 Nov 2026)
+
+**The spacing bug.** Every line score measures its tolerance in pitch, and the face table's pitch was wrong: it divided
+each gap between lines by the difference of eBL's line index, which assumes the index rises by 1 per text line. On many
+tablets it rises by 2 or 3, so pitch came out half or a third of the real value. The tolerance was then too strict on
+those faces, and the Dencker network, which sizes its input from this value, ran at the wrong scale. 446 of 1,551 faces
+(192 of 755 test faces) were at least 1.5 times too small: Neo-Babylonian 190, Old Babylonian 182, Neo-Assyrian 71, Old
+Assyrian 3. The "small faces" group shrinks from about 90 test faces to 12, because most of them were not small.
+
+**The fix** (`truth/ebl_ground_truth.py`). Pitch is now measured directly: the median gap between neighbouring annotated
+lines. The index is not used at all, because it is irregular (1, 1, 3, 4, 4, 6 on YBC.5710). Measured gaps alone fail
+on faces with few annotated lines far apart (two lines 1,460 px apart on HS.2070), and a first attempt inflated pitch
+there and made scores too generous. So with fewer than five annotated lines, a gap over 1.5 sign heights is replaced by
+0.93 sign heights, the ratio on well-annotated blocks. Checks:
+
+| check | before | after |
+|---|---|---|
+| blocks with implausible spacing (under 0.6 or over 1.4 sign heights) | 22% | 3.5% |
+| spacing in sign heights, median: NA / NB / OA / OB | 0.81 / 0.56 / 0.95 / 0.87 | 0.93 / 0.94 / 0.94 / 0.94 |
+| face images and crop boxes | | unchanged (the old value is kept only as the face margin, `face_margin_px`; all faces.csv columns but the two pitch columns identical, 60 sampled images byte-identical) |
+
+Stored predictions, crops and the split therefore all stay valid. Scores rise because a too-strict tolerance is gone,
+not because any model changed; the Dencker network alone was re-run. Old scores are kept beside the new ones as
+`evaluation_before_pitch_fix.csv`.
+
+| eBL test faces: recall / precision, first line | before | after |
+|---|---|---|
+| line model run 1 | 0.81 / 0.81, 76% | 0.84 / 0.82, 76% |
+| line model run 2 | 0.87 / 0.88, 84% | 0.90 / 0.89, 86% |
+| line model run 3, seed 0 | 0.87 / 0.87, 86% | 0.90 / 0.88, 87% |
+| line model run 3, seed 1 | 0.88 / 0.87, 79% | 0.89 / 0.88, 80% |
+| Kraken retrained, pieces joined | 0.89 / 0.81, 80% | 0.91 / 0.82, 81% |
+| Dencker network, no count (re-run at the right scale) | 0.85 / 0.78, 74% | **0.88 / 0.86**, 73% |
+| Dencker network, with count (re-run) | 0.80 / 0.82, 72% | 0.86 / 0.88, 75% |
+| detector route with count (`det_n`), 487 NA and OB faces | 0.91 / 0.91, 90% | 0.92 / 0.92, 90% |
+| line model with count (`unet_n`, still run 1), 486 NA and OB faces | 0.83 / 0.85, 81% | 0.87 / 0.88, 83% |
+
+- **The order among line models holds, but the Dencker network moves up.** Its precision rises eight points, so most of
+  its earlier deficit on eBL was this bug. It is given each face's true spacing, which a new tablet does not come with.
+- **Run 2 and run 3 still tie overall.**
+- **Heidelberg scores do not change:** that set has its own truth and spacing.
+
+**The shift** (`make_crops --shift`). The model's lines sit a median 0.06 line spacings above the middle of the signs, so
+crops are moved down by that constant (436 test faces, 3,831 lines, measured as in A.8):
+
+| crops | own signs inside (median) | lines >= 95% inside | other lines' signs in crop (median) | crop holds half of another line | image per line |
+|---|---|---|---|---|---|
+| today (gap-bounded) | 81% | 12% | 5% | 9.1% | 1.01 |
+| `--shift 0.06` | 82% | 12% | 4% | 9.1% | 1.01 |
+| `--extend 0.2` | 98% | 67% | 19% | 10.6% | 1.41 |
+| **`--extend 0.2 --shift 0.06`** | **98%** | **70%** | **19%** | **10.7%** | 1.41 |
+| `--extend 0.15 --shift 0.06` | 96% | 55% | 14% | 10.1% | 1.31 |
+
+| lines >= 95% inside | Neo-Assyrian | Neo-Babylonian | Old Assyrian | Old Babylonian |
+|---|---|---|---|---|
+| `--extend 0.2` | 52% | 68% | 66% | 69% |
+| `--extend 0.2 --shift 0.06` | 60% | 73% | 66% | 72% |
+
+- **The shift is a small free gain:** three more lines in a hundred whole, eight on Neo-Assyrian, none on Old Assyrian,
+  with no added image and no added foreign signs.
+- **It matters only together with the extension.** Alone it changes almost nothing.
+- **It does not replace extending:** extending by 0.15 with the shift keeps fewer whole lines than 0.2 without it.
+- **Why the lines sit high (found while setting up run 4, A.10):** mostly half a pixel of the stride-4 output map. Map rows
+  are counted from their top edge when turned back into face pixels, which is 2 px of model input. The measured offset is
+  a nearly constant 2 to 3 px at every line spacing (run 2, median -2.7 px), not a constant share of the spacing. So
+  `--shift` in line spacings is a stand-in: small spacings are under-corrected and large ones over-corrected. A
+  half-pixel fix in the read-out would be the proper correction; it is not applied, so that stored predictions stay as scored.
+- **Caveat:** the offset was measured on these same test faces, as only they have stored run 2 lines. It is one constant
+  and the median is similar across scripts (-0.04 to -0.06 by a separate per-script check), so the optimism should be
+  small, but it is not an independent test.
+
+### A.10 Run 4: predicting each line's height (set up 1 Nov 2026, trained 2 Nov 2026)
+
+**Result in short.** Predicted heights did not beat a fixed height: at equal crop size they keep as many whole lines, no
+more. Line accuracy did not suffer and rose slightly on both seeds. Crops should stay on `--extend` and `--shift`.
+
+**Goal.** One fixed crop height serves every line (A.8, A.9). Run 4 adds two output channels so the model says how far
+each line's signs reach, and crop height follows the line.
+
+**Target** (`truth/line_heights.py`, `faces/line_heights.csv`). For each line, the 90th percentile over its sign boxes of
+the distance from the line to the box's top edge (`up`) and bottom edge (`down`), capped at 1.2 line spacings. A
+percentile rather than the maximum, so that one box assigned to the wrong line does not set the height. 11,471 of 14,210
+eBL lines have a height; lines with fewer than 3 boxes do not. The ceiling, with perfect lines and perfect heights (390
+tune faces, 3,808 lines, measured as in A.8, with the fixed height standing in for lines without a height):
+
+| crops around truth lines | own signs inside (median) | lines >= 95% inside | other lines' signs in crop (median) | crop holds half of another line |
+|---|---|---|---|---|
+| fixed +-0.65 spacings | 99% | 79% | 23% | 1.3% |
+| fixed +-0.7 spacings | 100% | 88% | 27% | 2.1% |
+| per line, 75th percentile | 98% | 86% | 18% | 0.7% |
+| **per line, 90th percentile** | **99%** | **95%** | **21%** | **1.3%** |
+| per line, maximum | 100% | 96% | 23% | 3.0% |
+
+**Model** (`train.py --heights`). The head grows from 4 to 6 channels; the network is otherwise run 3's, with the same
+recipe and, per seed, the same faces (490 training and 66 validation with seed 0, 507 and 49 with seed 1). Inside a line's band, each pixel predicts log(1 + d / 4), with d its distance straight up or down to
+the edge of the line's signs, so the target scales with the augmentation and the error is relative. The loss adds L1 on
+both channels, weight 1, only on lines with a height: 425 of the 556 training and validation faces; the Old Assyrian hand
+labels and Heidelberg lines have no sign boxes and train the line channels only. Checkpoint selection stays on line recall
+plus precision.
+
+**Read-out and crops.** Each line's `up` and `down` are medians over its band pixels (`infer.read_lines`), written with the
+segments and used by `make_crops --bounds heights`, with `--height-scale` to trade whole signs against other lines' signs.
+The heights correct for the half-pixel offset above, so crop edges are unbiased while the line positions stay comparable
+with earlier runs.
+
+**Checks before training.** Perfect target maps through the real read-out recover the true edges (median error 0.000 of the
+crop height, IQR within 0.001). Run 3 weights through the changed code give byte-identical segments (20 of 20 faces). A
+dry run trains, infers and scores end to end.
+
+**What to compare.** Run 4 against run 3 on lines (adding a task must not cost line accuracy; seed variation applies), and
+on the same run 4 lines, `--bounds heights` against `--extend 0.2 --shift 0.06` (`savio/infer.sbatch` prints both).
+Worthwhile if whole lines rise clearly above 70% without more of other lines' signs than the fixed 19%.
+
+**Results: lines.** Two seeds, 40 epochs, trained locally, eBL test faces. Recall and precision rise by 0.01 to 0.03 on both
+seeds, and first-line accuracy moves by -1 and +3 points. Two seeds cannot show that the height task is the cause.
+
+| run | recall | precision | first line within 0.5 spacing |
+|---|---|---|---|
+| run 3, seed 0 | 0.90 | 0.88 | 87% |
+| run 3, seed 1 | 0.89 | 0.88 | 80% |
+| **run 4, seed 0** | **0.92** | **0.91** | **86%** |
+| **run 4, seed 1** | **0.91** | **0.89** | **83%** |
+
+**Results: crops.** On the same run 4 lines (`eval/box_containment.py`; seed 0 439 faces, 3,851 lines; seed 1 438 faces,
+3,834 lines), the unscaled heights give smaller crops than the fixed setting, so they miss the target of 70% (44% and 51%). The comparison that
+counts is at equal crop size, where the `--height-scale` and `--extend` sweeps meet:
+
+| crops (all `--extend` with `--shift 0.06`) | seed | lines >= 95% inside | other lines' signs in crop (median) | crop holds half of another line | image per line (spacings) |
+|---|---|---|---|---|---|
+| `--extend 0.2` | 0 | 67% | 18% | 8.2% | 1.40 |
+| heights x 1.1 | 0 | 65% | 17% | 8.3% | 1.38 |
+| `--extend 0.25` | 0 | 78% | 22% | 9.0% | 1.50 |
+| heights x 1.2 | 0 | 78% | 23% | 10.4% | 1.51 |
+| `--extend 0.2` | 1 | 66% | 18% | 8.3% | 1.41 |
+| heights x 1.1 | 1 | 69% | 19% | 11.0% | 1.42 |
+| `--extend 0.25` | 1 | 76% | 22% | 9.4% | 1.51 |
+| heights x 1.15 | 1 | 75% | 22% | 12.4% | 1.49 |
+
+Heights also take in half of another line as often or more often, and they move whole lines between scripts rather than adding
+them. At `--extend 0.2` against x 1.1, seed 0, Neo-Assyrian falls from 56% to 44% (other lines' signs 20% to 16%) and Old
+Assyrian rises from 66% to 71% (15% to 17%). The scales were read off these test faces, which favours the heights, and
+they still do not win.
+
+**Why the ceiling was not reached.** Crops that follow each line's tilt, scored as in A.8 on the test faces (398 and 397
+faces; a separate measure, so compare only within this table):
+
+| crops following the line | lines >= 95% inside, seed 0 / seed 1 |
+|---|---|
+| truth lines, truth heights | 95% / 95% |
+| truth lines, predicted heights | 71% / 76% |
+| predicted lines, truth heights | 75% / 71% |
+| predicted lines, predicted heights | 67% / 71% |
+
+Either error alone costs about 20 points. Perfect heights on predicted lines would add only 0 to 8 points, so line position
+limits this as much as height does (position error 0.05 spacings at the median, 0.17 to 0.18 at the 90th percentile). The heights
+themselves carry little per-line information: they correlate with the truth at only 0.33 to 0.52, in spacings. Their bias is small
+(`up` 3 to 7% low, `down` 5 to 8% high, which roughly offsets the lines sitting high).
+
+### A.11 Crops that follow each line's tilt, and run 4 as the default model (2 Nov 2026)
+
+**Change.** `make_crops --bounds segments` (or `heights`) now cuts each line along its own predicted tilt instead of in the
+deskewed face. Lines tilt a median 0.74 degrees from their face's skew, and 2.82 at the 90th percentile. The option existed
+but was off and could not be scored; three things changed with it:
+
+- `crops.csv` gains `line_cx` and `line_cy`, and `box_containment` scores such a crop in the line's own frame. Before, it
+  read those rectangles as if they lay in the deskewed face.
+- The 20-degree guard added the skew instead of subtracting it, so it measured the wrong angle (median 5.82 degrees rather
+  than 0.74). The Line Splitter already subtracted it.
+- `--trim-background` now also applies to tilted crops.
+
+**Result.** On the run 4 lines, eBL test faces, with `--shift 0.06` throughout (seed 0: 439 faces, 3,851 lines; seed 1: 438
+faces, 3,834 lines). Tilted crops keep 2 to 3 points more whole lines at the same crop size, with other lines' signs and half
+neighbours essentially unchanged. The gain is real but small; crop size matters far more.
+
+| `--extend` | seed | lines >= 95% inside, level -> tilted | other lines' signs in crop, level -> tilted | crop holds half of another line, level -> tilted |
+|---|---|---|---|---|
+| 0.15 | 0 | 51% -> 53% | 14% -> 14% | 7.7% -> 7.8% |
+| 0.15 | 1 | 51% -> 53% | 14% -> 14% | 8.0% -> 8.0% |
+| **0.2** | **0** | **67% -> 69%** | **18% -> 18%** | **8.2% -> 8.2%** |
+| 0.2 | 1 | 66% -> 68% | 18% -> 18% | 8.3% -> 8.4% |
+| 0.25 | 0 | 78% -> 81% | 22% -> 22% | 9.0% -> 8.9% |
+| 0.25 | 1 | 76% -> 78% | 22% -> 22% | 9.4% -> 9.4% |
+
+10,607 of 10,624 seed 0 crops were cut along their tilt. A crop is still straight, so a curved line, or a segment joined across
+columns, is not fully levelled (K.3993 reverse is an example).
+
+**Default model.** `paths.LINE_WEIGHTS` is `weights/linemodel/run4_s0/model.pt`, the default of `infer.py` and the Line
+Splitter. The stored `predictions/` and `line_crops_unet/` are still from run 2 until regenerated. The Line Splitter already
+followed the tilt, but it does not apply `--extend` or `--shift`.
+
+**Run 5: run 4's seed 0 without the height channels (3 Nov 2026).** Same recipe, seed and faces, `--heights` left out, to test
+whether the height task caused run 4's gain. It points that way on precision and line centring, weakly, and `run4_s0` stays the
+default model.
+
+| run | recall | precision | first line within 0.5 spacing | lines >= 95% inside (tilted, `--extend 0.2 --shift 0.06`) | crop holds half of another line |
+|---|---|---|---|---|---|
+| **run 4, seed 0** | **0.92** | **0.91** | **86%** | **69%** | **8.2%** |
+| run 5, seed 0 | 0.91 | 0.88 | 82% | 70% | 8.6% |
+
+Differences on the same faces, with 95% intervals from resampling tablets. The intervals cover the choice of test tablets, not
+training randomness. Different seeds also train on different faces, so the seed rows overstate training randomness alone; the last
+row is the fairer yardstick, though run 3 was trained on slightly older code:
+
+| comparison | recall | precision | first line |
+|---|---|---|---|
+| run 4 seed 0 - run 5 seed 0 | +0.009 (+0.002, +0.017) | +0.032 (+0.019, +0.045) | +4.2 points (+1.3, +7.1) |
+| run 4 seed 0 - run 4 seed 1 (same recipe, other faces) | +0.015 (+0.006, +0.025) | +0.027 (+0.017, +0.037) | +3.5 points (+0.4, +6.7) |
+| run 3 seed 0 - run 3 seed 1 (same recipe, other faces) | +0.005 (-0.007, +0.017) | -0.000 (-0.015, +0.016) | +7.1 points (+3.9, +10.5) |
+| run 5 seed 0 - run 3 seed 0 (no heights, same seed and faces) | +0.011 (+0.001, +0.022) | +0.001 (-0.013, +0.016) | -5.3 points (-8.4, -2.2) |
+
+Run 4's precision gain is larger than the difference between the two runs without heights; its recall and first-line gaps are not.
+Lines also sit better centred on the sign boxes with heights (eBL test faces with coverage >= 0.9; negative = line sits high;
+offset and error in line spacings):
+
+| run | heights | median offset | median absolute error |
+|---|---|---|---|
+| run 4, seed 0 | yes | -0.032 | 0.050 |
+| run 4, seed 1 | yes | -0.034 | 0.054 |
+| run 5, seed 0 | no | -0.041 | 0.059 |
+| run 3, seed 1 | no | -0.045 | 0.063 |
+| run 3, seed 0 | no | -0.061 | 0.072 |
+
+The height outputs do not change the kernel target that positions a line, so any effect is indirect, through features shared with
+the sign edges. Five runs cannot settle this, and `run4_s0` was picked on these test faces, so its scores are slightly optimistic.
+Crops are level with run 5's. The crop sweeps in A.10 and A.11 were written to a temporary folder and not kept; `make_crops` with
+the flags shown and `eval/box_containment.py` regenerate them.
+
+### A.12 Fixes to scoring and validation (3 Nov 2026)
+
+An audit of the benchmarks found no wrong stored numbers in the main tables, but four code bugs. Test faces were never trained on
+through any of them. Sections A.1 to A.11 keep the scores of their time; the Summary and sections 6.1 and 6.4 use the scoring below.
+
+**Scoring (`eval/evaluate_lines.py`).** All runs were rescored; the old files are kept as `evaluation_before_truth_merge.csv`.
+
+- *Repeated truth rows.* 63 test faces listed one line more than once (194 extra rows), so a single predicted line could only match
+  one of them. Rows with the same column and line index within 0.35 pitch are now one truth line. Rows farther apart stay separate, as
+  they can be separate rows of writing.
+- *Faces with no prediction.* These were skipped, which spared a model that found nothing. They now score recall 0 and fail their first
+  line if it is scored. It concerned 0 to 2 faces per run.
+
+| eBL test faces, recall / precision, first line | before | after |
+|---|---|---|
+| run 1 | 0.84 / 0.82, 76% (759 faces) | 0.85 / 0.82, 76% (761) |
+| run 2 | 0.90 / 0.89, 86% (759) | 0.91 / 0.89, 86% (761) |
+| run 3, seed 0 | 0.90 / 0.88, 87% (761) | 0.92 / 0.88, 87% (761) |
+| run 3, seed 1 | 0.89 / 0.88, 80% (760) | 0.91 / 0.88, 80% (761) |
+| run 4, seed 0 | 0.92 / 0.91, 86% (761) | 0.94 / 0.91, 86% (761) |
+| run 4, seed 1 | 0.91 / 0.89, 83% (760) | 0.92 / 0.89, 82% (761) |
+| run 5, seed 0 | 0.91 / 0.88, 82% (761) | 0.93 / 0.88, 82% (761) |
+| Kraken, pieces joined | 0.91 / 0.82, 81% (761) | 0.93 / 0.82, 81% (761) |
+| Dencker network, no count | 0.88 / 0.86, 73% (759) | 0.89 / 0.86, 73% (759) |
+| `det_n`, 487 NA and OB faces | 0.92 / 0.92, 90% | 0.94 / 0.91, 90% |
+
+Recall rises by 0.012 to 0.017 for every method and the order does not change. `phase5_eval.py` still scores the raw rows; its stored
+Phase 5 results are historical and it should not be re-run, as it rewrites the split. The run comparisons in A.11 change by at most 0.002.
+
+**Validation (`linemodel/train.py`, `infer.score_against_truth`).**
+
+- *Training mode.* `validate()` never called `model.eval()`. Validation scores were noisy, and validation faces, with full-face statistics,
+  altered the BatchNorm statistics saved in `model.pt`. This affected every run, and the saved statistics also shape test predictions.
+- *Heidelberg lines miscounted (runs 3 to 5).* Each short segment of a drawn line counted as a truth line, so these faces scored
+  about 0.29 / 0.48 instead of about 0.92 / 0.83 on `run4_s0`. They are 6 of the 66 validation faces with seed 0. Segments of one chain now
+  count as one line, and eBL pieces are merged as above.
+
+Together these explain why stored validation scores (`run4_s0`: about 0.80 / 0.76 in `history.csv`) sit far below test. In eval mode with lines
+merged, `run4_s0` scores 0.90 / 0.84 on its validation slice. `history.csv` of the existing runs was not rewritten.
+
+**Not yet addressed.** Existing checkpoints were chosen with both validation bugs and keep their BatchNorm statistics, so a fair
+comparison needs retraining. Runs 1 to 5 are not comparable on validation scores with any run trained after this fix. Run 6 is that retraining (A.13).
+
+### A.13 Run 6: retraining after the validation fixes, with and without heights (3-4 Nov 2026)
+
+Four models were trained with the fixes of A.12: seeds 0 and 1, each with and without the height channels, otherwise with the settings of
+run 4 (40 epochs, Heidelberg faces in training). They answer two questions: whether the height channels help, and whether the fixes change
+the model. `LINE_WEIGHTS` now points to `run6_heights_s1` (see the end of this section).
+
+Line finding on the 761 eBL test faces, and on the 9 Heidelberg test faces (5 tablets):
+
+| Model | Best validation sum (epoch) | eBL recall / precision | eBL first line | Heidelberg recall / precision | Heidelberg first line |
+|---|---|---|---|---|---|
+| run 4, seed 0 (default) | not comparable | 0.94 / 0.91 | 86% | 0.99 / 0.93 | 67% |
+| run 4, seed 1 | not comparable | 0.92 / 0.89 | 82% | 0.99 / 0.91 | 67% |
+| run 5, seed 0 | not comparable | 0.93 / 0.88 | 82% | not scored | not scored |
+| run 6, heights, seed 0 | 1.830 (19) | 0.94 / 0.89 | 86% | 0.98 / 0.96 | 89% |
+| run 6, no heights, seed 0 | 1.793 (27) | 0.94 / 0.90 | 85% | 0.99 / 1.00 | 89% |
+| run 6, heights, seed 1 | 1.817 (21) | 0.94 / 0.91 | 87% | 0.97 / 1.00 | 89% |
+| run 6, no heights, seed 1 | 1.825 (20) | 0.94 / 0.90 | 85% | 0.97 / 0.98 | 89% |
+
+Crops on the 435 faces and 3,830 lines that every set covers (`--bounds segments --extend 0.2 --shift 0.06`, cut along each line's tilt; output in
+`linemodel/recheck/box_all`):
+
+| Model | Whole lines | Other lines' signs | Half of another line | Image per line |
+|---|---|---|---|---|
+| run 4, seed 0 | 70% | 18% | 7.9% | 1.39 |
+| run 4, seed 1 | 68% | 18% | 8.4% | 1.41 |
+| run 5, seed 0 | 70% | 18% | 8.2% | 1.41 |
+| run 6, heights, seed 0 | 68% | 17% | 4.4% | 1.39 |
+| run 6, no heights, seed 0 | 69% | 17% | 5.4% | 1.39 |
+| run 6, heights, seed 1 | 68% | 17% | 5.5% | 1.38 |
+| run 6, no heights, seed 1 | 68% | 17% | 5.8% | 1.39 |
+
+These counts differ slightly from A.11 (69%, 8.2%), which scored each model on its own faces. Intervals below are 95%, from 2,000 paired resamples of tablets;
+they are not corrected for the number of comparisons.
+
+**Heights make no measurable difference.** No gap between the height and no-height models of a seed excludes zero:
+
+| No heights minus heights | Recall | Precision | First line | Half of another line | Whole lines |
+|---|---|---|---|---|---|
+| seed 0 | +0.000 (-0.008 to +0.008) | +0.002 (-0.009 to +0.014) | -0.2 (-2.9 to +2.4) pts | +1.0 (-0.1 to +2.2) pts | +1.1 (-0.3 to +2.7) pts |
+| seed 1 | -0.001 (-0.006 to +0.004) | -0.008 (-0.018 to +0.001) | -2.2 (-4.6 to +0.2) pts | +0.3 (-0.7 to +1.3) pts | +0.9 (-0.5 to +2.2) pts |
+
+Height channels did not clearly centre lines better either. The median offset of the line from its signs' box centres, in pitch, with the median absolute
+offset, is -0.019 / 0.075 with heights and -0.030 / 0.079 without on seed 0, but -0.034 / 0.083 with heights and -0.030 / 0.081 without on seed 1.
+This measure uses box centres on matched lines with at least 3 boxes, so it is not comparable with the offsets quoted in earlier sections.
+
+**All four run 6 models hold half of another line less often than `run4_s0`.** The gap is 2.0 to 3.5 points, and its interval excludes zero for each of them, for
+example -2.3 (-3.7 to -1.1) points for heights, seed 1. Neo-Assyrian and Neo-Babylonian gain most (for that model, 19% to 15% and 14% to 12%). The cost is:
+
+- whole lines down 0.8 to 2.3 points; only the two height models exclude zero (seed 1: -2.3, -3.6 to -1.0);
+- recall up by about 0.006, within the interval for three of the four;
+- precision down 0.006 to 0.021; only heights with seed 1 includes zero (-0.006, -0.018 to +0.005), and first line unchanged for all four;
+- slightly more predicted lines (8,508 to 8,719 against 8,477).
+
+Older models rerun with the current inference and crop code gave identical crop scores, so this is not a side effect of those changes.
+Run configurations match apart from heights, seed and output folder. The likely cause is the A.12 validation fix, either through checkpoint choice or through
+BatchNorm statistics no longer altered by validation faces. This was not tested separately.
+
+On the 12 small faces, the default is below `run4_s0` (0.73 / 0.74 against 0.81 / 0.96; precision on 4 faces) and `run6_heights_s0` (0.87 / 0.87).
+
+**Which model.** The four differ by no more than seed noise, so the height channels can be dropped or kept on other grounds. Against `run4_s0`, `run6_heights_s1` is the
+only one with no measurable loss of precision, and it has the highest first-line score, though it was picked using these test scores, so they slightly favour it. Validation
+would pick `run6_heights_s0`, by 0.005 over the next model. Heidelberg differences come from 9 faces and are weak evidence. `run6_heights_s1` became the default on 4 Nov 2026.
 
 ## Sources
 
