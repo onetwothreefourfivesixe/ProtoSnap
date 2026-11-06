@@ -15,12 +15,12 @@ the humanities, retrained on our training faces. The line model itself is descri
   but, retrained on our training faces (490 with seed 0), becomes the strongest alternative.
 - **On the eBL test faces** run 6 of the line model (with heights) and Kraken are level on recall (0.94 against 0.93), and the line
   model has seven to nine points more precision (0.89-0.91 against 0.82) and places the first line better (86-87 against 81
-  percent overall; 54-60 against 48 percent on Neo-Assyrian). Run 3 was closer: 0.91-0.92 recall, 0.88 precision, 80-87
-  percent. **On the hand-drawn Neo-Assyrian lines** the line model is ahead on recall and precision (run 6: 0.97-0.98 / 0.96-1.00; run 4: 0.99 / 0.91-0.93;
-  run 3: 0.96-0.98 / 0.93-0.94; Kraken: 0.88 / 0.86), on 9 faces. The Dencker network, given each face's true line spacing,
+  percent overall; 54-60 against 48 percent on Neo-Assyrian). Run 3 was closer, with 0.91-0.92 recall, 0.88 precision and 80-87
+  percent on the first line. **On the hand-drawn Neo-Assyrian lines** the line model is ahead on recall and precision on 9 faces (run 6: 0.97-0.98 / 0.96-1.00; run 4: 0.99 / 0.91-0.93;
+  run 3: 0.96-0.98 / 0.93-0.94; Kraken: 0.88 / 0.86). The Dencker network, given each face's true line spacing,
   comes close to run 3 on eBL (0.89 / 0.86) and is furthest behind on the hand-drawn lines.
-- **Practicalities favour the line model:** much faster than Kraken (stored timings of 0.07-0.09 seconds per face, against
-  6.8 seconds noted at the time and not stored), no separate environment, and no extra step to join the side-by-side pieces into which Kraken splits
+- **Practicalities favour the line model:** it is much faster than Kraken (stored timings of 0.07-0.09 seconds per face, against
+  6.8 seconds noted at the time and not stored), it needs no separate environment, and it needs no extra step to join the side-by-side pieces into which Kraken splits
   a third of its lines.
 
 ## 1. Comparison at a glance
@@ -38,18 +38,18 @@ the humanities, retrained on our training faces. The line model itself is descri
 
 ![Three line models per script](img/models_by_script.png)
 
-*Figure 1. The line model (blue), Kraken retrained (orange) and the Dencker network (gray) on the same test faces,
+*Figure 1. The line model (blue), Kraken retrained (orange) and the Dencker network (gray) are compared on the same test faces,
 per script and on the hand-drawn Heidelberg lines.*
 
 ![Three models on the same faces](img/models_examples.jpg)
 
-*Figure 2. Four test faces drawn at random, each read by the three models (the line model is the default, `run6_heights_s1`; green = truth line,
-red = prediction; per face recall R and precision P). "Kraken raw" shows its habit of returning one line as several side-by-side pieces (20
+*Figure 2. Four test faces drawn at random are each read by the three models. The line model is the default, `run6_heights_s1`. Green marks the truth line and
+red the prediction, and each face is labelled with its recall R and precision P. "Kraken raw" shows its habit of returning one line as several side-by-side pieces (20
 pieces for 15 lines on P336128), which "Kraken joined" merges with the line model's own rule. HS.2069 shows a flaw of the eBL truth: its top green line
 slants across two lines of writing and some lines have no green line, so correct lines count as false and every model's precision is low. CBS.1505 shows all
-three handling a broken face, the Dencker network missing the lowest lines.*
+three handling a broken face, with the Dencker network missing the lowest lines.*
 
-**Line model against Kraken, per script** (eBL test faces; positive = line model higher):
+**Line model against Kraken, per script** (eBL test faces; a positive value means the line model is higher):
 
 | | all | Neo-Assyrian | Neo-Babylonian | Old Assyrian | Old Babylonian | small faces | Heidelberg (hand-drawn) |
 |---|---|---|---|---|---|---|---|
@@ -57,20 +57,20 @@ three handling a broken face, the Dencker network missing the lowest lines.*
 | precision | +0.09 | +0.12 | +0.08 | +0.05 | +0.10 | +0.04 | +0.14 |
 | first line within 0.5 pitch | +7 pts | +12 pts | +4 pts | 0 pts | +9 pts | 0 pts | 0 pts |
 
-(`run6_heights_s1`, the default, against Kraken with pieces joined.) The line model leads on precision on every set, and on recall the two are within
+(The table compares `run6_heights_s1`, the default, against Kraken with pieces joined.) The line model leads on precision on every set, and on recall the two are within
 0.04 on the eBL scripts. The small-face column rests on 12 faces (4 for precision, 5 for first line) and should not be read closely, and the
-Heidelberg column on 9 faces.
+Heidelberg column rests on 9 faces.
 
 ## 2. Head-to-head: Kraken's baseline segmenter retrained on our data (15 Oct 2026)
 
-**Setup.** Kraken 7.1.1 (separate environment, `~/venvs/kraken`), its default segmenter (`blla.mlmodel`) fine-tuned with
-`ketos segtrain` on exactly run 3 seed 0's faces (490 training, 66 validation: eBL, Old Assyrian hand labels and
-Heidelberg), each truth line written as the line in PageXML (`line_cropping/baselines/kraken_seg.py export`). Augmentation
-on, early stopping: 38 epochs at about 9 minutes, epoch 27 kept (Kraken's own validation line F1 0.37). Two Kraken 7.1.1
+**Setup.** Kraken 7.1.1 was used in a separate environment (`~/venvs/kraken`), and its default segmenter (`blla.mlmodel`) was fine-tuned with
+`ketos segtrain` on exactly run 3 seed 0's faces (490 training and 66 validation, from eBL, Old Assyrian hand labels and
+Heidelberg). Each truth line was written as the line in PageXML (`line_cropping/baselines/kraken_seg.py export`). Augmentation
+was on, with early stopping: training ran for 38 epochs at about 9 minutes, and epoch 27 was kept (Kraken's own validation line F1 0.37). Two Kraken 7.1.1
 command-line bugs were worked around: the centre-line switch cannot be passed (it only changes how line polygons are
-drawn, not which lines are learned), and class resizing crashes, avoided by naming our classes like the pretrained
+drawn, not which lines are learned), and class resizing crashes, which was avoided by naming our classes like the pretrained
 model's. Kraken often returns one text line as several side-by-side pieces (42 of 138 predicted lines on the
-Heidelberg test faces), which our scoring counts as false lines; the line model's read-out joins such pieces, so Kraken is
+Heidelberg test faces), which our scoring counts as false lines. The line model's read-out joins such pieces, so Kraken is
 reported both raw and with the same join applied (`kraken_seg.py merge`, using `infer.merge_fragments`).
 
 | Heidelberg test faces (9 faces, 99 hand-drawn lines) | recall | precision | first line within 0.5 pitch |
@@ -89,12 +89,11 @@ reported both raw and with the same join applied (`kraken_seg.py merge`, using `
 
 **What this means.**
 - **Kraken's stock model does not work on tablet photographs** (recall 0.03): it is a manuscript and print model.
-- **Retrained on the same faces, Kraken is the strongest baseline so far** and close to the line model on eBL: one or two
-  points more recall (0.91 against 0.89-0.90), six points less precision (0.82 against 0.88), once its line
-  pieces are joined. Without the join its precision is 0.58.
+- **Retrained on the same faces, Kraken is the strongest baseline so far** and close to the line model on eBL. Once its line
+  pieces are joined, it has one or two points more recall (0.91 against 0.89-0.90) and six points less precision (0.82 against 0.88). Without the join its precision is 0.58.
 - **The line model leads on the hand-drawn Neo-Assyrian lines** (0.96-0.98 / 0.93-0.94 against 0.88 / 0.86) and on
-  placing the first line on Neo-Assyrian (52-61 against 48 percent); overall the two are about level (80-87 against 81 percent).
-- **Kraken finds a few more lines on most scripts;** its extra lines are mostly the cost of that recall. The column for
+  placing the first line on Neo-Assyrian (52-61 against 48 percent). Overall, the two are about level (80-87 against 81 percent).
+- **Kraken finds a few more lines on most scripts.** Its extra lines are mostly the cost of that recall. The column for
   faces under 60 px per line rests on 12 faces and should not be read closely.
 - **The line model is much faster** (stored timings of 0.07-0.09 seconds per face, against 6.8 seconds noted at the time
   and not stored) and needs no separate environment.
@@ -102,15 +101,15 @@ reported both raw and with the same join applied (`kraken_seg.py merge`, using `
 ## 3. Head-to-head: Dencker et al.'s line network against the line model (14 Oct 2026)
 
 **Setup.** Their trained weights were unreachable, so `line_cropping/baselines/dencker_linenet.py` re-implements their
-line network in current PyTorch and retrains it with their recipe: an AlexNet-style patch classifier (line or not, on
-227-px grayscale patches) run fully convolutionally over a face, trained on the hand-drawn lines of the authors'
-Heidelberg train faces (32 faces and 388 lines with photographs, against their 410), 101 epochs as in their notebook
-(patch accuracy 0.83). Their post-processing is reproduced in simplified form: skeleton of the line map, Hough transform
-restricted to near-horizontal angles, peaks thinned by non-maximum suppression, one straight line per peak. The two
-read-out settings were tuned on the authors' train faces only. Two variants: **no count**, keeping every peak above a
-threshold, which is the line model's setting; and **with count**, keeping as many lines as the transliteration has
+line network in current PyTorch and retrains it with their recipe. The recipe is an AlexNet-style patch classifier (line or not, on
+227-px grayscale patches) run fully convolutionally over a face. It is trained on the hand-drawn lines of the authors'
+Heidelberg train faces (32 faces and 388 lines with photographs, against their 410) for 101 epochs as in their notebook
+(patch accuracy 0.83). Their post-processing is reproduced in simplified form: the line map is skeletonised, a Hough transform
+restricted to near-horizontal angles is applied, the peaks are thinned by non-maximum suppression, and one straight line is drawn per peak. The two
+read-out settings were tuned on the authors' train faces only. There are two variants. **No count** keeps every peak above a
+threshold, which is the line model's setting. **With count** keeps as many lines as the transliteration has
 (the drawn count for Heidelberg), which is their setting. Each face is rescaled so signs are about 128 px tall, as
-their model expects; on eBL faces the scale comes from our truth line spacing, which gives the baseline the right
+their model expects. On eBL faces, the scale comes from our truth line spacing, which gives the baseline the right
 scale for free. Scoring is the line model's: `evaluate_heidelberg.py --segments` and `evaluate_lines.py`.
 
 | Heidelberg test faces (9 faces, 99 hand-drawn lines) | recall | precision | first line within 0.5 pitch |
@@ -128,11 +127,11 @@ scale for free. Scoring is the line model's: `evaluate_heidelberg.py --segments`
 | line model run 3, seed 0 | 0.90 / 0.88 | 0.89 / 0.90 | 0.92 / 0.89 | 0.89 / 0.88 | 0.90 / 0.87 | 0.70 / 0.74 | 87% / 61% |
 
 **What this means.**
-- **The line model is clearly ahead on the hand-drawn lines, narrowly on eBL.** On the Heidelberg test faces, the Dencker
-  network's home ground, the line model finds 12 to 18 more lines in a hundred at 16 to 22 points more precision, even
+- **The line model is clearly ahead on the hand-drawn lines and narrowly ahead on eBL.** On the Heidelberg test faces, the Dencker
+  network's home ground, the line model finds 12 to 18 more lines in a hundred at 16 to 22 points more precision. This holds even for
   run 2, which never saw a Heidelberg face. On the eBL test faces it leads by one to two points of recall and two to
   three of precision, within seed variation, and by 7 to 14 points on the first line. These eBL runs tell the network
-  each face's true line spacing to set its scale (its setting), which a new tablet does not come with; the line model
+  each face's true line spacing to set its scale (its setting), which a new tablet does not come with. The line model
   needs none. Before the spacing correction (`line_model.md`, Appendix A.9) this network ran at the wrong scale on a
   quarter of the faces and looked eight points worse on precision.
 - **The Dencker network transfers surprisingly well in recall.** Trained on 32 Neo-Assyrian faces only, it finds 85
@@ -143,9 +142,9 @@ scale for free. Scoring is the line model's: `evaluate_heidelberg.py --segments`
   not always the real lines.
 - **Neither model places the first Neo-Assyrian line well** (Dencker 43 percent, the line model 52 to 61).
 
-Caveats: a re-implementation retrained on 388 of their 410 lines, not their released model; a simplified version of
-their post-processing (their line grouping also uses transliteration line lengths); straight lines only, by design;
-and the scale handed to it from our truth.
+The caveats are as follows. This is a re-implementation retrained on 388 of their 410 lines, not their released model. It uses a simplified version of
+their post-processing (their line grouping also uses transliteration line lengths). It finds straight lines only, by design.
+The scale is handed to it from our truth.
 
 ## 4. Literature review
 
@@ -154,7 +153,7 @@ and the scale handed to it from our truth.
 Only one published model detects text lines in tablet photographs: the line segmentation network of **Dencker et al.
 (2020)**, trained on Neo-Assyrian State Archives tablets. Everything else either detects signs or wedges (from which
 lines must be built by grouping, as our first pipeline does), works on 3D scans, or is not about segmentation. The
-newest large system, the eBL OCR pipeline (Che et al. 2026), groups detected signs into lines with a heuristic; that is
+newest large system, the eBL OCR pipeline (Che et al. 2026), groups detected signs into lines with a heuristic. That is
 the route our first pipeline already uses and has already been compared (`det_n`, section 6.4 of `line_model.md`).
 
 ### 4.2 Models that could be compared directly
@@ -176,7 +175,7 @@ the route our first pipeline already uses and has already been compared (`det_n`
 | Dencker et al. 2020 (above) | signs | SSD with MobileNet-v2, trained from transliteration alignment; 65.6 mAP | Neo-Assyrian | as above |
 
 Our first pipeline already builds lines from a sign detector (the eBL Deformable DETR) and found it needs the
-transliteration's line count to be reliable; any of these detectors would go through the same grouping and the same
+transliteration's line count to be reliable. Any of these detectors would go through the same grouping and the same
 limitation. SAM2 is the one general-purpose segmenter in the list and might be worth a zero-shot look, but it
 segments signs, not lines.
 
@@ -207,7 +206,7 @@ segments signs, not lines.
 
 ### 4.5 Not checked
 
-Blocked, unreachable or needing an account: the Heidelberg thesis (archiv.ub.uni-heidelberg.de 24537), the
+The following were blocked, unreachable or needed an account: the Heidelberg thesis (archiv.ub.uni-heidelberg.de 24537), the
 Eurographics paper (diglib.eg.org), the Mara et al. papers on ResearchGate (*Automating transliteration from parallel
 lines*, *From extraction to spotting*, *Automatable annotations*, *Clustering spatial n-grams*, *OCR Optical
 Cuneiform Recognition*), the Iraqi and Başkent university theses and journal articles (iasj.net, uotechnology,
@@ -218,34 +217,34 @@ confirmed.
 
 ### 4.6 Wider search (14 Oct 2026)
 
-A web search beyond the supplied list, for cuneiform line detection and for general text-line segmenters that could
+This section reports a web search beyond the supplied list, for cuneiform line detection and for general text-line segmenters that could
 be retrained on our data.
 
 **Cuneiform line finding found in addition:**
-- **CDLI Cuneiform-OCR** (github.com/cdli-gh/Cuneiform-OCR, Google Summer of Code, last updated 2019): line detection
-  with a pretrained HED edge detector, binarisation, skeletonisation, probabilistic Hough and clustering. Shown only
-  qualitatively on one tablet; no training data or scores.
-- **Line grouping from sign detections:** DeepScribe groups detected Elamite signs into lines with sequential RANSAC;
-  the eBL pipeline (arXiv 2606.22608) with DBSCAN. Both are variants of our first pipeline's route.
+- **CDLI Cuneiform-OCR** (github.com/cdli-gh/Cuneiform-OCR, Google Summer of Code, last updated 2019) performs line detection
+  with a pretrained HED edge detector, binarisation, skeletonisation, probabilistic Hough and clustering. It is shown only
+  qualitatively on one tablet, with no training data or scores.
+- **Line grouping from sign detections:** DeepScribe groups detected Elamite signs into lines with sequential RANSAC.
+  The eBL pipeline (arXiv 2606.22608) does so with DBSCAN. Both are variants of our first pipeline's route.
 - **YOLOv8 sign detectors** (Iraq Museum Assyrian tablets, about 800 to 2,000 photographs, mAP50 0.82; arXiv
-  2407.06133 on tablet classification): small-scale sign detection, no line output.
-- **Classical processing for Old Babylonian tablets** (multi-layered visualisations for OCR training, 2024):
-  histogram equalisation, morphology and Hough transform to find sign boundaries.
+  2407.06133 on tablet classification) perform small-scale sign detection with no line output.
+- **Classical processing for Old Babylonian tablets** (multi-layered visualisations for OCR training, 2024)
+  uses histogram equalisation, morphology and a Hough transform to find sign boundaries.
 
 **General historical-document line segmenters that could be retrained on our faces:**
-- **Kraken baseline segmenter (BLLA)** (kraken.re): a maintained, installable segmenter that predicts baselines with
-  start and end maps and is trained from PageXML; our truth (eBL segments, Heidelberg polylines, Old Assyrian labels)
+- **Kraken baseline segmenter (BLLA)** (kraken.re) is a maintained, installable segmenter that predicts baselines with
+  start and end maps and is trained from PageXML. Our truth (eBL segments, Heidelberg polylines, Old Assyrian labels)
   converts directly to baselines. Its default model is trained on manuscripts and printed pages and is reported to
   struggle with non-Latin scripts without retraining.
-- **Doc-UFCN** (Teklia): small fully convolutional line detector chosen in a recent comparison for training on few
-  images; best mAP (0.76) there against dhSegment and ARU-Net.
-- **dhSegment** (ResNet encoder-decoder) and **ARU-Net** (attention residual U-Net, the line detector in Transkribus):
-  the standard baselines in that comparison; ARU-Net tends to merge close lines.
-- **Mask R-CNN** for text lines (Journal of Imaging 2024): instance segmentation that avoids the post-processing step,
-  reported ahead of U-Net variants on pixel metrics.
+- **Doc-UFCN** (Teklia) is a small fully convolutional line detector chosen in a recent comparison for training on few
+  images. It had the best mAP (0.76) there against dhSegment and ARU-Net.
+- **dhSegment** (ResNet encoder-decoder) and **ARU-Net** (attention residual U-Net, the line detector in Transkribus)
+  are the standard baselines in that comparison. ARU-Net tends to merge close lines.
+- **Mask R-CNN** for text lines (Journal of Imaging 2024) is an instance segmentation method that avoids the post-processing step.
+  It is reported ahead of U-Net variants on pixel metrics.
 
-**Inscriptions on stone** (EpiSAM, arXiv 2606.28859; patch-based Attention U-Net binarisation): character-level
-segmentation or binarisation, no line models.
+**Inscriptions on stone** (EpiSAM, arXiv 2606.28859; patch-based Attention U-Net binarisation) covers character-level
+segmentation or binarisation, with no line models.
 
 None of these has been applied to cuneiform tablets with a published line score. Kraken's segmenter, the most widely
 used trainable line segmenter in the humanities, has since been retrained on our faces and compared (head-to-head

@@ -1,8 +1,8 @@
 # Running the line model on Savio
 
-Scripts to train and run `line_cropping/linemodel` (the U-Net tablet line segmenter) on Berkeley's Savio cluster.
-Savio docs: https://datadisco.cdss.berkeley.edu/ (jobs, software) and
-https://docs-research-it.berkeley.edu/services/high-performance-computing/user-guide/ (GPU partitions, QoS).
+These scripts train and run `line_cropping/linemodel` (the U-Net tablet line segmenter) on Berkeley's Savio cluster.
+The Savio docs are at https://datadisco.cdss.berkeley.edu/ (jobs and software) and
+https://docs-research-it.berkeley.edu/services/high-performance-computing/user-guide/ (GPU partitions and QoS).
 
 | file | what |
 |---|---|
@@ -18,7 +18,7 @@ https://docs-research-it.berkeley.edu/services/high-performance-computing/user-g
 ## Run 4: steps
 
 Run 4 adds two output channels that predict how far each line's signs reach above and below it, so that crop height is
-set per line instead of by one fixed extension (`docs/line_model/line_model.md`, Appendix A.10). Two seeds, as in run 3.
+set per line instead of by one fixed extension (`docs/line_model/line_model.md`, Appendix A.10). It uses two seeds, as in run 3.
 
 ```bash
 # 0. local, from the repo root: copy everything over (PIN+OTP once; needs rsync: sudo apt install rsync). Also rerun after any code change.
@@ -52,9 +52,9 @@ Each training job uses 4 cores on `savio4_gpu` at 4.67 SU per core-hour, so at m
 
 ## QoS (ic_cdss170fall)
 
-`sacctmgr -p show associations user=$USER format=account,partition,qos` shows the account's GPU QoS names end in
-`_ica` (the FCA ones end in `_normal`): `a5k_gpu4_ica` on `savio4_gpu`, and `a40_gpu3_ica`, `gtx2080_gpu3_ica`,
-`v100_gpu3_ica` on `savio3_gpu`. `savio_lowprio` and `savio_debug` are not available on the GPU partitions.
+`sacctmgr -p show associations user=$USER format=account,partition,qos` shows that the account's GPU QoS names end in
+`_ica` (the FCA ones end in `_normal`). They are `a5k_gpu4_ica` on `savio4_gpu`, and `a40_gpu3_ica`, `gtx2080_gpu3_ica`
+and `v100_gpu3_ica` on `savio3_gpu`. `savio_lowprio` and `savio_debug` are not available on the GPU partitions.
 
 ## GPU choice
 
@@ -67,8 +67,8 @@ Each training job uses 4 cores on `savio4_gpu` at 4.67 SU per core-hour, so at m
 
 TITAN, L40 and H200 GPUs need `savio_lowprio`, which this account does not have. A job that asks
 for fewer CPUs per GPU than the ratio above is rejected by the scheduler. The `_ica` GPU QoS cap wall time per job below the
-general 72 h (`sacctmgr show qos a5k_gpu4_ica format=Name,MaxWall` prints the cap; a longer `--time` leaves the job
-pending with reason QOSMaxWallDurationPerJobLimit). The 40-epoch run took 54 min locally, so `train.sbatch` asks for 2 h.
+general 72 h. `sacctmgr show qos a5k_gpu4_ica format=Name,MaxWall` prints the cap, and a longer `--time` leaves the job
+pending with reason QOSMaxWallDurationPerJobLimit. The 40-epoch run took 54 min locally, so `train.sbatch` asks for 2 h.
 
 ## Interactive debugging
 
@@ -78,6 +78,6 @@ source savio/savio_env.sh; source activate "$CONDA_ENV_DIR"
 python -m line_cropping.linemodel.train --dry-run --heidelberg --heights --out weights/linemodel/tmp
 ```
 
-Notes: scratch is not backed up, and Research IT asks users to delete intermediate files when a job ends: a file-count overload made it unavailable from 23 Jan to 10 Feb 2026, and a purge policy is planned. Copy weights back, then delete what you no longer need. Do not set `CUDA_VISIBLE_DEVICES`
-yourself. The ProtoSnap stages (`main.py`, diffusers) are not covered by this environment; install the full
+Scratch is not backed up, and Research IT asks users to delete intermediate files when a job ends. A file-count overload made scratch unavailable from 23 Jan to 10 Feb 2026, and a purge policy is planned. Copy weights back, then delete what you no longer need. Do not set `CUDA_VISIBLE_DEVICES`
+yourself. The ProtoSnap stages (`main.py`, diffusers) are not covered by this environment. Install the full
 `requirements.txt` into the same env if you need them.

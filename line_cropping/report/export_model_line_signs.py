@@ -27,42 +27,50 @@ from line_cropping.truth.full_line_annotations import visible_signs
 
 README = """# Line crops from the line model, with annotated signs
 
-{n_lines} line crops holding {n_signs} sign boxes, from {n_faces} test faces of {n_tablets} eBL tablets. Exported {date} with
-`python -m line_cropping.report.export_model_line_signs`. Model: `{model}`.
+This set holds {n_lines} line crops with {n_signs} sign boxes, from {n_faces} test faces of {n_tablets} eBL tablets. It was exported on {date} with
+`python -m line_cropping.report.export_model_line_signs`, using the model `{model}`.
 
-The crops are model output, not annotations. The signs are eBL's boxes, placed in a crop when the box centre falls inside it. All faces are from the
-line model's test split, so it never trained on them. Another {n_empty} crops hold no annotated sign and are listed in `crops_without_signs.csv`, and {n_out}
-signs fall in no crop and are listed in `signs_outside_crops.csv`.
+The crops are model output, not annotations. The signs are eBL's boxes, and each is placed in a crop when its box centre falls inside it. All faces are from the
+line model's test split, so the model never trained on them. Another {n_empty} crops hold no annotated sign; they are listed in `crops_without_signs.csv`. In addition, {n_out}
+signs fall in no crop; they are listed in `signs_outside_crops.csv`.
 
 ## Files
 
-- `faces.csv`: one row per face. `face`, `tablet`, `script`, `side`, `object`, `image` (face photograph, relative to the repository), `width`, `height`, `pitch_px`, `coverage`, `tablet_level`, `n_lines`.
-- `lines.csv`: one row per crop. `line_id`, `face`, `tablet`, `script`, `side`, `object`, `line_no` (model's order, 1 = top), `image`, `x0`, `y0`, `x1`, `y1`, `skew_deg`, `line_angle_deg`, `line_cx`, `line_cy`, `pitch_px`,
-  `n_signs`, `ebl_line_index`, `ebl_label`, `ebl_column`, `atf_text` (eBL's main line in this crop and its transliteration), `signs_visible`, `sign_share` (signs of the main line in this crop / visible signs in `atf_text`, capped at 1, an estimate),
-  `main_line_share` (share of this crop's signs on the main line), `n_ebl_lines`, `line_kept` (share of the main line's signs on this face that are in this crop), `order_ok`, `flags`, `tablet_level`.
-- `signs.csv`: one row per sign, left to right in its crop. `sign_id`, `line_id`, `face`, `tablet`, `pos`, `sign_name`, `reading`, `type`, `ebl_label`, `ebl_line_index`, `on_main_line`, `ebl_path`,
-  `face_x0..face_y1` (box in the face photograph), `crop_x0..crop_y1` (bounds of the box in the crop image).
-- `lines/<face>/<line_id>.jpg`: the crops.
+- `faces.csv` has one row per face. Its columns are `face`, `tablet`, `script`, `side`, `object`, `image` (the face photograph, relative to the repository), `width`, `height`, `pitch_px`, `coverage`, `tablet_level` and `n_lines`.
+- `lines.csv` has one row per crop. Its columns are `line_id`, `face`, `tablet`, `script`, `side`, `object`, `line_no` (the model's order, with 1 at the top), `image`, `x0`, `y0`, `x1`, `y1`, `skew_deg`, `line_angle_deg`, `line_cx`, `line_cy`, `pitch_px`,
+  `n_signs`, `ebl_line_index`, `ebl_label`, `ebl_column`, `atf_text`, `signs_visible`, `sign_share`, `main_line_share`, `n_ebl_lines`, `line_kept`, `order_ok`, `flags` and `tablet_level`.
+  The `ebl_*` and `atf_text` columns describe eBL's main line in the crop and its transliteration. The `sign_share` column is an estimate: the number of signs of the main line in the crop divided by the visible signs in `atf_text`, capped at 1.
+  The `main_line_share` column is the share of the crop's signs that are on the main line, and `line_kept` is the share of the main line's signs on this face that are in this crop.
+- `signs.csv` has one row per sign, in left-to-right order within its crop. Its columns are `sign_id`, `line_id`, `face`, `tablet`, `pos`, `sign_name`, `reading`, `type`, `ebl_label`, `ebl_line_index`, `on_main_line`, `ebl_path`,
+  `face_x0..face_y1` (the box in the face photograph) and `crop_x0..crop_y1` (the bounds of the box in the crop image).
+- The folder `lines/<face>/` holds the crops, one `<line_id>.jpg` per crop.
 
 ## Coordinate frames
 
-Line frame: the face rotated with `cv2.getRotationMatrix2D((line_cx, line_cy), line_angle_deg, 1.0)`, same size; where `line_angle_deg` is blank, with
-`cv2.getRotationMatrix2D((width / 2, height / 2), skew_deg, 1.0)`. A crop's pixels are that frame minus (`x0`, `y0`).
+The line frame is the face rotated with `cv2.getRotationMatrix2D((line_cx, line_cy), line_angle_deg, 1.0)`, at the same size. Where `line_angle_deg` is blank, the face is rotated with
+`cv2.getRotationMatrix2D((width / 2, height / 2), skew_deg, 1.0)` instead. A crop's pixels are that frame minus the crop's (`x0`, `y0`).
 
 ## Choosing lines
 
-`flags`: `few_signs` (under 3), `no_atf` (no transliteration for the main line), `mixed_lines` (under 75% of the crop's signs on one eBL line: often a merged line, or an eBL line assignment error),
-`split_line` (the crop holds under 75% of its main line's signs on this face), `order` (signs left to right do not follow eBL's order). A line with none of these and `sign_share` >= 0.8 is a good default: {n_clean} lines here.
+The `flags` column lists any of these problems:
+
+- `few_signs`: the crop has fewer than 3 signs.
+- `no_atf`: no transliteration was found for the main line.
+- `mixed_lines`: fewer than 75% of the crop's signs are on one eBL line, which often means a merged line or an error in eBL's line assignment.
+- `split_line`: the crop holds fewer than 75% of its main line's signs on this face.
+- `order`: the signs, read left to right, do not follow eBL's order.
+
+A crop with none of these flags and a `sign_share` of at least 0.8 is a good default, and there are {n_clean} such crops here.
 
 ## Caveats
 
-- Crops run 0.2 line spacings past the middle of the gaps and overlap, so a crop image also shows parts of its neighbours, whose signs are not listed on it.
-- eBL's boxes are loose and sometimes partial; a crop with few signs may simply be a partly annotated line.
+- The crops run 0.2 line spacings past the middle of the gaps and overlap. A crop image therefore also shows parts of its neighbours, whose signs are not listed for it.
+- eBL's boxes are loose and sometimes partial, so a crop with few signs may simply be a partly annotated line.
 
 ## Licence
 
-Photographs and sign annotations: the Electronic Babylonian Library (https://www.ebl.lmu.de/), photographs by the holding museums (British Museum images CC BY-NC-SA 4.0; others vary). Sign annotations are
-also published as the eBL sign dataset (Lewenstein et al. 2026, https://doi.org/10.5334/johd.503; CC BY-NC 4.0). For research use; check the holding institution's terms before redistributing the images.
+The photographs and sign annotations come from the Electronic Babylonian Library (https://www.ebl.lmu.de/), and the photographs were taken by the holding museums. British Museum images are licensed CC BY-NC-SA 4.0, and
+the licences of others vary. The sign annotations are also published as the eBL sign dataset (Lewenstein et al. 2026, https://doi.org/10.5334/johd.503; CC BY-NC 4.0). The set is for research use. Check the holding institution's terms before redistributing the images.
 """
 
 

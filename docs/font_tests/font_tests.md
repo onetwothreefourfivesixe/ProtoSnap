@@ -8,7 +8,7 @@ to the photograph, and how much a sign's handwritten form differs from the font.
 ## Data
 
 The photographs are the eBL sign crops (`data/ebl/singleSignImages/`, listed in `data/ebl/signs_snippets_metadata.json`).
-`experiments/font_tests/testSingleSigns.py` keeps only crops that ProtoSnap can run: the script matches the font
+`experiments/font_tests/testSingleSigns.py` keeps only crops that ProtoSnap can run. In a kept crop, the script matches the font
 (NA for Assurbanipal, OB for Santakku), the sign name maps to a Unicode code point, and the font has a prototype and
 a skeleton for that sign. It then draws a random sample and writes `test_set/singleSigns_<font>.csv` in the format
 `run_test.py` reads.
@@ -25,13 +25,13 @@ The Santakku run was stopped after 12 signs.
 `experiments/font_tests/compareToFont.py` compares each finished run with the font glyph it started from. It does
 not measure accuracy against the photograph, for which there is no ground truth.
 
-- **Mean shift:** the average distance, in pixels, that each skeleton keypoint moved from its position in the font
+- **Mean shift:** This is the average distance, in pixels, that each skeleton keypoint moved from its position in the font
   skeleton.
-- **Max shift:** the largest single keypoint move.
-- **IoU:** the overlap between the fitted skeleton, drawn with thick strokes, and the glyph's ink.
+- **Max shift:** This is the largest single keypoint move.
+- **IoU:** This is the overlap between the fitted skeleton, drawn with thick strokes, and the glyph's ink.
 
-It writes `font_compare.csv` per run folder and a `font_compare.png` per sign: glyph, glyph with the fitted skeleton,
-and photograph with the fitted skeleton.
+It writes `font_compare.csv` per run folder and a `font_compare.png` per sign. Each panel shows the glyph, the glyph with the fitted
+skeleton, and the photograph with the fitted skeleton.
 
 ## Results
 
@@ -42,7 +42,7 @@ and photograph with the fitted skeleton.
 
 The fitted skeletons end up far from the font: keypoints move about 60 pixels on average and overlap the glyph's ink
 by about 13 percent. ProtoSnap does adapt the prototype to the photograph rather than keeping the font's shape. With
-no truth for the photographs these numbers cannot say whether the adapted skeleton is right; the `font_compare.png`
+no truth for the photographs, these numbers cannot say whether the adapted skeleton is right. The `font_compare.png`
 panels have to be judged by eye.
 
 ## Reproduce

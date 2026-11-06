@@ -25,7 +25,7 @@ which the obverse (front face) sits at the centre, the reverse (back face) below
 edges around them. `tablet_data/fat-cross_processed/` holds, for 1,532 tablets named by their CDLI P-number,
 one file per face (`_obverse`, `_reverse`, `_left`, `_right`, `_top`, `_bottom`) plus a `_layout`
 image showing the detected faces drawn on the composite photograph. 1,505 tablets have an obverse
-file and 1,350 have both obverse and reverse; the remainder are missing faces or are single-face
+file and 1,350 have both obverse and reverse. The remainder are missing faces or are single-face
 fragments. A subfolder `incomplete/` holds about 155 composites that could not be split, and
 `Test_ObvRev/` holds 46 hand-checked faces. `tablet_data/fat-cross_processed/inventory.csv` lists all of this per
 tablet and is rebuilt by `line_cropping/ingest/inventory.py` whenever images are added.
@@ -42,19 +42,19 @@ exactly how many lines each face holds.
 
 **Ground truth.** The Electronic Babylonian Library (eBL) publishes sign-level bounding boxes for
 about 2,000 tablets, but only one of them is in this set, so eBL cannot serve as line-level truth
-here. No line-level truth exists for these tablets yet; section 3 describes how to make some.
+here. No line-level truth exists for these tablets yet. Section 3 describes how to make some.
 
 **Released detectors.** The eBL group released Deformable DETR sign-detector weights trained on
 124,504 signs from many periods including Old Assyrian (Zenodo record 17395154), and an earlier
 FCENet model packaged as a Docker API (Zenodo record 10693601). A detector is a neural network that
 outputs a bounding box, an axis-aligned rectangle, and a class label for every sign it finds.
 
-**Measurements on this set** (scripts and tables in `tablet_data/fat-cross_processed/experiments/`):
+**Measurements on this set** (the scripts and tables are in `tablet_data/fat-cross_processed/experiments/`):
 
 - A projection profile is a one-dimensional signal made by summing a per-pixel quantity along each
   row of the image. Summing the vertical image gradient, which is strong along the shadowed upper
   edges of wedge impressions, gives a signal that peaks once per line of writing when the face is
-  upright. Rotating the face to make this signal sharpest is called deskewing; the faces here need
+  upright. Rotating the face to make this signal sharpest is called deskewing. The faces here need
   rotations of up to about eight degrees.
 - Counting peaks of that profile without any other knowledge matched the ATF line count within one
   line on only 25 percent of 1,881 faces, and systematically undercounted dense faces. Free counting
@@ -69,7 +69,7 @@ outputs a bounding box, an axis-aligned rectangle, and a class label for every s
   more detail can be recovered by re-cropping.
 - Some face crops are wrong: of 2,856 obverse and reverse files, 60 are under 150 pixels in one
   dimension, 233 have an implausible aspect ratio and 94 are too short for their ATF line count, for
-  example a 445 by 98 pixel sliver labelled as the obverse of P250549; 243 files carry at least one of
+  example a 445 by 98 pixel sliver labelled as the obverse of P250549. In all, 243 files carry at least one of
   these flags. `tablet_data/fat-cross_processed/experiments/face_qc.csv` lists them. These need to be caught
   before line finding.
 
@@ -86,7 +86,7 @@ should be re-cropped or the tablet excluded. The `incomplete/` composites are tr
 Edge faces need one extra step. In the composite, the left and right edges are shown as tall
 strips, so their lines of writing run vertically in the `_left` and `_right` files. These files are
 rotated by 90 degrees before any line finding, in the direction that puts the edge's text in the
-same reading orientation as the obverse; the ATF's `@left` block, present for 619 tablets, says
+same reading orientation as the obverse. The ATF's `@left` block, present for 619 tablets, says
 whether text is expected there at all.
 
 Ground truth is then made by hand for a stratified sample, meaning a sample chosen so that each
@@ -123,7 +123,7 @@ face. Lines are placed by fitting a comb of N positions to the deskewed row prof
 over a line pitch, the vertical distance from one line to the next, between 0.6 and 1.15 times the
 body height divided by N, and over the offset of the first line, and keeps the combination with the
 largest total profile response. Each line is then snapped to the nearest profile peak within three
-tenths of a pitch. This rigid comb is a starting point; the planned improvement is to replace it
+tenths of a pitch. This rigid comb is a starting point. The planned improvement is to replace it
 with dynamic programming, a method that finds the lowest-cost sequence of N line positions when the
 cost penalises both low profile response and departures from a uniform pitch, which lets the spacing
 vary gradually down the face as it does on real tablets. The state lines in the ATF are used as
@@ -135,8 +135,8 @@ sign boxes are clustered into lines with DBSCAN, a clustering algorithm that gro
 enough close neighbours and uses an anisotropic distance in which vertical separation counts far
 more than horizontal separation, and the number of clusters gives N. The comb fit above is then run
 with that N so both routes produce lines in the same form. Whether the detector works at 25 to 45
-pixels per line has to be measured on the ground-truth sample; if it does not, the free profile
-count with a pitch estimated by autocorrelation is the fallback, accepting the lower accuracy.
+pixels per line has to be measured on the ground-truth sample. If it does not, the free profile
+count with a pitch estimated by autocorrelation is the fallback, and the lower accuracy is accepted.
 
 Where the detector runs, its boxes are also kept, since they give the left and right ends of each
 line and, later, starting positions for ProtoSnap.
@@ -219,18 +219,18 @@ typically three fewer, because lines run onto edges, are broken away, or are not
 Forcing the ATF count therefore costs precision (0.76 against 0.88 with the true count), and choosing the
 count automatically is the open problem carried into Phase 4.
 
-Third, the ground truth for the Old Assyrian set came from a click-to-mark page rather than from CSV editing;
-90 faces were labelled in one sitting, and the same page can label more faces or a second annotator's pass
+Third, the ground truth for the Old Assyrian set came from a click-to-mark page rather than from CSV editing.
+In all, 90 faces were labelled in one sitting, and the same page can label more faces or a second annotator's pass
 whenever the evaluation needs it.
 
 ## 12. Status after Phases 4 and 5 (12 September 2026)
 
-Crop generation and the formal evaluation are done on the eBL set; the Old Assyrian set is parked by decision.
+Crop generation and the formal evaluation are done on the eBL set. The Old Assyrian set is parked by decision.
 Each detected line becomes a strip two pitches tall, because eBL sign boxes turned out to be as tall as the
 line pitch and the one-and-a-quarter-pitch crop of section 6 cut the wedges of half the lines. With the
 clustering thresholds tuned on one half of the faces and scored on the other, the detector route meets the
-three criteria of section 7 on faces with at least 120 pixels per line: recall 0.90, first line within half a
-pitch on 92 percent of faces, count agreement 97 percent. Eighty-three percent of annotated lines fall fully inside
+three criteria of section 7 on faces with at least 120 pixels per line, with recall of 0.90, the first line within half a
+pitch on 92 percent of faces, and count agreement of 97 percent. Eighty-three percent of annotated lines fall fully inside
 one crop and one percent in none. What remains for Phase 6 is the ProtoSnap connection itself, and two known
 gaps: faces with more than one column are still excluded, and Neo-Assyrian faces agree with the ATF count far
 less often than Old Babylonian ones, because their transliterations count lines the photographs do not show.
@@ -240,7 +240,7 @@ less often than Old Babylonian ones, because their transliterations count lines 
 The two-pitch crop of section 12 was a wrong turn: it captured whole eBL sign boxes only by including half of
 each neighbouring line, which is exactly what the project set out to avoid. Crops are now bounded by the gaps
 between lines, found from the detected sign boxes, so each crop holds one line: 99 percent of annotated line
-centres fall in exactly one crop, none in two, and only 2 percent of crops contain the centre of a second line.
+centres fall in exactly one crop, none fall in two, and only 2 percent of crops contain the centre of a second line.
 The sign-level ProtoSnap trial that followed is kept as groundwork for aligning transliterated signs to detected
 boxes, but the deliverable of Phase 6 is the clean line crop itself.
 
@@ -256,7 +256,7 @@ the detector finds too few signs for the route to work at all. Both weaknesses c
 that lines are inferred from detected signs. This phase replaces that inference with a model that predicts lines
 directly from the face image. The transliteration and the sign detector remain useful, but as optional refinements
 rather than requirements. The plan anticipated this in section 8 as the fallback to take if the released detectors
-fell short for the general case; they have.
+fell short for the general case. They have.
 
 ### What the model sees and what it must produce
 
@@ -273,7 +273,7 @@ right form: 9,296 lines on the eBL faces, plus the 785 hand-marked Old Assyrian 
 and the Neo-Babylonian lines once that script's tablets are downloaded. Partial annotation is the one hazard. eBL
 annotators covered a median of 86 percent of a face's lines, and an unannotated line painted as background would
 teach the model to miss real lines. Two rules remove the hazard: only faces with annotation coverage of at least
-0.9 are used for training, about 494 eBL faces and the 88 labelled Old Assyrian faces, and any vertical gap between
+0.9 are used for training (about 494 eBL faces and the 88 labelled Old Assyrian faces), and any vertical gap between
 consecutive annotated lines wider than one and a half pitches is marked as **ignore**, meaning those pixels
 contribute nothing to the loss, since a missing line almost certainly sits there.
 
@@ -284,7 +284,7 @@ and a decoder that upsamples them back, concatenating at each step the encoder's
 skip connections so that fine position is recovered alongside wide context. The encoder is a **ResNet-34**, a
 34-layer convolutional network built from residual blocks whose weights are initialised from ImageNet training and
 then fine-tuned here, which matters when there are only a few hundred training faces. The decoder ends with a
-one-by-one convolution producing the three output maps. The whole model is about 24 million weights. The loss is
+one-by-one convolution producing the three output maps. The whole model has about 24 million weights. The loss is
 Dice plus binary cross-entropy on the kernel and band maps and an L1 error on the orientation map inside bands,
 with ignore pixels excluded. This is the established recipe for text-line segmentation in document analysis, in the
 family of DBNet and PSENet, chosen over a rotated-box line detector because it handles curved and tilted lines and
@@ -299,14 +299,14 @@ brightness and contrast jitter, JPEG re-encoding, and a background polarity swap
 museum photographs. Horizontal flips are not used, since they mirror the script. Training runs on the tune half of
 the Phase 5 split only, mixing all scripts in one model, with an AdamW optimiser and a cosine learning-rate
 schedule for roughly 40 epochs, and keeps the checkpoint with the best validation line recall. On the RTX 4060 one
-run takes one to two hours and inference on a face well under a second.
+run takes one to two hours, and inference on a face takes well under a second.
 
 ### From maps to lines to crops
 
 At inference the full face goes through the model once. Connected components of the thresholded kernel map give
-line instances; each instance grows into the band map to recover its extent; a polyline fitted through the band's
+line instances. Each instance grows into the band map to recover its extent. A polyline fitted through the band's
 centre, guided by the orientation map, gives the line and its local tilt. Lines are ordered top to bottom, and where
-a transliteration exists its count is reconciled by the existing split and merge rules; where none exists the
+a transliteration exists its count is reconciled by the existing split and merge rules. Where none exists, the
 model's count stands. The gap-bounded crop of section 6 then applies unchanged, except that it may follow a curved
 band rather than a horizontal strip, which addresses the last known crop failure. Predictions are written in the
 same table format as the detector route, so the Phase 5 evaluator and the crop evaluator score them without
@@ -314,10 +314,10 @@ modification.
 
 ### Evaluation
 
-The model is scored on the test half of the Phase 5 split against the detector route's figures on the same faces,
-0.91 recall with the count and 0.87 without, per script and per resolution bucket, and separately on the labelled
+The model is scored on the test half of the Phase 5 split against the detector route's figures on the same faces
+(0.91 recall with the count and 0.87 without), per script and per resolution bucket, and separately on the labelled
 Old Assyrian faces, where the current best is the profile method's 0.89 recall at 0.76 precision. The acceptance
-criteria are the plan's original ones, recall at least 0.90 and the first line within half a pitch on at least 90
+criteria are the plan's original ones: recall of at least 0.90 and the first line within half a pitch on at least 90
 percent of faces, now required without any transliteration, plus count agreement with the truth of at least 80
 percent on faces with coverage above 0.9. A transfer test trains on eBL faces alone and evaluates on Old Assyrian
 faces, to measure how much the model generalises across photograph quality before any Old Assyrian labels are
@@ -330,7 +330,7 @@ added.
    eye before any training.
 2. Download and process the Neo-Babylonian eBL tablets through Phases 1 and 2, so all three supported scripts are
    present in training and evaluation.
-3. Train the first model on the tune split and score it; compare with the detector route on the test split.
+3. Train the first model on the tune split and score it. Compare it with the detector route on the test split.
 4. Add column detection ahead of line read-out, using the kernel map's horizontal gaps, so multi-column faces stop
    being excluded.
 5. Wire the model in as the default line finder, keep the detector route as an option, make the transliteration an
@@ -339,10 +339,10 @@ added.
 
 ### Risks
 
-The training set is small by deep-learning standards, a few hundred faces, so the pretrained encoder and heavy
+The training set is small by deep-learning standards (a few hundred faces), so the pretrained encoder and heavy
 augmentation are doing real work, and the transfer test will show whether one model covers all photograph
 qualities or whether Old Assyrian needs its own fine-tuning pass. Curved lines on strongly warped faces are
-represented in the truth only as straight segments, so the model may learn straight bands there; the labelled
+represented in the truth only as straight segments, so the model may learn straight bands there. The labelled
 Old Assyrian faces, marked as centres, are the check. Finally, the ignore rule hides likely-missing lines but not
 unannotated lines that sit inside a normal gap, so a small amount of label noise remains and precision numbers on
 low-coverage faces should keep being treated with care.

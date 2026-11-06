@@ -27,69 +27,68 @@ from line_cropping.paths import EBL
 
 README = """# Line crops and sign annotations: {n} eBL tablets
 
-Exported {date} from the ProtoSnap line-cropping project (`python -m line_cropping.report.export_tablets`).
+This set was exported on {date} from the ProtoSnap line-cropping project with `python -m line_cropping.report.export_tablets`.
 
 ## What this is
 
-{n} cuneiform tablets from the Electronic Babylonian Library (eBL), {per} each in four scripts: Neo-Assyrian (NA),
-Neo-Babylonian (NB), Old Assyrian (OA) and Old Babylonian (OB). For each tablet: the photographed faces, one image
-crop per text line, and the eBL sign annotations (a box and reading for each annotated sign), plus the
-transliteration.
+The set holds {n} cuneiform tablets from the Electronic Babylonian Library (eBL), {per} in each of four scripts: Neo-Assyrian (NA),
+Neo-Babylonian (NB), Old Assyrian (OA) and Old Babylonian (OB). Each tablet comes with its photographed faces, one image
+crop per text line, the eBL sign annotations (a box and a reading for each annotated sign) and its transliteration.
 
 The line crops come from the project's learned line model (`run6_heights_s1`, a U-Net that finds text lines without a
 transliteration) with its default read-out. All {n} tablets are from the held-out test split, so the model never saw
 them in training. Every face is single-column and has at least 90% of its transliterated lines covered by sign
-boxes; signs that were not annotated by eBL are not in signs.csv.
+boxes. Signs that eBL did not annotate are not in `signs.csv`.
 
-Counts: {n_faces} faces, {n_crops} line crops, {n_signs} sign boxes ({n_in} of them inside a line crop).
+The set contains {n_faces} faces, {n_crops} line crops and {n_signs} sign boxes, of which {n_in} lie inside a line crop.
 
 ## Files
 
-- `tablets.csv` — one row per tablet: `tablet` (museum number), `script`, `period` and `genres` (eBL),
-  `n_faces`, `n_line_crops`, `n_signs`, `transliteration` (path to the ATF file).
-- `faces.csv` — one row per face: `face` (id), `tablet`, `side` (obverse, reverse, ...), `image` (path),
-  `width`, `height`, `photo_x0`, `photo_y0` (where the face sits in the eBL photograph), `skew_deg` (rotation that levels the
-  face as a whole, see frames), `line_pitch_px` (typical distance between lines), `annotation_coverage`.
-- `line_crops.csv` — one row per line crop, in reading order within a face: `crop_id`, `tablet`, `face`, `line_no`
-  (1 = top line), `image` (path), `x0`, `y0`, `x1`, `y1` (the crop rectangle in the crop's own frame, see frames), `skew_deg`,
-  `line_angle_deg`, `line_cx`, `line_cy` (the rotation of that frame; blank when the crop was cut from the deskewed face),
-  `atf_line` (the transliteration line label, e.g. `3` or `5'`; filled only where the number of crops on the face
-  equals the transliteration's line count, otherwise blank), `n_signs` (annotated signs assigned to the crop, see `crop_id` in `signs.csv`).
-- `signs.csv` — one row per annotated sign: `sign_id`, `tablet`, `face`, `sign_name` (eBL sign list), `reading`
-  (transliterated value), `type` (HasSign, Number, Damaged, PartiallyBroken, UnclearSign), `ebl_label` (eBL's line
-  label, e.g. `o 3` = obverse line 3), `ebl_path` (eBL's position of the sign in the transliteration:
-  line, word, sign), `face_x0..face_y1` (box in face image pixels), `deskew_x0..deskew_y1` (box in the deskewed face
-  frame), `crop_id` (the line crop containing the box centre, blank if none; where crops overlap, the one whose middle is
-  closest), `crop_x0..crop_y1` (bounds of the box in that crop image).
-- `faces/`, `line_crops/` — the images; `transliterations/<tablet>.atf` — eBL transliteration (ATF).
+- `tablets.csv` has one row per tablet. Its columns are `tablet` (the museum number), `script`, `period` and `genres` (from eBL),
+  `n_faces`, `n_line_crops`, `n_signs` and `transliteration` (the path to the ATF file).
+- `faces.csv` has one row per face. Its columns are `face` (the id), `tablet`, `side` (obverse, reverse and so on), `image` (the path),
+  `width`, `height`, `photo_x0` and `photo_y0` (where the face sits in the eBL photograph), `skew_deg` (the rotation that levels the
+  face as a whole; see the coordinate frames below), `line_pitch_px` (the typical distance between lines) and `annotation_coverage`.
+- `line_crops.csv` has one row per line crop, in reading order within each face. Its columns are `crop_id`, `tablet`, `face`, `line_no`
+  (1 is the top line), `image` (the path), `x0`, `y0`, `x1` and `y1` (the crop rectangle in the crop's own frame), `skew_deg`,
+  `line_angle_deg`, `line_cx` and `line_cy` (the rotation of that frame, blank when the crop was cut from the deskewed face),
+  `atf_line` and `n_signs`. The `atf_line` column holds the transliteration line label, such as `3` or `5'`; it is filled only where the number of crops
+  on the face equals the transliteration's line count. The `n_signs` column counts the annotated signs assigned to the crop (see `crop_id` in `signs.csv`).
+- `signs.csv` has one row per annotated sign. Its columns are `sign_id`, `tablet`, `face`, `sign_name` (from the eBL sign list), `reading`
+  (the transliterated value), `type` (HasSign, Number, Damaged, PartiallyBroken or UnclearSign), `ebl_label` (eBL's line
+  label; for example, `o 3` means obverse line 3), `ebl_path` (eBL's position of the sign in the transliteration as
+  line, word and sign), `face_x0..face_y1` (the box in face image pixels), `deskew_x0..deskew_y1` (the box in the deskewed face
+  frame), `crop_id` and `crop_x0..crop_y1`. The `crop_id` column names the line crop that contains the box centre and is blank if there is none; where crops
+  overlap, it names the crop whose middle is closest. The `crop_x0..crop_y1` columns give the bounds of the box in that crop image.
+- The `faces/` and `line_crops/` folders hold the images, and `transliterations/<tablet>.atf` holds each eBL transliteration (ATF).
 
 ## Coordinate frames
 
-- **Face frame:** pixels of `faces/<face>.jpg`, origin top left.
-- **Deskewed face frame:** the face image rotated by `skew_deg` degrees about its centre (OpenCV
-  `cv2.getRotationMatrix2D((width / 2, height / 2), skew_deg, 1.0)`, positive = counter-clockwise), same size. The
+- **Face frame.** This frame uses the pixels of `faces/<face>.jpg`, with the origin at the top left.
+- **Deskewed face frame.** This is the face image rotated by `skew_deg` degrees about its centre, at the same size. The OpenCV call is
+  `cv2.getRotationMatrix2D((width / 2, height / 2), skew_deg, 1.0)`, and positive angles turn counter-clockwise. The
   `deskew_*` sign boxes are in this frame.
-- **Line frame:** each line is cut along its own tilt, from the face image rotated by `line_angle_deg` about
-  (`line_cx`, `line_cy`): `cv2.getRotationMatrix2D((line_cx, line_cy), line_angle_deg, 1.0)`, same size. A crop's rectangle
+- **Line frame.** Each line is cut along its own tilt, from the face image rotated by `line_angle_deg` about
+  (`line_cx`, `line_cy`) with `cv2.getRotationMatrix2D((line_cx, line_cy), line_angle_deg, 1.0)`, at the same size. A crop's rectangle
   is in this frame. Where `line_angle_deg` is blank, the rectangle is in the deskewed face frame instead.
-- **Crop frame:** pixels of the crop image = line frame minus (`x0`, `y0`) of the crop. The `crop_*` sign boxes are in this frame.
+- **Crop frame.** A crop image's pixels are the line frame minus the crop's (`x0`, `y0`). The `crop_*` sign boxes are in this frame.
 
 ## Caveats
 
-- Line crops are model output, not ground truth. On test faces like these the model finds about 94 lines in 100 at
-  about 91% precision; occasionally a crop holds no annotated sign (`n_signs` = 0) or a line is missed.
+- The line crops are model output, not ground truth. On test faces like these, the model finds about 94 lines in 100 at
+  about 91% precision. Occasionally a crop holds no annotated sign (`n_signs` is 0), or a line is missed.
 - Crop height comes from the export's crop set. With the default settings, each crop runs 0.2 line spacings past the
-  middle of the gap above and below its line, moved down by 0.06 spacings, so neighbouring crops overlap and hold parts of the
-  neighbouring lines; a tall sign can still be clipped. Each has half a line pitch of margin at the ends.
-- Sign boxes were drawn by eBL annotators on the eBL photographs; a few boxes overlap or are loose, and a tall box can
-  extend past the top or bottom of its crop, so `crop_*` coordinates can be negative or exceed the crop size.
+  middle of the gap above and below its line and is moved down by 0.06 spacings. Neighbouring crops therefore overlap and hold parts of the
+  neighbouring lines, and a tall sign can still be clipped. Each crop has half a line pitch of margin at its ends.
+- eBL annotators drew the sign boxes on the eBL photographs. A few boxes overlap or are loose, and a tall box can
+  extend past the top or bottom of its crop, so the `crop_*` coordinates can be negative or exceed the crop size.
 
 ## Provenance and licence
 
-Photographs and sign annotations: the Electronic Babylonian Library (https://www.ebl.lmu.de/), photographs by the
-holding museums (British Museum images CC BY-NC-SA 4.0; others vary). Sign annotations are also published as the eBL
+The photographs and sign annotations come from the Electronic Babylonian Library (https://www.ebl.lmu.de/), and the photographs were taken by the
+holding museums. British Museum images are licensed CC BY-NC-SA 4.0, and the licences of others vary. The sign annotations are also published as the eBL
 sign dataset (Lewenstein et al. 2026, Journal of Open Humanities Data, https://doi.org/10.5334/johd.503; CC BY-NC
-4.0). For research use; check the holding institution's terms before redistributing the images.
+4.0). The set is for research use. Check the holding institution's terms before redistributing the images.
 """
 
 

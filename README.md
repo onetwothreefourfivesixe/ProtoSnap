@@ -34,8 +34,8 @@ root.
 | 3. Esagil skeletons | ProtoSnap on Neo-Babylonian signs, with Esagil skeletons transferred from Assurbanipal and generated with ProtoSnapVectorMapper | `experiments/esagil_skeletons/` | `docs/esagil/` | `output/esagil/` |
 | 4. Custom line model | a U-Net that finds text lines directly, without a transliteration, plus the Line Splitter web app | `line_cropping/linemodel/`, `line_cropping/app/` (phase 7) | `docs/line_model/` | |
 
-Data: `data/` holds raw downloads (CDLI dump, eBL sign crops and annotation export, eBL detector training data,
-fonts); `tablet_data/` holds the line-cropping pipeline's working data; `weights/` holds model weights. All three are
+Three folders hold data. `data/` holds raw downloads (the CDLI dump, eBL sign crops and annotation export, eBL detector
+training data and fonts). `tablet_data/` holds the line-cropping pipeline's working data, and `weights/` holds model weights. All three are
 gitignored apart from `data/ebl/signs_snippets_metadata.json`. `docs/README.md` lists every document.
 
 ## Installation

@@ -1,6 +1,6 @@
 # Zenodo record 10693601 (eBL "Sign Detection for Cuneiform Tablets", 2024) — raw-data.tar.gz
 
-Extracted to `raw/raw-data/`. No licence is stated on the record; treat as research-use only.
+The archive is extracted to `raw/raw-data/`. No licence is stated on the record, so treat the data as research-use only.
 
 | folder | content |
 |---|---|
@@ -10,7 +10,7 @@ Extracted to `raw/raw-data/`. No licence is stated on the record; treat as resea
 | `deepscribe/` | 1,239 Persepolis Fortification (Elamite) images with hotspot JSON. |
 | `jooch/`, `urschrei-CDP/` | ~15k and ~12k images from other cuneiform datasets (JOOCH, CDP/Urschrei). |
 
-Conclusion for line cropping: these are NOT cropped tablet sides. The eBL portion is the same photographs we
+The conclusion for line cropping is that these are NOT cropped tablet sides. The eBL portion consists of the same photographs we
 already have from the API, with fewer fields. Its only extra value is 226 annotated tablets outside our
 Neo-Assyrian/Old Babylonian selection, usable if other periods are added later, and the Heidelberg set as an
 independent Neo-Assyrian check.

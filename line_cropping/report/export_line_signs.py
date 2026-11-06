@@ -1,6 +1,7 @@
 """A data set of annotated text lines: one image per line, tied to its face, with the line's signs in reading order.
 
   python -m line_cropping.report.export_line_signs [--out tablet_data/exports/line_signs] [--limit-faces N] [--scripts OB NB ...]
+      [--half-height 0.7 --end-margin 0.5] [--model-pred <predictions dir>]
 
 Lines are the eBL truth lines (faces/lines/<face>.csv), so a line's signs are the sign boxes eBL assigned to it, not whatever
 falls inside a predicted crop. Run truth/full_line_annotations.py first: its levels go into the tables.
@@ -10,7 +11,12 @@ these columns). The angle comes from the truth segment when it rests on at least
 face's usual line angle (the median over its truth rows with at least 3 signs); otherwise that usual angle is used. The rectangle holds all the line's signs plus a margin, leaving out signs more than
 one line spacing from the line's median row, which are kept in signs.csv with outlier = True. Rows of one line index and column
 closer than 0.35 line spacings are one line (as in evaluate_lines); rows farther apart are separate lines, and each sign goes to
-the nearest. Writes README.md, faces.csv, lines.csv, signs.csv and lines/<face>/<line_id>.jpg under --out.
+the nearest.
+
+--half-height gives every line the same geometry instead: the rectangle runs --half-height line spacings above and below the median row of
+the line's sign-box centres, and from its leftmost to its rightmost box plus --end-margin spacings, whatever the boxes' heights. --model-pred
+(a line model's predictions, linemodel/infer.py) adds a check: how far the nearest predicted line lies from each eBL line, flagged when it is
+more than 0.35 spacings or there is none. Writes README.md, faces.csv, lines.csv, signs.csv and lines/<face>/<line_id>.jpg under --out.
 """
 import argparse
 import collections
@@ -31,48 +37,58 @@ MARGIN_X, MARGIN_Y, OUTLIER = 0.25, 0.1, 1.0
 
 README = """# Annotated lines of signs
 
-{n_lines} text lines with {n_signs} sign boxes, from {n_faces} faces of {n_tablets} eBL tablets. Exported {date} with
+This set holds {n_lines} text lines with {n_signs} sign boxes, from {n_faces} faces of {n_tablets} eBL tablets. It was exported on {date} with
 `python -m line_cropping.report.export_line_signs`.
 
-Each line has one image, is tied to the face it came from, and lists its signs in reading order. Lines are eBL's: the sign boxes
-were assigned to transliteration lines by eBL's annotators, so these are annotations, not model output.
+Each line has one image, is tied to the face it came from, and lists its signs in reading order. The lines are eBL's: eBL's annotators
+assigned the sign boxes to transliteration lines, so these lines are annotations, not model output.
+
+{geometry}
 
 ## Files
 
-- `faces.csv`: one row per face. `face`, `tablet`, `script`, `side`, `object`, `image` (face photograph, relative to the repository),
-  `width`, `height`, `skew_deg` (the face's usual line angle, degrees), `pitch_px` (line spacing), `coverage`, `n_columns`, `split`, `tablet_level`, `n_lines`.
-- `lines.csv`: one row per line. `line_id`, `face`, `tablet`, `script`, `side`, `object`, `column`, `line_index`, `line_label`, `atf_text` (the
-  transliteration of that line, blank if not found), `image`, `x0`, `y0`, `x1`, `y1` (rectangle in the line frame), `skew_deg`, `line_angle_deg`,
-  `line_cx`, `line_cy` (the line frame), `angle_source`, `pitch_px`, `n_signs`, `signs_visible`, `sign_share`, `n_outliers`, `order_ok`, `flags`, `split`, `tablet_level`.
-- `signs.csv`: one row per sign, in reading order. `sign_id`, `line_id`, `face`, `tablet`, `pos` (1 = first), `sign_name`, `reading`, `type`,
-  `ebl_label`, `ebl_path` (line, word, sign), `face_x0..face_y1` (box in the face photograph), `crop_x0..crop_y1` (bounds of the box in the line image), `outlier`.
-- `lines/<face>/<line_id>.jpg`: the line images.
+- `faces.csv` has one row per face. Its columns are `face`, `tablet`, `script`, `side`, `object`, `image` (the face photograph, relative to the repository),
+  `width`, `height`, `skew_deg` (the face's usual line angle in degrees), `pitch_px` (the line spacing), `coverage`, `n_columns`, `split`, `tablet_level` and `n_lines`.
+- `lines.csv` has one row per line. Its columns are `line_id`, `face`, `tablet`, `script`, `side`, `object`, `column`, `line_index`, `line_label`, `atf_text` (the
+  transliteration of that line, blank if it was not found), `image`, `x0`, `y0`, `x1` and `y1` (the rectangle in the line frame), `skew_deg`, `line_angle_deg`,
+  `line_cx` and `line_cy` (the line frame), `angle_source`, `pitch_px`, `model_offset_pitch`, `n_signs`, `signs_visible`, `sign_share`, `n_outliers`, `order_ok`, `flags`, `split`
+  and `tablet_level`. The `model_offset_pitch` column gives the distance to the nearest line found by the line model and is blank if there is none or the check was not run.
+- `signs.csv` has one row per sign, in reading order. Its columns are `sign_id`, `line_id`, `face`, `tablet`, `pos` (1 is the first sign), `sign_name`, `reading`, `type`,
+  `ebl_label`, `ebl_path` (line, word and sign), `face_x0..face_y1` (the box in the face photograph), `crop_x0..crop_y1` (the bounds of the box in the line image) and `outlier`.
+- The folder `lines/<face>/` holds the line images, one `<line_id>.jpg` per line.
 
 ## Coordinate frames
 
-Line frame: the face rotated with `cv2.getRotationMatrix2D((line_cx, line_cy), line_angle_deg, 1.0)`, same size. A line image's pixels are that frame minus (`x0`, `y0`).
+The line frame is the face rotated with `cv2.getRotationMatrix2D((line_cx, line_cy), line_angle_deg, 1.0)`, at the same size. A line image's pixels are that frame minus the line's (`x0`, `y0`).
 
 ## Choosing lines
 
-- `tablet_level`: `full` (every transliterated line has boxes, at least 80% of visible signs boxed), `all_lines`, `edges_missing`, `partial`.
-  Lines of a `partial` tablet can themselves be well annotated, so `sign_share` is the better guide for one line.
-- `sign_share`: boxes on this line / visible signs in `atf_text`, capped at 1, blank without a transliteration. Only an estimate: the signs are counted by splitting the text.
-- `flags`: `few_signs` (under 3), `no_atf` (no transliteration line found), `angle_off` (the truth segment is more than 5 degrees from the face's usual line angle,
-  often a sign box assigned to the wrong line), `order` (signs do not read left to right), `outlier` (a sign far from the line).
-  A line with none of these and `sign_share` >= 0.8 is a good default: {n_clean} lines here.
+- The `tablet_level` column takes the values `full`, `all_lines`, `edges_missing` and `partial`. A `full` tablet has boxes on every transliterated line, with at least 80% of its visible signs boxed.
+  Lines of a `partial` tablet can themselves be well annotated, so `sign_share` is the better guide for a single line.
+- The `sign_share` column is the number of boxes on the line divided by the number of visible signs in `atf_text`, capped at 1, and it is blank without a transliteration. It is only an estimate, because the signs are counted by splitting the text.
+- The `flags` column lists any of these problems:
+  - `few_signs`: the line has fewer than 3 signs.
+  - `no_atf`: no transliteration line was found.
+  - `angle_off`: the truth segment is more than 5 degrees from the face's usual line angle, which often means a sign box was assigned to the wrong line.
+  - `order`: the signs do not read left to right.
+  - `outlier`: a sign lies far from the line.
+  - `clipped`: the rectangle reaches the edge of the photograph.
+  - `model_disagrees`: the line model found no line within 0.35 spacings, which often means a misplaced box or a damaged line. The model was trained on about half these faces, so it agrees more often there.
+
+  A line with none of these flags and a `sign_share` of at least 0.8 is a good default, and there are {n_clean} such lines here.
 
 ## Caveats
 
-- Neo-Assyrian is thinly annotated: most of its tablets have boxes on few lines.
+- Neo-Assyrian is thinly annotated, and most of its tablets have boxes on only a few lines.
 - eBL boxes are loose, and neighbouring lines' boxes overlap, so a line image also shows parts of its neighbours.
-- Lines come from eBL's labels, are straight, and are occasionally wrong where a box was assigned to the wrong line.
-- `split` is the line model's split: a face marked `tune` may have been used to train it. Multi-column faces have none.
+- The lines come from eBL's labels and are straight. They are occasionally wrong where a box was assigned to the wrong line.
+- The `split` column is the line model's split, so a face marked `tune` may have been used to train it. Multi-column faces have no split.
 
 ## Licence
 
-Photographs and sign annotations: the Electronic Babylonian Library (https://www.ebl.lmu.de/), photographs by the holding museums (British Museum images
-CC BY-NC-SA 4.0; others vary). Sign annotations are also published as the eBL sign dataset (Lewenstein et al. 2026, https://doi.org/10.5334/johd.503; CC BY-NC 4.0).
-For research use; check the holding institution's terms before redistributing the images.
+The photographs and sign annotations come from the Electronic Babylonian Library (https://www.ebl.lmu.de/), and the photographs were taken by the holding museums. British Museum images
+are licensed CC BY-NC-SA 4.0, and the licences of others vary. The sign annotations are also published as the eBL sign dataset (Lewenstein et al. 2026, https://doi.org/10.5334/johd.503; CC BY-NC 4.0).
+The set is for research use. Check the holding institution's terms before redistributing the images.
 """
 
 
@@ -124,6 +140,7 @@ def segments(rows, skew, W, H, pitch):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--out', default='tablet_data/exports/line_signs'); ap.add_argument('--limit-faces', type=int, default=None)
+    ap.add_argument('--half-height', type=float, default=None); ap.add_argument('--end-margin', type=float, default=0.5); ap.add_argument('--model-pred', default=None)
     ap.add_argument('--scripts', nargs='*', default=None); ap.add_argument('--max-dev', type=float, default=10.0); ap.add_argument('--quality', type=int, default=92)
     a = ap.parse_args()
     if os.path.exists(os.path.join(a.out, 'lines.csv')):
@@ -162,6 +179,9 @@ def main():
                 boxes.append((dt, an, (x0, y0, x1, y1)))
         hs = [b[2][3] - b[2][1] for b in boxes]; pitch = float(f['pitch_px']) if f['pitch_px'] else (float(np.median(hs)) if hs else float('nan'))
         segs = segments(rows, skew, W, H, pitch)
+        pred = []
+        if a.model_pred and os.path.exists(os.path.join(a.model_pred, 'unet_segments', f['face'] + '.csv')):
+            pred = [np.array([[float(q['ax0']), float(q['ay0']), 1.0], [float(q['ax1']), float(q['ay1']), 1.0]]) for q in csv.DictReader(open(os.path.join(a.model_pred, 'unet_segments', f['face'] + '.csv')))]
         by_idx = collections.defaultdict(list)
         for s in segs: by_idx[s['line_index']].append(s)
         for dt, an, b in boxes:
@@ -183,8 +203,24 @@ def main():
             rowc = np.array([(q[1] + q[3]) / 2 for q in fb]); med = float(np.median(rowc))
             lim = OUTLIER * pitch if pitch == pitch else float('inf'); out = np.abs(rowc - med) > lim
             keep = [q for q, o in zip(fb, out) if not o] or fb; m = pitch if pitch == pitch else float(np.median([q[3] - q[1] for q in fb]))
-            X0, Y0 = int(max(0, min(q[0] for q in keep) - MARGIN_X * m)), int(max(0, min(q[1] for q in keep) - MARGIN_Y * m))
-            X1, Y1 = int(min(W, max(q[2] for q in keep) + MARGIN_X * m)), int(min(H, max(q[3] for q in keep) + MARGIN_Y * m))
+            if a.half_height:                                                   # the same geometry for every line
+                mid = float(np.median([(q[1] + q[3]) / 2 for q in keep]))
+                rx0, rx1 = min(q[0] for q in keep) - a.end_margin * m, max(q[2] for q in keep) + a.end_margin * m
+                ry0, ry1 = mid - a.half_height * m, mid + a.half_height * m
+            else:
+                mid = med
+                rx0, rx1 = min(q[0] for q in keep) - MARGIN_X * m, max(q[2] for q in keep) + MARGIN_X * m
+                ry0, ry1 = min(q[1] for q in keep) - MARGIN_Y * m, max(q[3] for q in keep) + MARGIN_Y * m
+            clipped = rx0 < 0 or ry0 < 0 or rx1 > W or ry1 > H
+            X0, Y0, X1, Y1 = int(max(0, rx0)), int(max(0, ry0)), int(min(W, rx1)), int(min(H, ry1))
+            moff = ''
+            if a.model_pred:                                                    # nearest model line at this line's middle, in the line frame
+                xc = (rx0 + rx1) / 2; best = float('inf')
+                for P in pred:
+                    (u0, u1), (v0, v1) = P @ M[0], P @ M[1]
+                    if min(u0, u1) <= xc <= max(u0, u1) and u1 != u0:
+                        best = min(best, abs(v0 + (v1 - v0) * (xc - u0) / (u1 - u0) - mid))
+                moff = round(best / m, 3) if best < float('inf') else ''
             if X1 - X0 < 4 or Y1 - Y0 < 4:
                 skipped['empty rectangle'] += 1; continue
             n_face += 1; line_id = f"{f['face']}__L{n_face:03d}"; rel = os.path.join('lines', f['face'], line_id + '.jpg')
@@ -193,9 +229,10 @@ def main():
             xs = [(q[0] + q[2]) / 2 for _, q, o in items if not o]; order = float(np.mean(np.diff(xs) > 0)) if len(xs) > 1 else 1.0
             col = '' if s['column'] == 'single' else s['column']; text = find_text(tablet_cache['texts'], obj, f['side'], col, s['label'])
             vis = len(visible_signs(text)) if text else 0; share = round(min(1.0, len(items) / vis), 3) if vis else ''
-            flags = [n for n, on in (('few_signs', len(items) < 3), ('no_atf', not text), ('angle_off', len(items) >= 3 and dev > 5), ('order', order < 0.8), ('outlier', bool(out.any()))) if on]
+            flags = [n for n, on in (('few_signs', len(items) < 3), ('no_atf', not text), ('angle_off', len(items) >= 3 and dev > 5), ('order', order < 0.8), ('outlier', bool(out.any())), ('clipped', clipped),
+                                                 ('model_disagrees', bool(a.model_pred) and (moff == '' or moff > 0.35))) if on]
             L.append(dict(line_id=line_id, face=f['face'], tablet=tab, script=f['script'], side=f['side'], object=f['object'], column=col, line_index=s['line_index'], line_label=s['label'], atf_text=text, image=rel,
-                          x0=X0, y0=Y0, x1=X1, y1=Y1, skew_deg=skew, line_angle_deg=round(use, 3), line_cx=round(cx, 2), line_cy=round(cy, 2), angle_source=src, pitch_px=f['pitch_px'], n_signs=len(items),
+                          x0=X0, y0=Y0, x1=X1, y1=Y1, skew_deg=skew, line_angle_deg=round(use, 3), line_cx=round(cx, 2), line_cy=round(cy, 2), angle_source=src, pitch_px=f['pitch_px'], model_offset_pitch=moff, n_signs=len(items),
                           signs_visible=vis or '', sign_share=share, n_outliers=int(out.sum()), order_ok=round(order, 2), flags=' '.join(flags), split=split.get(f['face'], ''), tablet_level=level.get(tab, '')))
             for k, ((dt, an, b), q, o) in enumerate(items):
                 S.append(dict(sign_id=f'{line_id}__s{k + 1:03d}', line_id=line_id, face=f['face'], tablet=tab, pos=k + 1, sign_name=dt.get('signName', ''), reading=dt.get('value', ''), type=dt['type'],
@@ -211,7 +248,11 @@ def main():
             w = csv.DictWriter(fh, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
     clean = sum(1 for r in L if not r['flags'] and r['sign_share'] != '' and r['sign_share'] >= 0.8)
     import datetime
-    open(os.path.join(a.out, 'README.md'), 'w', encoding='utf-8').write(README.format(n_lines=len(L), n_signs=len(S), n_faces=len(F), n_tablets=len({r['tablet'] for r in F}), n_clean=clean, date=datetime.date.today().isoformat()))
+    geometry = (f"Every line has the same geometry. Its image runs {a.half_height:g} line spacings above and below the middle of its signs, which is the median row of their box centres. "
+                f"It runs from the line's first sign to its last plus {a.end_margin:g} spacings at each end, along the line's own angle. Boxes taller than the image reach past its edge, "
+                "so their `crop_*` coordinates can be negative or exceed the image size."
+                if a.half_height else "Each image is cut around the line's own sign boxes with a small margin, so image heights vary with the boxes.")
+    open(os.path.join(a.out, 'README.md'), 'w', encoding='utf-8').write(README.format(geometry=geometry, n_lines=len(L), n_signs=len(S), n_faces=len(F), n_tablets=len({r['tablet'] for r in F}), n_clean=clean, date=datetime.date.today().isoformat()))
     print(f"{len(F)} faces, {len(L)} lines, {len(S)} signs, {clean} lines with no flag and sign_share >= 0.8; skipped {dict(skipped)} -> {a.out}")
 
 
