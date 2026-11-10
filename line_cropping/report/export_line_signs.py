@@ -33,7 +33,7 @@ from line_cropping.paths import EBL
 from line_cropping.truth.ebl_ground_truth import SIGN_TYPES, parse_label
 from line_cropping.truth.full_line_annotations import ATF_OBJECTS, ATF_SIDES, ROMAN, visible_signs
 
-MARGIN_X, MARGIN_Y, OUTLIER = 0.25, 0.1, 1.0
+MARGIN_X, MARGIN_Y, OUTLIER, ATF_MATCH = 0.25, 0.1, 1.0, 0.5
 
 README = """# Annotated lines of signs
 
@@ -51,7 +51,7 @@ assigned the sign boxes to transliteration lines, so these lines are annotations
   `width`, `height`, `skew_deg` (the face's usual line angle in degrees), `pitch_px` (the line spacing), `coverage`, `n_columns`, `split`, `tablet_level` and `n_lines`.
 - `lines.csv` has one row per line. Its columns are `line_id`, `face`, `tablet`, `script`, `side`, `object`, `column`, `line_index`, `line_label`, `atf_text` (the
   transliteration of that line, blank if it was not found), `image`, `x0`, `y0`, `x1` and `y1` (the rectangle in the line frame), `skew_deg`, `line_angle_deg`,
-  `line_cx` and `line_cy` (the line frame), `angle_source`, `pitch_px`, `model_offset_pitch`, `n_signs`, `signs_visible`, `sign_share`, `n_outliers`, `order_ok`, `flags`, `split`
+  `line_cx` and `line_cy` (the line frame), `angle_source`, `pitch_px`, `model_offset_pitch`, `n_signs`, `signs_visible`, `sign_share`, `atf_match`, `n_outliers`, `order_ok`, `flags`, `split`
   and `tablet_level`. The `model_offset_pitch` column gives the distance to the nearest line found by the line model and is blank if there is none or the check was not run.
 - `signs.csv` has one row per sign, in reading order. Its columns are `sign_id`, `line_id`, `face`, `tablet`, `pos` (1 is the first sign), `sign_name`, `reading`, `type`,
   `ebl_label`, `ebl_path` (line, word and sign), `face_x0..face_y1` (the box in the face photograph), `crop_x0..crop_y1` (the bounds of the box in the line image) and `outlier`.
@@ -66,9 +66,13 @@ The line frame is the face rotated with `cv2.getRotationMatrix2D((line_cx, line_
 - The `tablet_level` column takes the values `full`, `all_lines`, `edges_missing` and `partial`. A `full` tablet has boxes on every transliterated line, with at least 80% of its visible signs boxed.
   Lines of a `partial` tablet can themselves be well annotated, so `sign_share` is the better guide for a single line.
 - The `sign_share` column is the number of boxes on the line divided by the number of visible signs in `atf_text`, capped at 1, and it is blank without a transliteration. It is only an estimate, because the signs are counted by splitting the text.
+  It counts boxes and does not check that they match the text, so a line whose `atf_text` belongs to another line can still score 1.
+- The `atf_match` column is the share of the line's box readings that occur in `atf_text` (broken parts included, each word of the text used once), and it is blank
+  without a transliteration. It is near 1 for most lines and near 0 where eBL labelled a line's boxes with a neighbouring line's number, so `atf_text` is the wrong line's.
 - The `flags` column lists any of these problems:
   - `few_signs`: the line has fewer than 3 signs.
   - `no_atf`: no transliteration line was found.
+  - `atf_mismatch`: fewer than half the box readings occur in `atf_text`, which usually means it is another line's transliteration.
   - `angle_off`: the truth segment is more than 5 degrees from the face's usual line angle, which often means a sign box was assigned to the wrong line.
   - `order`: the signs do not read left to right.
   - `outlier`: a sign lies far from the line.
@@ -107,6 +111,20 @@ def atf_texts(atf):
         if m:
             out[(obj, side, col, m.group(1))] = m.group(2)
     return out
+
+
+def norm_reading(t):
+    """A reading as compared with the transliteration: lower case, without brackets, damage and correction marks."""
+    return re.sub(r'[\[\]#!?<>*&()⸢⸣|]', '', t).lower()
+
+
+def atf_match(text, readings):
+    """Share of a line's box readings that occur in its transliteration, broken parts included (each token used once).
+    Low values mean eBL's label for the boxes points to another line's text."""
+    body = re.sub(r'#tr\..*$', '', text); body = re.sub(r'\(?\$[^$]*\$\)?|%\S+', ' ', body).replace('...', ' ')
+    toks = collections.Counter(norm_reading(t) for t in re.split(r'[\s\-.:{}+]+', body) if norm_reading(t))
+    got = collections.Counter(norm_reading(r) for r in readings)
+    return round(sum((toks & got).values()) / sum(got.values()), 3) if got else ''
 
 
 def find_text(texts, obj, side, col, label):
@@ -229,11 +247,12 @@ def main():
             xs = [(q[0] + q[2]) / 2 for _, q, o in items if not o]; order = float(np.mean(np.diff(xs) > 0)) if len(xs) > 1 else 1.0
             col = '' if s['column'] == 'single' else s['column']; text = find_text(tablet_cache['texts'], obj, f['side'], col, s['label'])
             vis = len(visible_signs(text)) if text else 0; share = round(min(1.0, len(items) / vis), 3) if vis else ''
-            flags = [n for n, on in (('few_signs', len(items) < 3), ('no_atf', not text), ('angle_off', len(items) >= 3 and dev > 5), ('order', order < 0.8), ('outlier', bool(out.any())), ('clipped', clipped),
+            match = atf_match(text, [it[0][0].get('value') or it[0][0].get('signName', '') for it in items]) if text else ''
+            flags = [n for n, on in (('few_signs', len(items) < 3), ('no_atf', not text), ('atf_mismatch', match != '' and match < ATF_MATCH),('angle_off', len(items) >= 3 and dev > 5), ('order', order < 0.8), ('outlier', bool(out.any())), ('clipped', clipped),
                                                  ('model_disagrees', bool(a.model_pred) and (moff == '' or moff > 0.35))) if on]
             L.append(dict(line_id=line_id, face=f['face'], tablet=tab, script=f['script'], side=f['side'], object=f['object'], column=col, line_index=s['line_index'], line_label=s['label'], atf_text=text, image=rel,
                           x0=X0, y0=Y0, x1=X1, y1=Y1, skew_deg=skew, line_angle_deg=round(use, 3), line_cx=round(cx, 2), line_cy=round(cy, 2), angle_source=src, pitch_px=f['pitch_px'], model_offset_pitch=moff, n_signs=len(items),
-                          signs_visible=vis or '', sign_share=share, n_outliers=int(out.sum()), order_ok=round(order, 2), flags=' '.join(flags), split=split.get(f['face'], ''), tablet_level=level.get(tab, '')))
+                          signs_visible=vis or '', sign_share=share, atf_match=match, n_outliers=int(out.sum()), order_ok=round(order, 2), flags=' '.join(flags), split=split.get(f['face'], ''), tablet_level=level.get(tab, '')))
             for k, ((dt, an, b), q, o) in enumerate(items):
                 S.append(dict(sign_id=f'{line_id}__s{k + 1:03d}', line_id=line_id, face=f['face'], tablet=tab, pos=k + 1, sign_name=dt.get('signName', ''), reading=dt.get('value', ''), type=dt['type'],
                               ebl_label=(an.get('croppedSign') or {}).get('label', '').strip(), ebl_path='.'.join(map(str, dt['path'])),

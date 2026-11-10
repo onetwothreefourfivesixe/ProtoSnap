@@ -374,6 +374,12 @@ inside bands. The read-out (`infer.read_lines`) takes kernel components, assigns
 segment per component. The knobs to tune on the val split are `--kernel-thr`, `--band-thr` and `min_area`, and in training
 `--win`, `--long-side`, `--per-face` and the scale range in `dataset.py`.
 
+## Running the line model on a new data set (`segment/`)
+
+`segment/segment_images.py` runs the current line model on any folder or list of tablet images, with preprocessing for
+formats such as transparent 3D renderings, and writes each side's lines as polygons and boxes in `lines.json`.
+`segment/README.md` documents the steps, options and output.
+
 ## Line Splitter app (`app/`)
 
 The app is a local web page for trying the line model on any photograph:

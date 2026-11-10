@@ -445,6 +445,8 @@ every line annotated (`truth/full_line_annotations.py`). Run 2's outputs and ear
 `tablet_data/ebl_tablets/linemodel/archive/`. **Report figures** are regenerated with
 `MPLBACKEND=Agg .venv/bin/python -m line_cropping.report.report_figures`.
 
+**New data sets.** `line_cropping/segment/segment_images.py` runs the default model on any folder or list of images and writes `lines.json`; `line_cropping/segment/README.md` documents it.
+
 ```
 python -m line_cropping.linemodel.targets --preview 12
 python -m line_cropping.ingest.download_ebl --scripts OA NB --annotations-dump data/ebl/annotations_11.09.2026/annotations_11.09.2026.json
