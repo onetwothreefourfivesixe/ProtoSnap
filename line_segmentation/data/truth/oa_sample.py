@@ -2,12 +2,12 @@
 pre-labels (line centres from the ATF-constrained comb fit) plus preview overlays to correct against.
 
 Writes tablet_data/fat-cross_processed/ground_truth/{sample_faces.csv, prelabels.csv, previews/<face>.png}
-Usage (repo root): python -m line_cropping.truth.oa_sample [--n 100] [--seed 0]
+Usage (repo root): python -m line_segmentation.data.truth.oa_sample [--n 100] [--seed 0]
 """
-from line_cropping.paths import OA
+from line_segmentation.paths import OA
 import argparse, csv, os, random, collections
 import numpy as np, cv2
-from line_cropping.lines.profile_lines import find_lines, rotate
+from line_segmentation.heuristic_v1.profile_lines import find_lines, rotate
 
 FACES = f'{OA}/fat-cross_processed'
 OUT = f'{OA}/ground_truth'

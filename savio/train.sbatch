@@ -19,6 +19,6 @@ set -eo pipefail
 source savio/savio_env.sh; source activate "$CONDA_ENV_DIR"
 RUN="${RUN:-run4_savio_s0}"; SEED="${SEED:-0}"; EPOCHS="${EPOCHS:-40}"
 nvidia-smi --query-gpu=name,memory.total --format=csv
-python -m line_cropping.linemodel.train --epochs "$EPOCHS" --seed "$SEED" --heidelberg --heights \
+python -m line_segmentation.linemodel.train --epochs "$EPOCHS" --seed "$SEED" --heidelberg --heights \
     --workers "$SLURM_CPUS_PER_TASK" --plot-every 5 --out "weights/linemodel/$RUN"
 echo "weights in weights/linemodel/$RUN (model.pt = best checkpoint)"

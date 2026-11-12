@@ -1,4 +1,4 @@
-from line_cropping.paths import OA
+from line_segmentation.paths import OA
 import json,re,csv,collections,os,sys,time
 import numpy as np,cv2
 from scipy.signal import find_peaks

@@ -1,6 +1,6 @@
 # Running the line model on Savio
 
-These scripts train and run `line_cropping/linemodel` (the U-Net tablet line segmenter) on Berkeley's Savio cluster.
+These scripts train and run `line_segmentation/linemodel` (the U-Net tablet line segmenter) on Berkeley's Savio cluster.
 The Savio docs are at https://datadisco.cdss.berkeley.edu/ (jobs and software) and
 https://docs-research-it.berkeley.edu/services/high-performance-computing/user-guide/ (GPU partitions and QoS).
 
@@ -18,7 +18,7 @@ https://docs-research-it.berkeley.edu/services/high-performance-computing/user-g
 ## Run 4: steps
 
 Run 4 adds two output channels that predict how far each line's signs reach above and below it, so that crop height is
-set per line instead of by one fixed extension (`docs/line_model/line_model.md`, Appendix A.10). It uses two seeds, as in run 3.
+set per line instead of by one fixed extension (`docs/line_segmentation/line_model.md`, Appendix A.10). It uses two seeds, as in run 3.
 
 ```bash
 # 0. local, from the repo root: copy everything over (PIN+OTP once; needs rsync: sudo apt install rsync). Also rerun after any code change.
@@ -75,7 +75,7 @@ pending with reason QOSMaxWallDurationPerJobLimit. The 40-epoch run took 54 min 
 ```bash
 srun --pty -A ic_cdss170fall -p savio4_gpu -q a5k_gpu4_ica --gres=gpu:A5000:1 --cpus-per-task=4 -t 01:00:00 bash -i
 source savio/savio_env.sh; source activate "$CONDA_ENV_DIR"
-python -m line_cropping.linemodel.train --dry-run --heidelberg --heights --out weights/linemodel/tmp
+python -m line_segmentation.linemodel.train --dry-run --heidelberg --heights --out weights/linemodel/tmp
 ```
 
 Scratch is not backed up, and Research IT asks users to delete intermediate files when a job ends. A file-count overload made scratch unavailable from 23 Jan to 10 Feb 2026, and a purge policy is planned. Copy weights back, then delete what you no longer need. Do not set `CUDA_VISIBLE_DEVICES`

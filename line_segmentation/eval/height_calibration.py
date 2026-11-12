@@ -1,7 +1,7 @@
 """Crop height calibrated on the eBL sign boxes: how much of its own line a crop keeps against how much of the other
 lines it takes in, per script, for a range of crop heights.
 
-  python -m line_cropping.eval.height_calibration [--min-cov 0.9] [--out tablet_data/ebl_tablets/linemodel/height_calibration]
+  python -m line_segmentation.eval.height_calibration [--min-cov 0.9] [--out tablet_data/ebl_tablets/linemodel/height_calibration]
 
 Two sweeps, both on single-column faces with sign-annotation coverage >= --min-cov (so neighbouring lines are annotated):
   truth   crops centred on the truth lines (every such face, tune and test): the line's centre line +-h x pitch,
@@ -26,8 +26,8 @@ import os
 
 import numpy as np
 
-from line_cropping.eval.box_containment import face_boxes
-from line_cropping.paths import EBL
+from line_segmentation.eval.box_containment import face_boxes
+from line_segmentation.paths import EBL
 
 STEP = 2
 

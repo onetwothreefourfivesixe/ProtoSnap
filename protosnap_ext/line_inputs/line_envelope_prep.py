@@ -1,6 +1,6 @@
 """Line envelopes from ProtoSnap, step 1: choose lines and write one ProtoSnap target per annotated sign.
 
-  python -m line_cropping.protosnap.line_envelope_prep [--export tablet_data/exports/line_crops_60] [--per-script 20]
+  python -m protosnap_ext.line_inputs.line_envelope_prep [--export tablet_data/exports/line_crops_60] [--per-script 20]
       [--pad 0.3] [--seed 5] [--out tablet_data/protosnap_inputs/envelope_pilot]
 
 Idea: fit each annotated sign's font skeleton to the photograph with ProtoSnap, then join a line's fitted skeletons
@@ -25,8 +25,8 @@ import random
 import cv2
 import numpy as np
 
-from line_cropping.crops.crop_frame import crop_matrix
-from line_cropping.protosnap.protosnap_prep import sign_hex
+from line_segmentation.crops.crop_frame import crop_matrix
+from protosnap_ext.line_inputs.protosnap_prep import sign_hex
 
 FONT = {'OB': 'Santakku', 'NA': 'Assurbanipal'}
 

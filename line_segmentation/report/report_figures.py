@@ -1,6 +1,6 @@
-"""Figures for the line model report (docs/line_model/line_model.md) and the model comparison (related_work.md).
+"""Figures for the line model report (docs/line_segmentation/line_model.md) and the model comparison (related_work.md).
 
-  MPLBACKEND=Agg .venv/bin/python -m line_cropping.report.report_figures [--out docs/line_model/img] [--seed 3]
+  MPLBACKEND=Agg .venv/bin/python -m line_segmentation.report.report_figures [--out docs/line_segmentation/img] [--seed 3]
 
 Reads the stored per-face scores (evaluation.csv of each prediction set in tablet_data/ebl_tablets/linemodel/compare/,
 and the Heidelberg summaries) and the stored predictions, so the figures always match the tables. Writes:
@@ -23,12 +23,13 @@ import cv2
 import numpy as np
 import pandas as pd
 
-from line_cropping.paths import EBL, DATA_ROOT, LINE_WEIGHTS
+from line_segmentation.paths import EBL, DATA_ROOT, LINE_WEIGHTS
 
 CMP = os.path.join(EBL, 'linemodel', 'compare')
 HEID = os.path.join(DATA_ROOT, 'heidelberg')
 DEFAULT_RUN = os.path.basename(os.path.dirname(LINE_WEIGHTS))
 SURF, TXT, TXT2, MUTED, GRID, BASE = '#fcfcfb', '#0b0b0b', '#52514e', '#898781', '#e1e0d9', '#c3c2b7'
+BAND = '#f3f2ee'                                   # faint row band, a step off the surface
 def read_eval(path):
     # keep_default_na=False: the script code 'NA' (Neo-Assyrian) must not be read as a missing value
     return pd.read_csv(path, keep_default_na=False, na_values=['', 'nan'])
@@ -65,15 +66,20 @@ def style(ax, xlab=True):
     ax.set_xlim(0.4, 1.0); ax.set_xticks([.4, .5, .6, .7, .8, .9, 1]); ax.set_xticklabels(['40%', '50%', '60%', '70%', '80%', '90%', '100%'] if xlab else [], color=MUTED, fontsize=9)
 
 
-def dot_panels(path, title, legend, rows, series, metrics, note):
-    """rows: [(key, label)]; series: [(name, color, {key: {metric: value or (lo, hi)}})]; one panel per metric."""
+def dot_panels(path, title, legend, rows, series, metrics, note, markers=None):
+    """rows: [(key, label)]; series: [(name, color, {key: {metric: value or (lo, hi)}})]; one panel per metric.
+    Inside a row every series has its own lane, top to bottom in series order, and (with markers) its own symbol."""
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
     plt.rcParams.update({'font.family': 'DejaVu Sans', 'font.size': 10, 'text.color': TXT})
-    fig, axes = plt.subplots(1, len(metrics), figsize=(4.4 * len(metrics) + 2.2, 0.55 * len(rows) + 2.6), facecolor=SURF, sharey=True)
-    n = len(series); off = np.linspace(-0.22, 0.22, n) if n > 1 else [0]
+    n = len(series); markers = markers or ['o'] * n
+    size = {'o': 62, 's': 52, 'D': 44, '^': 70, 'v': 70, 'P': 74, 'X': 74, '*': 230}
+    fig, axes = plt.subplots(1, len(metrics), figsize=(4.4 * len(metrics) + 2.2, (0.34 + 0.15 * n) * len(rows) + 2.7), facecolor=SURF, sharey=True)
+    off = np.linspace(0.32, -0.32, n) if n > 1 else [0]                  # first series on top, as in the legend
     for ax, (mk, mlabel) in zip(axes, metrics):
         style(ax)
+        for i in range(len(rows)):                                         # a band behind every other row keeps the groups apart
+            if i % 2 == 0: ax.axhspan(i - 0.5, i + 0.5, color=BAND, zorder=0, lw=0)
         for j, (name, color, data) in enumerate(series):
             for i, (key, _) in enumerate(rows):
                 v = data.get(key, {}).get(mk)
@@ -81,23 +87,25 @@ def dot_panels(path, title, legend, rows, series, metrics, note):
                     continue
                 y = len(rows) - 1 - i + off[j]
                 if isinstance(v, tuple):
-                    ax.plot(v, [y, y], color=color, lw=2, solid_capstyle='round', zorder=2)
+                    ax.plot([max(x, 0.405) for x in v], [y, y], color=color, lw=2.4, solid_capstyle='round', zorder=2)
                     v = float(np.mean(v))
-                v = max(v, 0.405)
-                ax.scatter([v], [y], s=46, color=color, edgecolor=SURF, linewidth=1.5, zorder=3)
+                ax.scatter([max(v, 0.405)], [y], s=size.get(markers[j], 60), marker=markers[j], color=color, edgecolor=SURF, linewidth=1.3, zorder=3)
+                if v < 0.3995: ax.annotate(f'{100 * v:.0f}%', (0.405, y), xytext=(7, 0), textcoords='offset points', va='center', fontsize=7.5, color=TXT2)
         ax.set_title(mlabel, loc='left', fontsize=11.5, fontweight='bold', color=TXT, pad=10)
     axes[0].set_yticks(range(len(rows))); axes[0].set_yticklabels([lab for _, lab in rows][::-1], color=TXT2)
-    axes[0].set_ylim(-0.6, len(rows) - 0.4)
+    axes[0].set_ylim(-0.5, len(rows) - 0.5)
     fig.suptitle(title, x=0.01, ha='left', fontsize=14, fontweight='bold', color=TXT, y=0.99)
-    fig.legend(handles=[Line2D([], [], marker='o', ls='', color=c, markersize=8, label=lab) for lab, c in legend],
-               loc='upper left', bbox_to_anchor=(0.005, 0.95), ncol=min(3, len(legend)), frameon=False, fontsize=9.5, labelcolor=TXT)
+    fig.legend(handles=[Line2D([], [], marker=m, ls='', color=c, markersize=13 if m == '*' else 8.5, markeredgecolor=SURF, label=lab) for (lab, c), m in zip(legend, markers)],
+               loc='upper left', bbox_to_anchor=(0.005, 0.955), ncol=min(3, len(legend)), frameon=False, fontsize=9.5, labelcolor=TXT)
     fig.text(0.01, 0.01, note, fontsize=8, color=MUTED, va='bottom')
-    fig.subplots_adjust(left=0.17, right=0.985, top=0.78, bottom=0.17, wspace=0.12)
+    h = fig.get_size_inches()[1]
+    fig.subplots_adjust(left=0.17, right=0.985, top=1 - 1.45 / h, bottom=1.05 / h, wspace=0.12)
     fig.savefig(path, dpi=160, facecolor=SURF); plt.close(fig); print('->', path)
 
 
 def runs_by_script(out):
-    blues = ['#bdd8f6', '#8cb9ee', '#5b9ae6', '#2a78d6', '#0d3f85']        # one hue, light -> dark: run 1 -> run 6
+    # one hue and one symbol per run; the runs sit in fixed lanes (run 1 on top), so neighbours are the pairs that must differ
+    blues = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4']; marks = ['o', 's', '^', 'D', '*']
     r1 = script_stats(f'{CMP}/run1/evaluation.csv', 'unet'); r2 = script_stats(f'{CMP}/run2/evaluation.csv', 'unet')
     a = script_stats(f'{CMP}/run3_full_s0/evaluation.csv', 'unet'); b = script_stats(f'{CMP}/run3_full_s1/evaluation.csv', 'unet')
     two = lambda a, b: {k: {m: (a[k][m], b[k][m]) for m in ('recall', 'precision', 'first')} for k in a}
@@ -110,7 +118,7 @@ def runs_by_script(out):
                SCRIPTS, [('run 1', blues[0], r1), ('run 2', blues[1], r2), ('run 3', blues[2], r3), ('run 4', blues[3], r4), ('run 6', blues[4], r6)],
                [('recall', 'Line recall'), ('precision', 'Line precision'), ('first', 'First line within half a pitch')],
                'Same read-out for every run. Recall: share of truth lines found within 0.35 pitch; precision only on faces with >= 90% of signs annotated. '
-               'Bar = range of two seeds; dot = their mean. About 760 test faces (NA 160, NB 183, OA 91, OB 327, small 12).')
+               '\nBar = range of two seeds; symbol = their mean. In each row the runs are listed top to bottom, run 1 to run 6. About 760 test faces (NA 160, NB 183, OA 91, OB 327, small 12).', markers=marks)
 
 
 def training_curves(out):
@@ -152,7 +160,7 @@ def models_by_script(out):
                ('precision', 'Precision', 'share of the predicted lines that are real lines (faces with >= 90% of signs annotated)'),
                ('first', 'First line placed', 'share of faces whose top predicted line is within half a line spacing of the first truth line')]
     plt.rcParams.update({'font.family': 'DejaVu Sans', 'font.size': 10, 'text.color': TXT})
-    fig, axes = plt.subplots(3, 1, figsize=(13, 12.5), facecolor=SURF, sharex=True)
+    fig, axes = plt.subplots(3, 1, figsize=(13, 13.6), facecolor=SURF, sharex=True)
     xs = [0, 1, 2, 3, 4, 5, 6.6]               # gap before the Heidelberg group (a different test set)
     off = [-0.27, 0, 0.27]; bw = 0.25           # bar width; 0.02 gap between adjacent bars
     for ax, (mk, mname, mdesc) in zip(axes, metrics):
@@ -171,7 +179,8 @@ def models_by_script(out):
         ax.set_ylim(0, 1.1); ax.set_yticks([0, .25, .5, .75, 1]); ax.set_yticklabels(['0%', '25%', '50%', '75%', '100%'], color=MUTED, fontsize=9)
         ax.set_title(f'{mname}', loc='left', fontsize=13, fontweight='bold', color=TXT, pad=22)
         ax.text(0, 1.035, mdesc, transform=ax.transAxes, fontsize=9.5, color=TXT2)
-    axes[-1].set_xticks(xs); axes[-1].set_xticklabels([g for _, g in groups], color=TXT2, fontsize=9.5)
+    for ax in axes:                                                      # every panel carries its own category labels
+        ax.set_xticks(xs); ax.set_xticklabels([g for _, g in groups], color=TXT2, fontsize=9.5); ax.tick_params(axis='x', labelbottom=True)
     axes[0].text(6.6, 1.02, 'independent test set', ha='center', fontsize=8.5, color=TXT2, transform=axes[0].get_xaxis_transform())
     fig.suptitle('Three line models on the same test faces', x=0.01, ha='left', fontsize=15, fontweight='bold', color=TXT, y=0.995)
     fig.legend(handles=[Line2D([], [], color=c, lw=6, label=n) for n, c, _, _ in models], loc='upper left', bbox_to_anchor=(0.005, 0.975),
@@ -179,7 +188,7 @@ def models_by_script(out):
     fig.text(0.01, 0.008, 'eBL test faces: about 760 (NA 160, NB 183, OA 91, OB 327; small faces 12). '
              'Hand-drawn lines: the 9 held-out Heidelberg test faces.\nThe line model was trained on 507 faces (seed 1), Kraken on 490 (seed 0), the Dencker network on 32 Heidelberg faces; '
              'Kraken\'s side-by-side line pieces were joined with the line model\'s own rule.', fontsize=8, color=MUTED, va='bottom')
-    fig.subplots_adjust(left=0.06, right=0.99, top=0.9, bottom=0.11, hspace=0.42)
+    fig.subplots_adjust(left=0.06, right=0.99, top=0.905, bottom=0.1, hspace=0.58)
     path = os.path.join(out, 'models_by_script.png'); fig.savefig(path, dpi=160, facecolor=SURF); plt.close(fig); print('->', path)
 
 
@@ -268,7 +277,7 @@ def runs_examples(out, seed):
 def our_heid_segments(faces, weights):
     """Run the line model on Heidelberg face crops (its Heidelberg scores were computed on the fly, not stored)."""
     import torch
-    from line_cropping.linemodel.infer import load_model, predict_face, read_lines, tablet_mask_for
+    from line_segmentation.linemodel.infer import load_model, predict_face, read_lines, tablet_mask_for
     dev = 'cuda' if torch.cuda.is_available() else 'cpu'; m = load_model(weights, dev); out = {}
     for face in faces:
         im = cv2.imread(os.path.join(HEID, 'faces', face + '.jpg')); maps, s = predict_face(m, im, dev)
@@ -309,7 +318,7 @@ def models_examples(out, seed):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument('--out', default='docs/line_model/img'); ap.add_argument('--seed', type=int, default=3)
+    ap = argparse.ArgumentParser(); ap.add_argument('--out', default='docs/line_segmentation/img'); ap.add_argument('--seed', type=int, default=3)
     a = ap.parse_args(); os.makedirs(a.out, exist_ok=True)
     runs_by_script(a.out); training_curves(a.out); models_by_script(a.out); runs_examples(a.out, a.seed); models_examples(a.out, a.seed)
 

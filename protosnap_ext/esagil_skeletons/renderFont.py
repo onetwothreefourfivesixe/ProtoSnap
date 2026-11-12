@@ -1,6 +1,6 @@
 """Rasterize the data/fonts/CuneiformFonts SVG glyphs into the repo's prototype layout.
 
-Usage: python experiments/esagil_skeletons/renderFont.py "data/fonts/CuneiformFonts/Esagil (Neo-Babylonian)" Esagil
+Usage: python protosnap_ext/esagil_skeletons/renderFont.py "data/fonts/CuneiformFonts/Esagil (Neo-Babylonian)" Esagil
 Writes prototypes/Esagil/0x12xxx/<hex>.png (primary forms; files named '... Variant Form.svg'
 are skipped so each sign gets one canonical glyph).
 """

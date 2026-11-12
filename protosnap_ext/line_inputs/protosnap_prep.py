@@ -9,13 +9,13 @@ prototype and skeleton, save the box region as a ProtoSnap target image.
 
 Outputs: <out>/signs/<face>__L<nn>__S<kk>__<hex>.png, <out>/samples.csv (fn,file_path,abz,name,hex,sign — the
 columns run_test.py reads) and <out>/alignment.csv (per ATF sign: matched box, detector class, truth IoU).
-  python -m line_cropping.protosnap.protosnap_prep --script OB --font Santakku --out tablet_data/protosnap_inputs/OB [--limit-crops 300]
+  python -m protosnap_ext.line_inputs.protosnap_prep --script OB --font Santakku --out tablet_data/protosnap_inputs/OB [--limit-crops 300]
 """
-from line_cropping.crops.crop_frame import crop_matrix, line_row
-from line_cropping.paths import EBL, PROTOSNAP_INPUTS
+from line_segmentation.crops.crop_frame import crop_matrix, line_row
+from line_segmentation.paths import EBL, PROTOSNAP_INPUTS
 import argparse, csv, json, os, re, collections, unicodedata
 import numpy as np, cv2
-from line_cropping.lines.profile_lines import rotate
+from line_segmentation.heuristic_v1.profile_lines import rotate
 
 SUB = str.maketrans('₀₁₂₃₄₅₆₇₈₉', '0123456789')
 
@@ -104,7 +104,7 @@ def main():
     if a.limit_crops: crops = crops[:a.limit_crops]
     clf = None
     if a.classifier:
-        from line_cropping.signs.classify import SignClassifier
+        from protosnap_ext.sign_classifier.classify import SignClassifier
         clf = SignClassifier(a.script)
     by_face = collections.defaultdict(list)
     for c in crops: by_face[c['face']].append(c)

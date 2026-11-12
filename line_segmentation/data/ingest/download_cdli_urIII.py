@@ -16,8 +16,8 @@ Output (default <DATA_ROOT>/cdli_urIII_fg/):
 
 Reruns resume: probed IDs and downloaded files are reused.
 
-    python -m line_cropping.ingest.download_cdli_urIII                    # first 1000
-    python -m line_cropping.ingest.download_cdli_urIII --n 2000 --workers 6
+    python -m line_segmentation.data.ingest.download_cdli_urIII                    # first 1000
+    python -m line_segmentation.data.ingest.download_cdli_urIII --n 2000 --workers 6
 """
 import argparse
 import csv
@@ -29,7 +29,7 @@ import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
-from line_cropping.paths import DATA_ROOT
+from line_segmentation.paths import DATA_ROOT
 
 BASE = 'https://cdli.earth'
 UA = {'User-Agent': 'Mozilla/5.0 (research download script)'}

@@ -5,15 +5,15 @@ polyline. It needs its own environment (it pins its own PyTorch): python3 -m ven
 install kraken. Two halves, run with different interpreters:
 
   # 1. export (project venv): PageXML for run 3's training and validation faces + test face lists
-  .venv/bin/python -m line_cropping.baselines.kraken_seg export [--out tablet_data/kraken]
+  .venv/bin/python -m line_segmentation.baselines.kraken_seg export [--out tablet_data/kraken]
   # 2. train (kraken venv): fine-tune the default model with lines annotated as centre lines
   ~/venvs/kraken/bin/ketos segtrain -f page -t tablet_data/kraken/train.lst -e tablet_data/kraken/val.lst \\
       -i ~/venvs/kraken/lib/python3.11/site-packages/kraken/blla.mlmodel --augment \\
       -q early --min-epochs 20 --lag 10 -N 100 -d cuda:0 -o weights/kraken/blla_cuneiform
   # 4. optional (project venv): join side-by-side pieces of one line, as the line model's read-out does
-  .venv/bin/python -m line_cropping.baselines.kraken_seg merge --pred <dir> --method kraken_ft
+  .venv/bin/python -m line_segmentation.baselines.kraken_seg merge --pred <dir> --method kraken_ft
   # 3. predict (kraken venv): writes the line model's prediction format, scored by evaluate_lines / evaluate_heidelberg
-  ~/venvs/kraken/bin/python line_cropping/baselines/kraken_seg.py predict --faces tablet_data/kraken/test_ebl.csv \\
+  ~/venvs/kraken/bin/python line_segmentation/baselines/kraken_seg.py predict --faces tablet_data/kraken/test_ebl.csv \\
       [--model weights/kraken/blla_cuneiform_best.safetensors] --method kraken_ft --out <dir>
 
 Training data are exactly run 3 (seed 0)'s: eBL tune faces with coverage >= 0.9, the Old Assyrian hand labels and the
@@ -57,8 +57,8 @@ def export(a):
     import collections
     import numpy as np
     import cv2
-    from line_cropping.linemodel.dataset import build_index
-    from line_cropping.paths import EBL
+    from line_segmentation.linemodel.dataset import build_index
+    from line_segmentation.paths import EBL
     idx = build_index(include_heidelberg=True, seed=0)
     for part in ('train', 'val'):
         d = os.path.join(a.out, 'gt', part); os.makedirs(d, exist_ok=True); paths = []
@@ -151,7 +151,7 @@ def merge(a):
     often returns one text line as several side-by-side pieces. Thickness for the merge rule = 0.6 x the face's line
     spacing estimated from the predicted lines. Writes <method>_merged and <method>_merged_segments."""
     import numpy as np
-    from line_cropping.linemodel.infer import merge_fragments, segments_to_lines
+    from line_segmentation.linemodel.infer import merge_fragments, segments_to_lines
     from PIL import Image
     src = os.path.join(a.pred, a.method + '_segments'); dst = a.method + '_merged'
     os.makedirs(os.path.join(a.pred, dst), exist_ok=True); os.makedirs(os.path.join(a.pred, dst + '_segments'), exist_ok=True)

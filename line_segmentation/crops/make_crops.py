@@ -13,7 +13,7 @@ With --bounds segments or heights each line is cut along its own predicted tilt,
 (--no-rotate-per-line cuts every line in the deskewed face instead). A line more than 20 degrees off the face's skew
 falls back to the deskewed face, as do all lines of a face whose segment count differs from its line count.
 
-  python -m line_cropping.crops.make_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions --method det_n --out tablet_data/ebl_tablets/line_crops
+  python -m line_segmentation.crops.make_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions --method det_n --out tablet_data/ebl_tablets/line_crops
 
 For each face with a prediction: rotate the face by the run's skew, then cut, for line i at centre y_i, the rows
 [y_i - (0.5 + pad) * pitch, y_i + (0.5 + pad) * pitch] (pad 0.5 by default, i.e. a crop two pitches tall: eBL sign boxes are
@@ -24,10 +24,10 @@ the face's offset in the original photo, and the ATF line label when the predict
 for that side (else blank, with `atf_aligned` = False). The rectangle is in the deskewed face, unless line_angle_deg is
 filled: then it is in the frame of the original face rotated by line_angle_deg about (line_cx, line_cy).
 """
-from line_cropping.paths import EBL
+from line_segmentation.paths import EBL
 import argparse, csv, os, json, re
 import numpy as np, cv2
-from line_cropping.lines.profile_lines import rotate
+from line_segmentation.heuristic_v1.profile_lines import rotate
 
 
 def atf_labels_for_side(atf, side):

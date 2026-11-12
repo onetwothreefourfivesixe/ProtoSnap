@@ -9,13 +9,13 @@ that every coordinate the pipeline writes is in the pixels of the image as provi
   - 16-bit images are scaled to 8 bits, and greyscale images are copied into three channels;
   - optionally, contrast is equalised with CLAHE (--clahe); on the Ur III MSII renderings it did not help.
 find_views splits a photograph that shows several views of a tablet (a CDLI fat cross, an eBL composite) into one box per
-view; with views = 'whole' the image is used as it is.
+view and guesses each view's role (label_views); with views = 'whole' the image is used as it is.
 """
 import cv2
 import numpy as np
 from PIL import Image, ImageOps
 
-from line_cropping.app.pipeline import detect_views
+from line_segmentation.app.pipeline import detect_views
 
 Image.MAX_IMAGE_PIXELS = None
 BACKGROUNDS = {'black': (0, 0, 0), 'white': (255, 255, 255), 'grey': (128, 128, 128)}
@@ -46,6 +46,34 @@ def load_image(path, background='black', exif=False, clahe=False):
     return np.ascontiguousarray(img), notes
 
 
+def label_views(views, edge_area=0.35, edge_aspect=2.2):
+    """Guess each view's role, in place. The two largest views that are neither small nor elongated are the obverse and
+    reverse; the upper of the two (CDLI fat crosses and eBL composites put the obverse first) is the obverse. Every other
+    view is an edge: top, bottom, left or right by where it lies relative to the obverse, else 'edge'. A view smaller than
+    edge_area of the largest, or with sides in a ratio above edge_aspect, is always an edge. Roles are estimates."""
+    if not views:
+        return views
+    big = max((v['box'][2] - v['box'][0]) * (v['box'][3] - v['box'][1]) for v in views)
+    def is_face(v):
+        w, h = v['box'][2] - v['box'][0], v['box'][3] - v['box'][1]
+        return w * h >= edge_area * big and max(w, h) / max(1, min(w, h)) <= edge_aspect
+    faces = sorted([v for v in views if is_face(v)], key=lambda v: -(v['box'][2] - v['box'][0]) * (v['box'][3] - v['box'][1]))[:2]
+    faces.sort(key=lambda v: (v['box'][1] + v['box'][3]) / 2)
+    for v, role in zip(faces, ('obverse', 'reverse')):
+        v['role'] = role
+    ob = faces[0]['box'] if faces else None
+    for v in views:
+        if 'role' in v:
+            continue
+        v['role'] = 'edge'
+        if ob is not None:
+            cx, cy = (v['box'][0] + v['box'][2]) / 2, (v['box'][1] + v['box'][3]) / 2
+            ocx, ocy = (ob[0] + ob[2]) / 2, (ob[1] + ob[3]) / 2
+            if ob[0] <= cx <= ob[2]: v['role'] = 'edge_top' if cy < ocy else 'edge_bottom'
+            elif ob[1] <= cy <= ob[3]: v['role'] = 'edge_left' if cx < ocx else 'edge_right'
+    return views
+
+
 def find_views(img, views='whole', pad_frac=0.02):
     """Boxes [x0, y0, x1, y1] in image pixels to segment: the whole image, or each detected tablet view (largest first)."""
     H, W = img.shape[:2]
@@ -55,4 +83,4 @@ def find_views(img, views='whole', pad_frac=0.02):
     for v in detect_views(img):
         x0, y0, x1, y1 = v['box']; pad = int(pad_frac * max(x1 - x0, y1 - y0))
         out.append(dict(id=f"v{v['id']}", box=[max(0, x0 - pad), max(0, y0 - pad), min(W, x1 + pad), min(H, y1 + pad)]))
-    return out
+    return label_views(out)

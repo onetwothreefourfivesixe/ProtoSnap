@@ -1,6 +1,6 @@
 """Phase 7 inference and read-out: face image -> line segments -> predictions in the pipeline's format.
 
-  .venv/bin/python -m line_cropping.linemodel.infer --weights weights/linemodel/run6_heights_s1/model.pt \
+  .venv/bin/python -m line_segmentation.linemodel.infer --weights weights/linemodel/run6_heights_s1/model.pt \
       --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions --method unet [--split test]
 
 Read-out (optional end refinement: --end-thr extends line ends along the band, --clip-tablet trims ends over
@@ -11,12 +11,12 @@ component's band pixels gives the segment and its thickness. Predictions are wri
 (faces_run.csv + <method>/<face>.csv with y_deskewed/x0/x1 in the frame rotated by the face's median line angle), so
 evaluate_lines.py / phase5_eval.py score them unchanged, plus <method>_segments/<face>.csv with the raw segments.
 """
-from line_cropping.paths import EBL, LINE_WEIGHTS
+from line_segmentation.paths import EBL, LINE_WEIGHTS
 import argparse, collections, csv, os, time
 import numpy as np, cv2, torch
-from line_cropping.linemodel.model import LineUNet
-from line_cropping.linemodel.targets import STRIDE, height_decode
-from line_cropping.lines.lines_from_boxes import force_n
+from line_segmentation.linemodel.model import LineUNet
+from line_segmentation.linemodel.targets import STRIDE, height_decode
+from line_segmentation.heuristic_v1.lines_from_boxes import force_n
 
 
 def load_model(weights, dev):

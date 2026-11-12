@@ -6,13 +6,13 @@ share of crops that hold no truth line (empty or unannotated). Each crop is comp
 another line's truth band inside the crop's rows (>= 50% = half of the neighbouring line sliced in).
 Horizontal fit (crop width) comes from eval/crop_width.py on faces with coverage >= 0.9: the share of fully annotated
 lines kept whole on clay, extra width, the median cut at each end, and the overhang past the tablet into the
-background (crop width tests, docs/line_model/line_model.md section 10). It reads the face images; --no-width skips it.
-  python -m line_cropping.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops/crops.csv [--split test] [--no-width]
+background (crop width tests, docs/line_segmentation/line_model.md section 10). It reads the face images; --no-width skips it.
+  python -m line_segmentation.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops/crops.csv [--split test] [--no-width]
 """
 import argparse, csv, os, collections
 import numpy as np, cv2
-from line_cropping.crops.crop_frame import crop_matrix
-from line_cropping.eval import crop_width
+from line_segmentation.crops.crop_frame import crop_matrix
+from line_segmentation.eval import crop_width
 
 
 def compute(faces_csv, crops_csv, width=False, subset='all', max_cov=1.01):

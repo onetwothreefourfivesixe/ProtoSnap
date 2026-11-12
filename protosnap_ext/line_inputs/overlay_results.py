@@ -5,15 +5,15 @@ with y flipped for plotting. This tool undoes the flip, maps the points through 
 was cut from (alignment.csv, same padding as protosnap_prep.py) into face pixels, rotates them into the frame of
 their line crop (crops/crop_frame.py), and draws them.
 
-  python -m line_cropping.protosnap.overlay_results --run output/line_cropping/phase6_OB --samples tablet_data/protosnap_inputs/OB/samples_run40.csv \
-      --alignment tablet_data/protosnap_inputs/OB/alignment.csv --out output/line_cropping/phase6_OB/overlays
+  python -m protosnap_ext.line_inputs.overlay_results --run output/line_segmentation/phase6_OB --samples tablet_data/protosnap_inputs/OB/samples_run40.csv \
+      --alignment tablet_data/protosnap_inputs/OB/alignment.csv --out output/line_segmentation/phase6_OB/overlays
 Writes <out>/faces/<face>.jpg, <out>/lines/<face>__L<nn>.jpg, <out>/line_contact_sheet.jpg, <out>/index.csv.
 """
-from line_cropping.crops.crop_frame import crop_matrix
-from line_cropping.paths import EBL
+from line_segmentation.crops.crop_frame import crop_matrix
+from line_segmentation.paths import EBL
 import argparse, csv, os, collections
 import numpy as np, cv2, torch
-from line_cropping.lines.profile_lines import rotate
+from line_segmentation.heuristic_v1.profile_lines import rotate
 
 IMG = 512
 COLORS = [(60, 76, 231), (219, 152, 52), (34, 189, 34), (182, 89, 155), (0, 165, 255), (128, 128, 0), (200, 50, 200), (30, 200, 200)]

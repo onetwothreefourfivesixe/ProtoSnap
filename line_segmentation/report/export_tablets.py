@@ -1,6 +1,6 @@
 """Export a self-contained set of tablets with their line crops and sign annotations, for use in another pipeline.
 
-  python -m line_cropping.report.export_tablets [--per-script 15] [--seed 16] [--crops tablet_data/ebl_tablets/line_crops_unet]
+  python -m line_segmentation.report.export_tablets [--per-script 15] [--seed 16] [--crops tablet_data/ebl_tablets/line_crops_unet]
       [--out tablet_data/exports/line_crops_60_run6] [--zip]
 
 Selection: eBL tablets whose faces all have line crops in --crops (the line model's crops of the Phase 5 test split,
@@ -22,12 +22,12 @@ import zipfile
 import cv2
 import numpy as np
 
-from line_cropping.crops.crop_frame import box_in_frame, crop_matrix
-from line_cropping.paths import EBL
+from line_segmentation.crops.crop_frame import box_in_frame, crop_matrix
+from line_segmentation.paths import EBL
 
 README = """# Line crops and sign annotations: {n} eBL tablets
 
-This set was exported on {date} from the ProtoSnap line-cropping project with `python -m line_cropping.report.export_tablets`.
+This set was exported on {date} from the ProtoSnap line-cropping project with `python -m line_segmentation.report.export_tablets`.
 
 ## What this is
 

@@ -6,12 +6,12 @@ Three methods, all working on the deskewed row profile (see profile_lines.py):
   dp    : N lines at free positions by dynamic programming: maximise profile response subject to a quadratic
           penalty on each gap's deviation from the comb's pitch (gaps limited to 0.55-1.5 pitch)
 
-Batch use:  python -m line_cropping.lines.find_lines --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions
+Batch use:  python -m line_segmentation.heuristic_v1.find_lines --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions
 Writes <out>/<method>/<face>.csv (line_no, y_deskewed, x0, x1) and <out>/faces_run.csv (skew, pitch, timing).
 """
 import argparse, csv, os, time
 import numpy as np, cv2
-from line_cropping.lines.profile_lines import rotate, row_profile, estimate_pitch, free_peaks, comb_fit
+from line_segmentation.heuristic_v1.profile_lines import rotate, row_profile, estimate_pitch, free_peaks, comb_fit
 
 
 def tablet_mask(small):

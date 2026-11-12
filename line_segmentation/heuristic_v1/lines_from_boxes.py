@@ -7,10 +7,10 @@ with a 1-D gap rule (new line when the gap exceeds `gap_frac` x median box heigh
 clusters closer than `merge_frac` x median box height. Optionally, when the transliteration line count N is
 known, split or merge clusters until N lines remain (largest gaps split, closest pairs merge).
 
-  python -m line_cropping.lines.lines_from_boxes --faces <faces.csv> --det <detections dir> --out <pred dir> [--use-n]
+  python -m line_segmentation.heuristic_v1.lines_from_boxes --faces <faces.csv> --det <detections dir> --out <pred dir> [--use-n]
 Output is in the same format as find_lines.py so evaluate_lines.py can score it.
 """
-from line_cropping.paths import EBL
+from line_segmentation.paths import EBL
 import argparse, csv, os, collections
 import numpy as np, cv2
 

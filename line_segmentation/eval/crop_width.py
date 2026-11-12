@@ -1,6 +1,6 @@
 """Horizontal fit of line crops: how much of each true line lies inside its crop, and how much extra width the crop has.
 
-  python -m line_cropping.eval.crop_width --crops <crops.csv> [--pred <predictions dir> --method unet]
+  python -m line_segmentation.eval.crop_width --crops <crops.csv> [--pred <predictions dir> --method unet]
       [--min-cov 0.9] [--worst 0.1] [--render 16] [--out <dir>]
 
 For every truth line (eBL oriented segments, faces with annotation coverage >= --min-cov) whose centre falls inside
@@ -27,8 +27,8 @@ import os
 import cv2
 import numpy as np
 
-from line_cropping.crops.crop_frame import crop_matrix
-from line_cropping.paths import EBL
+from line_segmentation.crops.crop_frame import crop_matrix
+from line_segmentation.paths import EBL
 
 
 def load_truth(face, W, H, M):

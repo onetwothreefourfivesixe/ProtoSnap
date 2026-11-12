@@ -56,4 +56,4 @@ with open(outputCsv, 'w', newline='') as f:
 
 print(f'Wrote {numberOfSigns} rows to {outputCsv}. Run all of them with:')
 print(f'  python run_test.py --samples_df_path {outputCsv} --font_dir prototypes/{fontDir} '
-      f'--con_dir skeletons/{fontDir} --output_folder font_tests/singleSigns_{fontDir} --ignore_errors')
+      f'--con_dir skeletons/{fontDir} --output_folder protosnap/font_tests/singleSigns_{fontDir} --ignore_errors')

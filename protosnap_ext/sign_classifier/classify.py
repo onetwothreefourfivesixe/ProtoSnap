@@ -1,7 +1,7 @@
 """Inference wrapper for the per-script sign classifiers trained by train_classifier.py."""
 import json, os
 import numpy as np, cv2, torch, torch.nn as nn, torchvision
-from line_cropping.signs.train_classifier import letterbox, MEAN, STD, WEIGHTS
+from protosnap_ext.sign_classifier.train_classifier import letterbox, MEAN, STD, WEIGHTS
 
 
 class SignClassifier:

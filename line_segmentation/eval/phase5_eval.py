@@ -6,13 +6,13 @@
 3. Test-split report for det (no count) and det_n (ATF count) against the plan's criteria:
    recall >= 0.9, first line within 0.5 pitch on >= 90% of faces, count agreement >= 80%.
 4. Failure categories among test faces with recall < 0.7.
-  python -m line_cropping.eval.phase5_eval
+  python -m line_segmentation.eval.phase5_eval
 """
-from line_cropping.paths import EBL
+from line_segmentation.paths import EBL
 import csv, os, random, collections, itertools, json
 import numpy as np
-from line_cropping.eval.evaluate_lines import truth_in_frame
-from line_cropping.lines.lines_from_boxes import lines_for_face
+from line_segmentation.eval.evaluate_lines import truth_in_frame
+from line_segmentation.heuristic_v1.lines_from_boxes import lines_for_face
 
 FACES = f'{EBL}/faces/faces.csv'; DET = f'{EBL}/detections'; TRUTH = f'{EBL}/faces/lines'
 

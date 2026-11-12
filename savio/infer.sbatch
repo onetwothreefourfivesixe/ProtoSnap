@@ -21,12 +21,12 @@ WEIGHTS="weights/linemodel/$RUN/model.pt"
 FACES=tablet_data/ebl_tablets/faces/faces.csv
 LM=tablet_data/ebl_tablets/linemodel
 PRED="$LM/compare/$RUN"; CROPS="$LM/compare_crops/$RUN"
-python -m line_cropping.linemodel.infer --weights "$WEIGHTS" --faces "$FACES" --out "$PRED" --method unet --split test
-python -m line_cropping.eval.evaluate_lines --faces "$FACES" --pred "$PRED"
-crops() { name=$1; shift; python -m line_cropping.crops.make_crops --faces "$FACES" --pred "$PRED" --method unet --split test --no-images --out "$CROPS/$name" "$@"; }
+python -m line_segmentation.linemodel.infer --weights "$WEIGHTS" --faces "$FACES" --out "$PRED" --method unet --split test
+python -m line_segmentation.eval.evaluate_lines --faces "$FACES" --pred "$PRED"
+crops() { name=$1; shift; python -m line_segmentation.crops.make_crops --faces "$FACES" --pred "$PRED" --method unet --split test --no-images --out "$CROPS/$name" "$@"; }
 crops fixed --bounds segments --extend 0.2 --shift 0.06
 crops heights --bounds heights
 crops heights_tight --bounds heights --height-scale 0.9
-python -m line_cropping.eval.box_containment --sets fixed="$CROPS/fixed/crops.csv" heights="$CROPS/heights/crops.csv" \
+python -m line_segmentation.eval.box_containment --sets fixed="$CROPS/fixed/crops.csv" heights="$CROPS/heights/crops.csv" \
     heights_tight="$CROPS/heights_tight/crops.csv" --out "$CROPS/box_containment"
 echo "lines: $PRED/evaluation.csv  crops: $CROPS/box_containment/summary.json"

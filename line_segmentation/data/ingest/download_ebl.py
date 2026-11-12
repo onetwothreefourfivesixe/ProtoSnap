@@ -1,7 +1,7 @@
 """Download eBL tablet photos, sign annotations and transliterations. Resumable: tablets already in the manifest are
 skipped. Run from the repo root.
 
-  python -m line_cropping.ingest.download_ebl [--scripts NA OB] [--annotations-dump annotations_11.09.2026/annotations_11.09.2026.json]
+  python -m line_segmentation.data.ingest.download_ebl [--scripts NA OB] [--annotations-dump annotations_11.09.2026/annotations_11.09.2026.json]
       [--min-boxes 50] [--limit N] [--dry-run]
 
 Candidates and their script come from data/ebl/signs_snippets_metadata.json (majority script of a tablet's snippets).
@@ -13,7 +13,7 @@ the fragment (transliteration, period) and the photo are fetched. --dry-run list
 Output: tablet_data/ebl_tablets/<script>/<museum number>/{photo.jpg, annotations.json, fragment.json}
         tablet_data/ebl_tablets/manifest.csv  (one row per tablet: script, eBL period, photo size, #boxes, #atf lines)
 """
-from line_cropping.paths import EBL
+from line_segmentation.paths import EBL
 import argparse, json, csv, os, sys, time, collections, urllib.parse, urllib.request, urllib.error
 API = 'https://www.ebl.lmu.de/api/fragments/'
 OUT = EBL

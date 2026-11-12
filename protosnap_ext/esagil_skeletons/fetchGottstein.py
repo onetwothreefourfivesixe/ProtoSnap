@@ -6,8 +6,8 @@ PER PERIOD (Neo-Assyrian, Neo-Babylonian, Old Babylonian, Hittite, ...), which g
 expert-curated expected wedge count for each sign in each font's period -- far more reliable than
 estimating counts from glyph images.
 
-  python experiments/esagil_skeletons/fetchGottstein.py
-      Writes experiments/esagil_skeletons/gottstein_counts.csv with columns:
+  python protosnap_ext/esagil_skeletons/fetchGottstein.py
+      Writes protosnap_ext/esagil_skeletons/gottstein_counts.csv with columns:
       hex, sign_name, period, code, total_wedges
 """
 import json

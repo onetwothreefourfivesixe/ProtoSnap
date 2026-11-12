@@ -1,7 +1,7 @@
 """Line envelopes from ProtoSnap, step 2: join each line's fitted sign skeletons and compare them with the line crop.
 
-  python -m line_cropping.protosnap.line_envelope_analyze [--inputs tablet_data/protosnap_inputs/envelope_pilot]
-      [--runs output/line_cropping/envelope_pilot_{script}] [--min-score 0.5] [--render 12] [--out <inputs>/analysis]
+  python -m protosnap_ext.line_inputs.line_envelope_analyze [--inputs tablet_data/protosnap_inputs/envelope_pilot]
+      [--runs output/line_segmentation/envelope_pilot_{script}] [--min-score 0.5] [--render 12] [--out <inputs>/analysis]
 
 For every sign target fitted by ProtoSnap (step 1: line_envelope_prep.py), the fitted skeleton points (dst_points_100.pt,
 512 x 512 frame of the stretched target, y flipped) are mapped back into the frame the crop was cut in
@@ -29,7 +29,7 @@ import cv2
 import numpy as np
 import torch
 
-from line_cropping.crops.crop_frame import box_in_frame, crop_matrix
+from line_segmentation.crops.crop_frame import box_in_frame, crop_matrix
 
 IMG = 512
 
@@ -45,7 +45,7 @@ def load_fit(run_dir):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--inputs', default='tablet_data/protosnap_inputs/envelope_pilot')
-    ap.add_argument('--runs', default='output/line_cropping/envelope_pilot_{script}')
+    ap.add_argument('--runs', default='output/line_segmentation/envelope_pilot_{script}')
     ap.add_argument('--export', default='tablet_data/exports/line_crops_60')
     ap.add_argument('--min-score', type=float, default=0.5)
     ap.add_argument('--render', type=int, default=12)

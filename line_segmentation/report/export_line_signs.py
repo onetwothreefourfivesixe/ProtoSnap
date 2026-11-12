@@ -1,6 +1,6 @@
 """A data set of annotated text lines: one image per line, tied to its face, with the line's signs in reading order.
 
-  python -m line_cropping.report.export_line_signs [--out tablet_data/exports/line_signs] [--limit-faces N] [--scripts OB NB ...]
+  python -m line_segmentation.report.export_line_signs [--out tablet_data/exports/line_signs] [--limit-faces N] [--scripts OB NB ...]
       [--half-height 0.7 --end-margin 0.5] [--model-pred <predictions dir>]
 
 Lines are the eBL truth lines (faces/lines/<face>.csv), so a line's signs are the sign boxes eBL assigned to it, not whatever
@@ -28,17 +28,17 @@ import re
 import cv2
 import numpy as np
 
-from line_cropping.crops.crop_frame import box_in_frame
-from line_cropping.paths import EBL
-from line_cropping.truth.ebl_ground_truth import SIGN_TYPES, parse_label
-from line_cropping.truth.full_line_annotations import ATF_OBJECTS, ATF_SIDES, ROMAN, visible_signs
+from line_segmentation.crops.crop_frame import box_in_frame
+from line_segmentation.paths import EBL
+from line_segmentation.data.truth.ebl_ground_truth import SIGN_TYPES, parse_label
+from line_segmentation.data.truth.full_line_annotations import ATF_OBJECTS, ATF_SIDES, ROMAN, visible_signs
 
 MARGIN_X, MARGIN_Y, OUTLIER, ATF_MATCH = 0.25, 0.1, 1.0, 0.5
 
 README = """# Annotated lines of signs
 
 This set holds {n_lines} text lines with {n_signs} sign boxes, from {n_faces} faces of {n_tablets} eBL tablets. It was exported on {date} with
-`python -m line_cropping.report.export_line_signs`.
+`python -m line_segmentation.report.export_line_signs`.
 
 Each line has one image, is tied to the face it came from, and lists its signs in reading order. The lines are eBL's: eBL's annotators
 assigned the sign boxes to transliteration lines, so these lines are annotations, not model output.

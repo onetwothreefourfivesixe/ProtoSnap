@@ -1,4 +1,4 @@
-# Only what line_cropping/linemodel, crops/ and eval/ import (the full requirements.txt adds diffusers etc. for ProtoSnap itself).
+# Only what line_segmentation/linemodel, crops/ and eval/ import (the full requirements.txt adds diffusers etc. for ProtoSnap itself).
 # Versions match the local .venv. torch wheels bundle their own CUDA runtime, so no CUDA module is needed on Savio.
 torch==2.2.1
 torchvision==0.17.1

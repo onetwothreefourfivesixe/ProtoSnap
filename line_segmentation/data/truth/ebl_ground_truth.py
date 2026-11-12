@@ -7,9 +7,9 @@ lines per (side, object, column). Writes:
   tablet_data/ebl_tablets/ground_truth/tablets.csv          one row per tablet
   tablet_data/ebl_tablets/ground_truth/previews/<tablet>.jpg  overlay for visual checking (first --preview tablets)
 
-Usage (from repo root):  python -m line_cropping.truth.ebl_ground_truth [--preview 12] [--force]
+Usage (from repo root):  python -m line_segmentation.data.truth.ebl_ground_truth [--preview 12] [--force]
 """
-from line_cropping.paths import EBL
+from line_segmentation.paths import EBL
 import argparse, csv, json, os, re, collections
 import numpy as np
 from PIL import Image, ImageDraw

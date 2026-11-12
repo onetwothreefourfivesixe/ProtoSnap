@@ -2,11 +2,11 @@
 
 Pull first (from the Claude session that owns the artifact):
   Artifact read_db  url=<labeler url>  db_op=list  collection=labels  out_dir=tablet_data/fat-cross_processed/ground_truth/db
-Then:  python -m line_cropping.truth.labels_from_db
+Then:  python -m line_segmentation.data.truth.labels_from_db
 Writes tablet_data/fat-cross_processed/ground_truth/labels.csv: face_id, split, status, line_no, y_face_deskewed, skew_deg, src
 (y is a row in the full-size face after rotation by skew_deg with cv2.getRotationMatrix2D(centre, skew_deg)).
 """
-from line_cropping.paths import OA
+from line_segmentation.paths import OA
 import csv, glob, json, os
 
 def main():

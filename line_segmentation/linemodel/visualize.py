@@ -4,7 +4,7 @@ Each plot_* function takes the rows of history.csv (one dict per epoch, as writt
 and writes one PNG. plot_history() writes them all for a run folder and is what train.py calls after every epoch,
 so the graphs in weights/linemodel/<run>/ stay current while training runs.
 
-  python -m line_cropping.linemodel.visualize --run weights/linemodel/run1     # regenerate plots from history.csv
+  python -m line_segmentation.linemodel.visualize --run weights/linemodel/run1     # regenerate plots from history.csv
 """
 import argparse, csv, os
 import matplotlib

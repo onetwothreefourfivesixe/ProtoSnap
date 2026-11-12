@@ -11,10 +11,10 @@ Windows: the face is resized so its long side is `long_side` x a random scale in
 cut (biased to contain lines), photometric jitter and background polarity swap are applied, and the five target maps
 are painted from the transformed segments at stride 4.
 """
-from line_cropping.paths import EBL, OA, DATA_ROOT
+from line_segmentation.paths import EBL, OA, DATA_ROOT
 import csv, os, random, collections
 import numpy as np, cv2, torch
-from line_cropping.linemodel.targets import render_targets, read_segments, oa_segments, polyline_segments, STRIDE
+from line_segmentation.linemodel.targets import render_targets, read_segments, oa_segments, polyline_segments, STRIDE
 
 
 def heidelberg_items(split='train'):

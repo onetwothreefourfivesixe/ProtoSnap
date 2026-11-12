@@ -1,20 +1,20 @@
 """Write a markdown page with a random sample of ProtoSnap results for a font run (default: the Esagil run).
 
-  python experiments/esagil_skeletons/sampleResults.py [--run output/esagil/singleSigns_Esagil_New] [--samples test_set/singleSigns_Esagil.csv]
-      [--n 10] [--seed 7] [--include <result id> ...] [--out docs/esagil/esagil_results.md]
+  python protosnap_ext/esagil_skeletons/sampleResults.py [--run output/protosnap/esagil/singleSigns_Esagil_New] [--samples test_set/singleSigns_Esagil.csv]
+      [--n 10] [--seed 7] [--include <result id> ...] [--out docs/protosnap/esagil/esagil_results.md]
 
 Only finished results are eligible (dst_points_100.pt and itr99_viz.png present). --include forces specific results
 into the sample (ids as in the run folder without the _results suffix, e.g. BM.38166_1); the rest are drawn at random
-with the given seed. Each sample's itr99_viz.png panel is copied to img/<font>/ next to the output page (docs/esagil/img/esagil/) as a JPEG.
+with the given seed. Each sample's itr99_viz.png panel is copied to img/<font>/ next to the output page (docs/protosnap/esagil/img/esagil/) as a JPEG.
 """
 import argparse, csv, glob, os, random, statistics
 import cv2, torch
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument('--run', default='output/esagil/singleSigns_Esagil_New'); ap.add_argument('--samples', default='test_set/singleSigns_Esagil.csv')
+    ap = argparse.ArgumentParser(); ap.add_argument('--run', default='output/protosnap/esagil/singleSigns_Esagil_New'); ap.add_argument('--samples', default='test_set/singleSigns_Esagil.csv')
     ap.add_argument('--font', default='Esagil'); ap.add_argument('--n', type=int, default=10); ap.add_argument('--seed', type=int, default=7)
-    ap.add_argument('--include', nargs='*', default=[]); ap.add_argument('--out', default='docs/esagil/esagil_results.md')
+    ap.add_argument('--include', nargs='*', default=[]); ap.add_argument('--out', default='docs/protosnap/esagil/esagil_results.md')
     a = ap.parse_args()
     meta = {r['fn'].rsplit('.', 1)[0]: r for r in csv.DictReader(open(a.samples, encoding='utf-8'))}
     done = {}
@@ -52,7 +52,7 @@ def main():
           '1. onetwothreefourfivesixe, *ProtoSnapVectorMapper*: automatic generation of ProtoSnap prototype skeletons from cuneiform font glyphs, with a review editor. https://github.com/onetwothreefourfivesixe/ProtoSnapVectorMapper',
           '2. Rachel Mikulinsky, Morris Alper, Shai Gordin, Enrique Jiménez, Yoram Cohen, Hadar Averbuch-Elor, *ProtoSnap: Prototype Alignment for Cuneiform Signs*, ICLR 2025. https://arxiv.org/abs/2502.00129',
           '3. Or Lewenstein et al., *A Large-Scale Dataset of Annotated Cuneiform Sign Images for Digital Palaeography*, Journal of Open Humanities Data, 2026 (the sign photographs). https://doi.org/10.5334/johd.503', '',
-          f'Regenerate this page with `python experiments/esagil_skeletons/sampleResults.py --seed {a.seed}' + (f' --include {" ".join(a.include)}' if a.include else '') + '`.', '']
+          f'Regenerate this page with `python protosnap_ext/esagil_skeletons/sampleResults.py --seed {a.seed}' + (f' --include {" ".join(a.include)}' if a.include else '') + '`.', '']
     open(a.out, 'w', encoding='utf-8').write('\n'.join(L)); print(f'{len(done)} finished results; wrote {a.out} with {len(pick)} samples:', pick)
 
 

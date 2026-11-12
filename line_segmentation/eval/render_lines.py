@@ -1,9 +1,9 @@
 """Overlay predicted lines (and truth if present) on faces for visual review.
-  python -m line_cropping.eval.render_lines --faces <faces.csv> --pred <pred dir> --method det_n --out <dir> [--n 8] [--truth-dir <lines dir>]
+  python -m line_segmentation.eval.render_lines --faces <faces.csv> --pred <pred dir> --method det_n --out <dir> [--n 8] [--truth-dir <lines dir>]
 """
 import argparse, csv, os, random
 import numpy as np, cv2
-from line_cropping.lines.profile_lines import rotate
+from line_segmentation.heuristic_v1.profile_lines import rotate
 
 
 def main():
@@ -19,7 +19,7 @@ def main():
         if g is None: continue
         H, W = g.shape; skew = float(runs[f['face']]['skew_deg']); img = cv2.cvtColor(rotate(g.astype(np.float32), skew).astype(np.uint8), cv2.COLOR_GRAY2BGR)
         if a.truth_dir:
-            from line_cropping.eval.evaluate_lines import truth_in_frame
+            from line_segmentation.eval.evaluate_lines import truth_in_frame
             for t in truth_in_frame(os.path.join(a.truth_dir, f['face'] + '.csv'), W, H, skew): cv2.line(img, (0, int(t[0])), (W, int(t[0])), (0, 255, 0), max(1, H // 500))
         for p in csv.DictReader(open(os.path.join(a.pred, a.method, f['face'] + '.csv'))):
             y = int(float(p['y_deskewed'])); cv2.line(img, (int(p['x0']), y), (int(p['x1']), y), (0, 0, 255), max(1, H // 500))

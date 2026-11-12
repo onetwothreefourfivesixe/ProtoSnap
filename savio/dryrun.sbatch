@@ -13,4 +13,4 @@
 set -eo pipefail
 source savio/savio_env.sh; source activate "$CONDA_ENV_DIR"
 nvidia-smi
-python -m line_cropping.linemodel.train --dry-run --heidelberg --heights --out weights/linemodel/savio_dryrun
+python -m line_segmentation.linemodel.train --dry-run --heidelberg --heights --out weights/linemodel/savio_dryrun

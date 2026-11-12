@@ -8,8 +8,8 @@ import csv
 import os
 import sys
 
-from line_cropping.linemodel.dataset import build_index
-from line_cropping.paths import EBL
+from line_segmentation.linemodel.dataset import build_index
+from line_segmentation.paths import EBL
 
 EXPECTED = {'ebl-OB': 229, 'ebl-OA': 110, 'oa': 88, 'ebl-NB': 74, 'heid-NA': 32, 'ebl-NA': 23}   # 556 faces, 490 train + 66 validation
 

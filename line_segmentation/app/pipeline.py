@@ -11,9 +11,9 @@ import cv2
 import numpy as np
 from PIL import Image
 
-from line_cropping.crops.make_crops import crop_along_segment
-from line_cropping.faces.prepare_faces import tablet_components
-from line_cropping.linemodel.infer import predict_face, read_lines, segments_to_lines, tablet_mask_for
+from line_segmentation.crops.make_crops import crop_along_segment
+from line_segmentation.data.faces.prepare_faces import tablet_components
+from line_segmentation.linemodel.infer import predict_face, read_lines, segments_to_lines, tablet_mask_for
 
 Image.MAX_IMAGE_PIXELS = None
 

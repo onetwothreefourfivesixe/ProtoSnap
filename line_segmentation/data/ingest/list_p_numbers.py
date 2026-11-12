@@ -1,6 +1,6 @@
 """List the CDLI P-numbers of the tablets in this project's CDLI and eBL downloads, read from their JSON files.
 
-  python -m line_cropping.ingest.list_p_numbers [--out <DATA_ROOT>/p_numbers.csv]
+  python -m line_segmentation.data.ingest.list_p_numbers [--out <DATA_ROOT>/p_numbers.csv]
 
 Sources:
   eBL               ebl_tablets/<script>/<tablet>/fragment.json, field externalNumbers.cdliNumber (tablets without one are counted, not listed)
@@ -20,7 +20,7 @@ import json
 import os
 import re
 
-from line_cropping.paths import DATA_ROOT, EBL
+from line_segmentation.paths import DATA_ROOT, EBL
 
 
 def norm(p):

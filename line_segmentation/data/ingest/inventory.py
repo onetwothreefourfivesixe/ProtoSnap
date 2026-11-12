@@ -1,5 +1,5 @@
 """Rebuild tablet_data/fat-cross_processed/inventory.csv: one row per tablet with its faces, CDLI metadata and ATF flag."""
-from line_cropping.paths import OA
+from line_segmentation.paths import OA
 import os, re, csv, json, collections
 
 def main():

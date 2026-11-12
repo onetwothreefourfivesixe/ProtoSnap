@@ -5,8 +5,8 @@ model solves, the data and ground truth behind it, the model and how its output 
 evaluated, and what it achieves against earlier runs and against other line finders. It is written for readers who
 know OCR and object detection, and terms specific to the project are defined where they first appear. The work ran
 from late September to early November 2026. The order of experiments is kept in Appendix A, and the main text is
-organised by topic. The rest of the pipeline is described in `docs/line_cropping/pipeline_overview.md`, the published
-alternatives are described in `related_work.md`, and the code is in `line_cropping/linemodel/`.
+organised by topic. The rest of the pipeline is described in `docs/line_segmentation/v1/pipeline_overview.md`, the published
+alternatives are described in `related_work.md`, and the code is in `line_segmentation/linemodel/`.
 
 ## Summary
 
@@ -55,7 +55,7 @@ alternatives are described in `related_work.md`, and the code is in `line_croppi
 ![Line model runs per script](img/runs_by_script.png)
 
 *Figure 1. The figure shows runs 1, 2, 3, 4 and 6 (with heights) on the eBL test faces, per script, with recall,
-precision and first-line placement. Bars for runs 3, 4 and 6 span their two training seeds, and the dot is their mean.
+precision and first-line placement. Bars for runs 3, 4 and 6 span their two training seeds, and the symbol is their mean. Each run has its own colour and symbol, and within a row the runs are listed from run 1 at the top to run 6 at the bottom.
 Run 5 is not drawn, and its scores are in Appendix A.12.*
 
 ## 1. Problem and approach
@@ -82,7 +82,7 @@ flowchart LR
     S --> E[Evaluation against<br/>line truth]
 ```
 
-The design was fixed before any code was written (section 14 of `docs/line_cropping/line_cropping_plan.md`). It
+The design was fixed before any code was written (section 14 of `docs/line_segmentation/v1/line_cropping_plan.md`). It
 specified a face image at 1,024 pixels on the long side, three output maps painted from the existing line truth, a
 U-Net with a pretrained ResNet-34 encoder, training on the tune half of the Phase 5 split only, and evaluation with the
 unchanged Phase 5 harness against the detector route on the same test faces.
@@ -97,7 +97,7 @@ is the median distance between consecutive lines on a face and is the unit for a
 
 | source | what an annotator drew | how a truth line is made | used for |
 |---|---|---|---|
-| eBL sign annotations (OB, NA, OA, NB) | a box around each sign, with the transliteration line it belongs to | least-squares straight segment through the centres of one line's boxes (`truth/ebl_ground_truth.py`) | training and the main test set |
+| eBL sign annotations (OB, NA, OA, NB) | a box around each sign, with the transliteration line it belongs to | least-squares straight segment through the centres of one line's boxes (`data/truth/ebl_ground_truth.py`) | training and the main test set |
 | Old Assyrian Line Marker labels (CDLI photographs) | a mark at each line's height on 88 faces (7 or 4 of them held out for validation, depending on the seed) | horizontal segment across the face at that height, thickness 0.6 pitch | training |
 | Heidelberg line annotations, Dencker et al. 2020 (NA) | each text line as a polyline from end to end, 618 lines on 50 faces | the polyline itself, as a chain of short segments | training (32 faces) and an independent test (9 faces) |
 
@@ -132,7 +132,7 @@ seeds also differ in their training faces.
 
 Run 2's Old Assyrian and Neo-Babylonian faces come from 311 eBL tablets chosen from the eBL annotation export of
 11 Sep 2026 (`data/ebl/annotations_11.09.2026/`) for having at least 50 sign boxes with a line position
-(`ingest/download_ebl.py --scripts OA NB --annotations-dump`). The eBL sign data held no further usable Neo-Assyrian
+(`data/ingest/download_ebl.py --scripts OA NB --annotations-dump`). The eBL sign data held no further usable Neo-Assyrian
 tablets, which is why run 3 turned to the Heidelberg annotations (Appendix A.3, A.4).
 
 ### 2.3 Training targets
@@ -388,7 +388,7 @@ results on those 487 faces are as follows:
 
 So `run6_heights_s1` is level with the detector route on recall and precision, without needing a transliteration or a
 sign detector. The detector route stays ahead on Neo-Assyrian first lines, and on precision against the other seed.
-Its detector was also trained on a superset of these annotations (`line_cropping/README.md`), and the overlap with
+Its detector was also trained on a superset of these annotations (`line_segmentation/README.md`), and the overlap with
 these test faces is not known, so its scores may be flattered. It also needs a sign detector that works on the
 photograph. The comparison, the side-by-side examples and the literature search are in `related_work.md`.
 
@@ -441,23 +441,23 @@ and hold level crops, and they are still the default of the `protosnap/line_enve
 1.4 line spacings tall and along each line's angle (`--half-height 0.7 --end-margin 0.5`), and a check against the
 default model. `tablet_data/exports/line_signs_run6` holds the default model's crops on the test faces with the signs
 inside them (`report/export_model_line_signs.py`). `ground_truth/full_line_annotations.csv` lists which tablets have
-every line annotated (`truth/full_line_annotations.py`). Run 2's outputs and earlier versions are in
+every line annotated (`data/truth/full_line_annotations.py`). Run 2's outputs and earlier versions are in
 `tablet_data/ebl_tablets/linemodel/archive/`. **Report figures** are regenerated with
-`MPLBACKEND=Agg .venv/bin/python -m line_cropping.report.report_figures`.
+`MPLBACKEND=Agg .venv/bin/python -m line_segmentation.report.report_figures`.
 
-**New data sets.** `line_cropping/segment/segment_images.py` runs the default model on any folder or list of images and writes `lines.json`; `line_cropping/segment/README.md` documents it.
+**New data sets.** `line_segmentation/segment/segment_images.py` runs the default model on any folder or list of images and writes `lines.json`; `line_segmentation/segment/README.md` documents it.
 
 ```
-python -m line_cropping.linemodel.targets --preview 12
-python -m line_cropping.ingest.download_ebl --scripts OA NB --annotations-dump data/ebl/annotations_11.09.2026/annotations_11.09.2026.json
-python -m line_cropping.truth.ebl_ground_truth && python -m line_cropping.faces.prepare_faces ebl && python -m line_cropping.eval.extend_split
-MPLBACKEND=Agg .venv/bin/python -m line_cropping.linemodel.train --epochs 40 --seed 1 --heidelberg --heights --out weights/linemodel/run6_heights_s1
-.venv/bin/python -m line_cropping.linemodel.infer --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions --split test [--use-n]
-.venv/bin/python -m line_cropping.eval.evaluate_lines --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions
-.venv/bin/python -m line_cropping.eval.evaluate_heidelberg --weights weights/linemodel/run6_heights_s1/model.pt
-.venv/bin/python -m line_cropping.crops.make_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions --method unet --bounds segments --extend 0.2 --shift 0.06 --split test [--overlap 0.15] [--rotate-per-line] --out tablet_data/ebl_tablets/line_crops_unet
-.venv/bin/python -m line_cropping.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops_unet/crops.csv --split test
-.venv/bin/python -m line_cropping.report.export_tablets --zip     # 60 tablets with line crops and sign boxes, for other pipelines
+python -m line_segmentation.linemodel.targets --preview 12
+python -m line_segmentation.data.ingest.download_ebl --scripts OA NB --annotations-dump data/ebl/annotations_11.09.2026/annotations_11.09.2026.json
+python -m line_segmentation.data.truth.ebl_ground_truth && python -m line_segmentation.data.faces.prepare_faces ebl && python -m line_segmentation.eval.extend_split
+MPLBACKEND=Agg .venv/bin/python -m line_segmentation.linemodel.train --epochs 40 --seed 1 --heidelberg --heights --out weights/linemodel/run6_heights_s1
+.venv/bin/python -m line_segmentation.linemodel.infer --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions --split test [--use-n]
+.venv/bin/python -m line_segmentation.eval.evaluate_lines --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions
+.venv/bin/python -m line_segmentation.eval.evaluate_heidelberg --weights weights/linemodel/run6_heights_s1/model.pt
+.venv/bin/python -m line_segmentation.crops.make_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions --method unet --bounds segments --extend 0.2 --shift 0.06 --split test [--overlap 0.15] [--rotate-per-line] --out tablet_data/ebl_tablets/line_crops_unet
+.venv/bin/python -m line_segmentation.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops_unet/crops.csv --split test
+.venv/bin/python -m line_segmentation.report.export_tablets --zip     # 60 tablets with line crops and sign boxes, for other pipelines
 ```
 
 ## Appendix A. Experiment log
@@ -495,7 +495,7 @@ By script, `unet` reaches 0.87 recall at 0.87 precision on Old Babylonian, three
 Crops looked too wide by eye, so their horizontal fit is being examined one step at a time. The first step is to find
 what the over-wide crops are, the second is to change how line ends are set, and the third is to keep the resulting
 measures as standing metrics. Each test below records the question, the method, the numbers and what they mean for the
-next step. The diagnostic is `line_cropping/eval/crop_width.py`, and its outputs are in `tablet_data/ebl_tablets/linemodel/crop_width/<test>/`.
+next step. The diagnostic is `line_segmentation/eval/crop_width.py`, and its outputs are in `tablet_data/ebl_tablets/linemodel/crop_width/<test>/`.
 
 **Measures.** For every truth line on a test face with annotation coverage of at least 0.9 whose centre falls inside
 exactly one crop, the crop and the line are compared in the crop's frame. The line's true extent runs between its
@@ -805,7 +805,7 @@ in `tablet_data/ebl_tablets/linemodel/archive/`.
 **Next.** Neo-Assyrian needs its own data. The NA tablets in the snippet metadata that have not been downloaded have
 no line labels and a median of three boxes each, so that source is used up. The open options are lowering the training
 coverage bar for NA only (`--min-cov 0.8` admits more NA faces at some label noise), building truth for NA tablets
-from boxes without line paths by clustering them into lines (`lines/lines_from_boxes.py`), or hand-labelling NA faces
+from boxes without line paths by clustering them into lines (`heuristic_v1/lines_from_boxes.py`), or hand-labelling NA faces
 with the Line Marker page as was done for Old Assyrian.
 
 ### A.4 Independent check on hand-drawn Neo-Assyrian lines (10 Oct 2026)
@@ -927,7 +927,7 @@ lower with seed 1, which is also within it. Neo-Assyrian first-line placement re
 ends in typed characters (`tablet_data/ bnjm.njm.`), and the 102 rows that followed it are missing. That is what
 selecting a block of the file in an editor and typing over it produces. Run 3 (both seeds) therefore trained without 48
 Neo-Babylonian tune faces, and all comparisons in this section use the reduced test set. On 10 Oct 2026 the file was
-regenerated with `python -m line_cropping.faces.prepare_faces ebl`, and the damaged copy was kept as
+regenerated with `python -m line_segmentation.data.faces.prepare_faces ebl`, and the damaged copy was kept as
 `faces.csv.damaged_2026-10-07`. The regenerated file has 1,969 faces again, with 106 restored (103 Neo-Babylonian, 3 Old
 Babylonian), and every undamaged row of the damaged copy is identical in the regenerated file. Runs 3 and 3 seed 1 above were trained before the
 restore.
@@ -978,7 +978,7 @@ Old Assyrian, which has no font, could not be included. Each of the 357 signs wa
 eBL box with 30 percent padding, so that a skeleton could reach past the box and past the crop. Each sign was then fitted
 with the unchanged ProtoSnap (`run_test.py`), which took about 58 seconds per sign and 6.5 hours in all. Fits with a
 ProtoSnap score below 0.5 were left out. The envelope is the 2.5th-97.5th percentile of the kept wedge points. The code
-is in `line_cropping/protosnap/line_envelope_prep.py` and `line_envelope_analyze.py`, and the results are in
+is in `protosnap_ext/line_inputs/line_envelope_prep.py` and `line_envelope_analyze.py`, and the results are in
 `tablet_data/protosnap_inputs/envelope_pilot/analysis/`.
 
 | result | value |
@@ -1135,7 +1135,7 @@ strict on those faces, and the Dencker network, which sizes its input from this 
 Babylonian 182, Neo-Assyrian 71, and Old Assyrian 3. The "small faces" group shrinks from about 90 test faces to 12, because
 most of them were not small.
 
-**The fix** (`truth/ebl_ground_truth.py`). Pitch is now measured directly as the median gap between neighbouring
+**The fix** (`data/truth/ebl_ground_truth.py`). Pitch is now measured directly as the median gap between neighbouring
 annotated lines. The index is not used at all, because it is irregular (it runs 1, 1, 3, 4, 4, 6 on YBC.5710). Measured
 gaps alone fail on faces with few annotated lines far apart (HS.2070 has two lines 1,460 px apart), and a first attempt
 inflated pitch there and made scores too generous. So when there are fewer than five annotated lines, a gap over 1.5
@@ -1206,7 +1206,7 @@ no more. Line accuracy did not suffer and rose slightly on both seeds. Crops sho
 **Goal.** One fixed crop height serves every line (A.8, A.9). Run 4 adds two output channels so the model says how far
 each line's signs reach, and crop height follows the line.
 
-**Target** (`truth/line_heights.py`, `faces/line_heights.csv`). For each line, the target is the 90th percentile, over its
+**Target** (`data/truth/line_heights.py`, `faces/line_heights.csv`). For each line, the target is the 90th percentile, over its
 sign boxes, of the distance from the line to the box's top edge (`up`) and bottom edge (`down`), capped at 1.2 line
 spacings. A percentile is used rather than the maximum, so that one box assigned to the wrong line does not set the
 height. 11,471 of 14,210 eBL lines have a height. Lines with fewer than 3 boxes do not. The table shows the ceiling with

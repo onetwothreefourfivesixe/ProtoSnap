@@ -14,9 +14,9 @@ Target maps, at 1/`stride` of the image (default stride 4), channels:
              of the line's signs, for lines with `up` and `down` (truth/line_heights.py); see height_decode
   7 height valid  1 where channels 5,6 hold a height (the Old Assyrian and Heidelberg lines have no sign boxes)
 
-  python -m line_cropping.linemodel.targets --preview 12   # overlays in tablet_data/ebl_tablets/linemodel/target_previews/
+  python -m line_segmentation.linemodel.targets --preview 12   # overlays in tablet_data/ebl_tablets/linemodel/target_previews/
 """
-from line_cropping.paths import EBL
+from line_segmentation.paths import EBL
 import argparse, csv, os, collections, random
 import numpy as np, cv2
 
@@ -145,7 +145,7 @@ def overlay(img, T, stride=STRIDE):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--preview', type=int, default=12); ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--out', default=f'{EBL}/linemodel/target_previews'); a = ap.parse_args(); os.makedirs(a.out, exist_ok=True)
-    from line_cropping.linemodel.dataset import build_index
+    from line_segmentation.linemodel.dataset import build_index
     idx = build_index(); random.seed(a.seed); picks = random.sample(idx['train'], min(a.preview, len(idx['train'])))
     for it in picks:
         img = cv2.imread(it['file']); H, W = img.shape[:2]; T = render_targets(it['segments'], W, H)

@@ -7,7 +7,7 @@ would otherwise count as false positives), first-line error in pitch units (only
 is line 1 or 1'), and count agreement, split by script, method and resolution. Pieces with the same column and line index
 within `tol` x pitch of each other are one truth line. A face with no predicted line scores recall 0 and fails its first line.
 
-  python -m line_cropping.eval.evaluate_lines --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions
+  python -m line_segmentation.eval.evaluate_lines --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions
 """
 import argparse, csv, os, collections
 import numpy as np, cv2

@@ -1,6 +1,6 @@
 """A data set of line crops made by the line model, tied to their face, with the signs inside each crop in reading order.
 
-  python -m line_cropping.report.export_model_line_signs [--crops tablet_data/ebl_tablets/line_crops_unet]
+  python -m line_segmentation.report.export_model_line_signs [--crops tablet_data/ebl_tablets/line_crops_unet]
       [--out tablet_data/exports/line_signs_run6] [--limit-faces N]
 
 The crops are model output (crops/make_crops.py on the default model); the signs are eBL's boxes. A sign goes to the crop that holds its
@@ -19,16 +19,16 @@ import shutil
 import cv2
 import numpy as np
 
-from line_cropping.crops.crop_frame import box_in_frame, crop_matrix
-from line_cropping.paths import EBL, LINE_WEIGHTS
-from line_cropping.report.export_line_signs import atf_texts, find_text
-from line_cropping.truth.ebl_ground_truth import SIGN_TYPES
-from line_cropping.truth.full_line_annotations import visible_signs
+from line_segmentation.crops.crop_frame import box_in_frame, crop_matrix
+from line_segmentation.paths import EBL, LINE_WEIGHTS
+from line_segmentation.report.export_line_signs import atf_texts, find_text
+from line_segmentation.data.truth.ebl_ground_truth import SIGN_TYPES
+from line_segmentation.data.truth.full_line_annotations import visible_signs
 
 README = """# Line crops from the line model, with annotated signs
 
 This set holds {n_lines} line crops with {n_signs} sign boxes, from {n_faces} test faces of {n_tablets} eBL tablets. It was exported on {date} with
-`python -m line_cropping.report.export_model_line_signs`, using the model `{model}`.
+`python -m line_segmentation.report.export_model_line_signs`, using the model `{model}`.
 
 The crops are model output, not annotations. The signs are eBL's boxes, and each is placed in a crop when its box centre falls inside it. All faces are from the
 line model's test split, so the model never trained on them. Another {n_empty} crops hold no annotated sign; they are listed in `crops_without_signs.csv`. In addition, {n_out}

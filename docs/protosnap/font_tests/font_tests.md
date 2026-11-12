@@ -8,21 +8,21 @@ to the photograph, and how much a sign's handwritten form differs from the font.
 ## Data
 
 The photographs are the eBL sign crops (`data/ebl/singleSignImages/`, listed in `data/ebl/signs_snippets_metadata.json`).
-`experiments/font_tests/testSingleSigns.py` keeps only crops that ProtoSnap can run. In a kept crop, the script matches the font
+`protosnap_ext/font_tests/testSingleSigns.py` keeps only crops that ProtoSnap can run. In a kept crop, the script matches the font
 (NA for Assurbanipal, OB for Santakku), the sign name maps to a Unicode code point, and the font has a prototype and
 a skeleton for that sign. It then draws a random sample and writes `test_set/singleSigns_<font>.csv` in the format
 `run_test.py` reads.
 
 | font | crops listed | runs finished | results |
 |---|---|---|---|
-| Assurbanipal | 50 | 51 folders, 51 scored | `output/font_tests/singleSigns_Assurbanipal/` |
-| Santakku | 17,895 (every usable crop) | 12 | `output/font_tests/singleSigns_Santakku/` |
+| Assurbanipal | 50 | 51 folders, 51 scored | `output/protosnap/font_tests/singleSigns_Assurbanipal/` |
+| Santakku | 17,895 (every usable crop) | 12 | `output/protosnap/font_tests/singleSigns_Santakku/` |
 
 The Santakku run was stopped after 12 signs.
 
 ## Measures
 
-`experiments/font_tests/compareToFont.py` compares each finished run with the font glyph it started from. It does
+`protosnap_ext/font_tests/compareToFont.py` compares each finished run with the font glyph it started from. It does
 not measure accuracy against the photograph, for which there is no ground truth.
 
 - **Mean shift:** This is the average distance, in pixels, that each skeleton keypoint moved from its position in the font
@@ -48,8 +48,8 @@ panels have to be judged by eye.
 ## Reproduce
 
 ```
-python experiments/font_tests/testSingleSigns.py            # set fontDir in the script; asks how many signs to sample
+python protosnap_ext/font_tests/testSingleSigns.py            # set fontDir in the script; asks how many signs to sample
 python run_test.py --samples_df_path test_set/singleSigns_Assurbanipal.csv --font_dir prototypes/Assurbanipal \
-    --con_dir skeletons/Assurbanipal --output_folder font_tests/singleSigns_Assurbanipal --ignore_errors
-python experiments/font_tests/compareToFont.py font_tests/singleSigns_Assurbanipal
+    --con_dir skeletons/Assurbanipal --output_folder protosnap/font_tests/singleSigns_Assurbanipal --ignore_errors
+python protosnap_ext/font_tests/compareToFont.py font_tests/singleSigns_Assurbanipal
 ```

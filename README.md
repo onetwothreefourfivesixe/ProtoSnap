@@ -23,16 +23,16 @@ We used this method to train ControlNet to generate new and diverse cuneiform si
 
 ## This fork
 
-This fork builds on ProtoSnap in four parts. Upstream's own files (`main.py`, `run_test.py`, `src/`, `prototypes/`,
-`skeletons/`, `test_set/`, ...) are unchanged and stay where upstream has them. Run every command from the repository
-root.
+This fork adds two things to ProtoSnap. Upstream's own files (`main.py`, `run_test.py`, `src/`, `prototypes/`,
+`skeletons/`, `test_set/`, ...) stay where upstream has them. Run every command from the repository root.
 
-| part | what it is | code | docs | ProtoSnap results |
+| section | what it is | code | docs | results |
 |---|---|---|---|---|
-| 1. Font tests | ProtoSnap on photographed single signs with the Assurbanipal and Santakku font prototypes, and how far the fitted skeletons move from the font | `experiments/font_tests/` | `docs/font_tests/` | `output/font_tests/` |
-| 2. Line cropping, first iteration | splitting tablet photographs into single-line crops with the eBL sign detector and the transliteration's line count, then running ProtoSnap on signs in those crops | `line_cropping/` (phases 1–6) | `docs/line_cropping/` | `output/line_cropping/` |
-| 3. Esagil skeletons | ProtoSnap on Neo-Babylonian signs, with Esagil skeletons transferred from Assurbanipal and generated with ProtoSnapVectorMapper | `experiments/esagil_skeletons/` | `docs/esagil/` | `output/esagil/` |
-| 4. Custom line model | a U-Net that finds text lines directly, without a transliteration, plus the Line Splitter web app | `line_cropping/linemodel/`, `line_cropping/app/` (phase 7) | `docs/line_model/` | |
+| **Original ProtoSnap** | the upstream method, plus the Esagil skeletons and prototypes added to its data folders | `main.py`, `run_test.py`, `src/`, `prototypes/`, `skeletons/`, `test_set/` | this README | `output/` |
+| **ProtoSnap additions** | font tests on single signs, the scripts that build the Esagil skeletons, the steps that feed line crops to ProtoSnap, and a sign classifier | `protosnap_ext/` ([README](protosnap_ext/README.md)) | `docs/protosnap/` | `output/protosnap/` |
+| **Line segmentation** | a custom U-Net that finds text lines on tablet photographs without a transliteration, the pipeline that runs it on any images, the Line Splitter web app, and the first heuristic iteration it replaced | `line_segmentation/` ([README](line_segmentation/README.md)) | `docs/line_segmentation/` | `output/line_segmentation/` |
+
+`savio/` holds the scripts that train the line model on the Savio cluster.
 
 Three folders hold data. `data/` holds raw downloads (the CDLI dump, eBL sign crops and annotation export, eBL detector
 training data and fonts). `tablet_data/` holds the line-cropping pipeline's working data, and `weights/` holds model weights. All three are

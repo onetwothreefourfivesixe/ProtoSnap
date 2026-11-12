@@ -16,7 +16,7 @@ R() { rsync -avhm --progress --relative -e "$SSH" "$@"; }
 
 # code
 R --exclude '__pycache__' --exclude '.venv' --exclude '*.pyc' \
-   ./line_cropping ./savio ./requirements.txt ./README.md "$DST/"
+   ./line_segmentation ./protosnap_ext ./savio ./requirements.txt ./README.md "$DST/"
 # eBL faces (with line_heights.csv), ground truth, split, manifest; fragment.json for make_crops' ATF labels, annotations.json for box_containment
 R ./tablet_data/ebl_tablets/faces ./tablet_data/ebl_tablets/ground_truth \
    ./tablet_data/ebl_tablets/split.csv ./tablet_data/ebl_tablets/manifest.csv "$DST/"

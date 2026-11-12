@@ -1,6 +1,6 @@
 """Train a per-script cuneiform sign classifier on the eBL sign snippets (datasets from build_dataset.py).
 
-  .venv/bin/python -m line_cropping.signs.train_classifier --script OB [--epochs 15] [--size 112]
+  .venv/bin/python -m protosnap_ext.sign_classifier.train_classifier --script OB [--epochs 15] [--size 112]
 
 ResNet-34 from the locally cached ImageNet weights; inputs are letterboxed to a square (aspect kept, padded with the
 image's border mean) and held in RAM, since reading tens of thousands of small JPEGs from the mounted drive every
@@ -8,7 +8,7 @@ epoch is the bottleneck. Class-balanced sampling (weight 1/sqrt(class count)), l
 augmentation, label smoothing, AdamW with cosine decay, mixed precision. The checkpoint with the best validation
 top-1 is kept. Writes weights/sign_classifier/<script>/{model.pt, classes.json, metrics.json}.
 """
-from line_cropping.paths import EBL
+from line_segmentation.paths import EBL
 import argparse, csv, json, os, time
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np, cv2, torch, torch.nn as nn, torch.nn.functional as F

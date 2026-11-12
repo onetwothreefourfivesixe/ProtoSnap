@@ -5,9 +5,9 @@ share that frame when their skew matches; predictions from other frames (detecto
 line's centre point (face centre x, y) back to the face and then into the labelling frame. A predicted line
 matches a label if within `tol` x label pitch (median label gap). Reports recall, precision, first-line error,
 count match, by method, split and resolution.
-  python -m line_cropping.eval.evaluate_oa
+  python -m line_segmentation.eval.evaluate_oa
 """
-from line_cropping.paths import OA
+from line_segmentation.paths import OA
 import csv, os, collections, argparse
 import numpy as np, cv2
 

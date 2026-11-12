@@ -1,7 +1,7 @@
 """Phase 2: face preparation.
 
-  python -m line_cropping.faces.prepare_faces ebl   -> cut each annotated side out of the eBL composite photos
-  python -m line_cropping.faces.prepare_faces oa    -> accepted-face list for the Old Assyrian set, edges rotated
+  python -m line_segmentation.data.faces.prepare_faces ebl   -> cut each annotated side out of the eBL composite photos
+  python -m line_segmentation.data.faces.prepare_faces oa    -> accepted-face list for the Old Assyrian set, edges rotated
 
 eBL output (tablet_data/ebl_tablets/faces/):
   <tablet>__<side>[__<object>].jpg      face crop (block union + margin), unrotated
@@ -12,7 +12,7 @@ OA output (tablet_data/fat-cross_processed/prepared/):
   faces.csv                             accepted faces with path, rotation applied, ATF line count, px/line
   edges/<P>_<left|right>.png            edge strips rotated so text lines run horizontally
 """
-from line_cropping.paths import EBL, OA
+from line_segmentation.paths import EBL, OA
 import argparse, csv, json, os, re, collections
 import numpy as np
 from PIL import Image
@@ -163,6 +163,8 @@ def ebl():
             x0, y0, x1, y1 = cbox[0] - pad, cbox[1] - pad, cbox[2] + pad, cbox[3] + pad; method = 'blob'
         x0, y0, x1, y1 = int(max(0, x0)), int(max(0, y0)), int(min(W, x1)), int(min(H, y1))
         name = f'{tab}__{side}' + (f'__{obj}' if obj else '')
+        if x1 - x0 < 8 or y1 - y0 < 8:                            # the lines' boxes fall outside the photo: no face to cut
+            print(f'skipped {name}: empty crop box {(x0, y0, x1, y1)} in a {W} x {H} photo'); continue
         im.crop((x0, y0, x1, y1)).save(os.path.join(out, name + '.jpg'), quality=92)
         with open(os.path.join(out, 'lines', name + '.csv'), 'w', newline='') as f:
             w = csv.writer(f); w.writerow(['column', 'line_index', 'line_label', 'primed', 'is_first_line', 'sparse', 'n_signs', 'ax0', 'ay0', 'ax1', 'ay1', 'thickness', 'tilt_deg'])

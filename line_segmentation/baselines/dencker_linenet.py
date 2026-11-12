@@ -1,7 +1,7 @@
 """Baseline: the line segmentation network of Dencker et al. (2020), ported to current PyTorch and retrained.
 
-  python -m line_cropping.baselines.dencker_linenet train [--epochs 101] [--out weights/dencker/linenet_ours.pt]
-  python -m line_cropping.baselines.dencker_linenet predict --weights weights/dencker/linenet_ours.pt
+  python -m line_segmentation.baselines.dencker_linenet train [--epochs 101] [--out weights/dencker/linenet_ours.pt]
+  python -m line_segmentation.baselines.dencker_linenet predict --weights weights/dencker/linenet_ours.pt
          --set heidelberg|ebl [--split test] [--count none|truth] --out <dir>
 
 Dencker, Klinkisch, Maul, Ommer, "Deep learning of cuneiform sign detection with weak supervision using
@@ -42,8 +42,8 @@ from scipy import ndimage as ndi
 from skimage.morphology import skeletonize
 from skimage.transform import hough_line, hough_line_peaks
 
-from line_cropping.linemodel.infer import segments_to_lines
-from line_cropping.paths import DATA_ROOT, EBL
+from line_segmentation.linemodel.infer import segments_to_lines
+from line_segmentation.paths import DATA_ROOT, EBL
 
 ANN = 'data/heidelberg'
 FACES = os.path.join(DATA_ROOT, 'heidelberg', 'faces')

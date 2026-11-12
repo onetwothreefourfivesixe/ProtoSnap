@@ -1,6 +1,6 @@
 """Phase 3b: run the eBL Deformable DETR sign detector on prepared faces.
 
-Must run in the mmdetection environment:  ~/venvs/mmdet/bin/python -m line_cropping.lines.detect_signs --faces <faces.csv> --out <dir>
+Must run in the mmdetection environment:  ~/venvs/mmdet/bin/python -m line_segmentation.heuristic_v1.detect_signs --faces <faces.csv> --out <dir>
 Writes <out>/<face>.csv with one box per row (x0,y0,x1,y1,score,label,sign) in face pixels, and <out>/run.csv.
 Model: external/cuneiform-ocr/configs/detr.py + weights/ebl_detr/detr173/detr-173-classes-10-2025/epoch_1000.pth
 (Zenodo 17395154, CC BY 4.0). Inference resizes each face to fit 1333 x 800 (the model's test pipeline).

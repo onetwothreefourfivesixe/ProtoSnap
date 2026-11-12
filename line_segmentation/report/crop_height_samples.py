@@ -1,6 +1,6 @@
 """Side-by-side sample of line crops at today's height and with the calibrated extension, with the eBL sign boxes drawn.
 
-  python -m line_cropping.report.crop_height_samples [--n 30] [--extend 0.2] [--seed 4] [--crops tablet_data/ebl_tablets/line_crops_unet/crops.csv]
+  python -m line_segmentation.report.crop_height_samples [--n 30] [--extend 0.2] [--seed 4] [--crops tablet_data/ebl_tablets/line_crops_unet/crops.csv]
       [--out tablet_data/ebl_tablets/linemodel/crop_height_samples]
 
 Draws --n crops at random (seeded, spread evenly over the scripts) from test faces with sign-annotation coverage >= 0.9,
@@ -20,9 +20,9 @@ import random
 import cv2
 import numpy as np
 
-from line_cropping.crops.crop_frame import box_in_frame, crop_matrix
-from line_cropping.eval.box_containment import face_boxes
-from line_cropping.paths import EBL
+from line_segmentation.crops.crop_frame import box_in_frame, crop_matrix
+from line_segmentation.eval.box_containment import face_boxes
+from line_segmentation.paths import EBL
 
 
 def box_area_in(rect, b):

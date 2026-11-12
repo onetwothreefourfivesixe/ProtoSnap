@@ -1,7 +1,7 @@
 """Score the line model against hand-drawn text-line annotations (Dencker et al. 2020, Heidelberg Neo-Assyrian set).
 
-  python -m line_cropping.eval.evaluate_heidelberg --weights weights/linemodel/run2/model.pt [--render 6] [--out <dir>]
-  python -m line_cropping.eval.evaluate_heidelberg --segments <dir>/<method>_segments --out <dir>    # another model's lines
+  python -m line_segmentation.eval.evaluate_heidelberg --weights weights/linemodel/run2/model.pt [--render 6] [--out <dir>]
+  python -m line_segmentation.eval.evaluate_heidelberg --segments <dir>/<method>_segments --out <dir>    # another model's lines
 
 Data: data/heidelberg/line_annotations_{train,test}.csv (one row per polyline point: line_idx, x, y, segm_idx,
 tablet_CDLI; coordinates in the face crop) and tablet_segments_{train,test}.csv (each face's box in the composite
@@ -31,8 +31,8 @@ import numpy as np
 import pandas as pd
 import torch
 
-from line_cropping.linemodel.infer import load_model, predict_face, read_lines, tablet_mask_for
-from line_cropping.paths import DATA_ROOT
+from line_segmentation.linemodel.infer import load_model, predict_face, read_lines, tablet_mask_for
+from line_segmentation.paths import DATA_ROOT
 
 ANN = 'data/heidelberg'
 IMGS = 'data/ebl/ebl_detection_2024/raw/raw-data/heidelberg/heidelberg-imgs'

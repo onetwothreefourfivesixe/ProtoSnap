@@ -1,6 +1,6 @@
 """Line-shaped crops: each line cut out between two seams that run through the space between lines, around the signs.
 
-  python -m line_cropping.crops.seam_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions
+  python -m line_segmentation.crops.seam_crops --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions
       --method unet [--split test] [--outer 0.7] [--margin 0.5] [--fill clay|white|none] --out tablet_data/ebl_tablets/line_crops_seam
 
 Rectangular gap-bounded crops (make_crops.py) stop at a straight boundary halfway between two lines, so a tall sign
@@ -26,8 +26,8 @@ import os
 import cv2
 import numpy as np
 
-from line_cropping.lines.profile_lines import rotate
-from line_cropping.paths import EBL
+from line_segmentation.heuristic_v1.profile_lines import rotate
+from line_segmentation.paths import EBL
 
 
 def line_models(seg_csv, M, W):

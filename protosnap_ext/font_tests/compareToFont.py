@@ -7,7 +7,7 @@ still resembles the prototype glyph (NOT accuracy against the photo):
   * iou           : overlap between the fitted skeleton (drawn thick) and the glyph's ink
 Also writes <run>/font_compare.png: glyph | glyph + fitted skeleton | photo + fitted skeleton.
 
-Usage (from the repo root): python experiments/font_tests/compareToFont.py font_tests/singleSigns_Assurbanipal [--font Assurbanipal]
+Usage (from the repo root): python protosnap_ext/font_tests/compareToFont.py font_tests/singleSigns_Assurbanipal [--font Assurbanipal]
 """
 import json
 import re

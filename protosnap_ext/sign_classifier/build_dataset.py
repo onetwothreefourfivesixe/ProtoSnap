@@ -1,6 +1,6 @@
 """Build per-script sign-classification datasets from data/ebl/signs_snippets_metadata.json (the eBL sign-crop release).
 
-  python -m line_cropping.signs.build_dataset [--scripts NA OB] [--min-train 20]
+  python -m protosnap_ext.sign_classifier.build_dataset [--scripts NA OB] [--min-train 20]
 
 The metadata is a classification set: one cropped sign per entry with its sign name and script, no position on the
 tablet. It therefore cannot train the detector; it trains a sign classifier used to score detector boxes against
@@ -14,7 +14,7 @@ Split keeps everything evaluated downstream out of training:
 Classes are the signs with at least --min-train TRAINING samples; rarer signs are dropped from all splits.
 Writes tablet_data/ebl_tablets/sign_classifier/<script>/{train,val,test}.csv (id,path,sign,label,tablet,type), classes.json, stats.json.
 """
-from line_cropping.paths import EBL
+from line_segmentation.paths import EBL
 import argparse, csv, json, os, random, collections
 
 KEEP_TYPES = {'MANUALLY_ANNOTATED_SIGN', 'OCR', 'MANUALLY_ANNOTATED_SIGN_DAMAGED', 'PARTIALLY_BROKEN'}

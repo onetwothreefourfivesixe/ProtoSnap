@@ -1,6 +1,6 @@
 """Why signs in signs_outside_crops.csv (report/export_model_line_signs.py) fall in no crop.
 
-  python -m line_cropping.report.explain_signs_outside [--export tablet_data/exports/line_signs_run6]
+  python -m line_segmentation.report.explain_signs_outside [--export tablet_data/exports/line_signs_run6]
 
 Each sign is placed by its box centre against every crop of its face, in that crop's frame. `line_caught` is how many other signs of its eBL
 line are in a crop. Causes, checked in this order:
@@ -18,8 +18,8 @@ import os
 
 import numpy as np
 
-from line_cropping.crops.crop_frame import crop_matrix
-from line_cropping.paths import EBL
+from line_segmentation.crops.crop_frame import crop_matrix
+from line_segmentation.paths import EBL
 
 
 def main():

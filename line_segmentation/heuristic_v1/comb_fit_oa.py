@@ -1,4 +1,4 @@
-from line_cropping.paths import OA
+from line_segmentation.paths import OA
 import csv,collections,numpy as np,cv2,random
 from scipy.signal import find_peaks
 import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt

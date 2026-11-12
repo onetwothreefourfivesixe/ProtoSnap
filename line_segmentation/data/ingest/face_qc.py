@@ -1,5 +1,5 @@
 """Quality check of obverse/reverse face crops: size, aspect ratio and pixels per ATF line. Writes face_qc.csv."""
-from line_cropping.paths import OA
+from line_segmentation.paths import OA
 import csv, os, re, json, collections, numpy as np
 from PIL import Image
 

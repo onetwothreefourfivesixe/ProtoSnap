@@ -6,7 +6,7 @@ continuing beyond it), then extend the tail from the apex along the ink -- re-ce
 stroke's ridge each step -- until the ink ends or another head begins. Two tails that run toward
 each other along the same line (a shared tail) are truncated to meet halfway.
 
-  python experiments/esagil_skeletons/traceWedges.py Esagil 0x1230b 0x12038 ...
+  python protosnap_ext/esagil_skeletons/traceWedges.py Esagil 0x1230b 0x12038 ...
       Writes a proposal image per sign to data/fonts/fontTargets/<font>_proposals/<hex>.png.
       With no hex codes given, processes every sign in data/fonts/fontTargets/<font>/.
 

@@ -65,7 +65,7 @@ Heidelberg column rests on 9 faces.
 
 **Setup.** Kraken 7.1.1 was used in a separate environment (`~/venvs/kraken`), and its default segmenter (`blla.mlmodel`) was fine-tuned with
 `ketos segtrain` on exactly run 3 seed 0's faces (490 training and 66 validation, from eBL, Old Assyrian hand labels and
-Heidelberg). Each truth line was written as the line in PageXML (`line_cropping/baselines/kraken_seg.py export`). Augmentation
+Heidelberg). Each truth line was written as the line in PageXML (`line_segmentation/baselines/kraken_seg.py export`). Augmentation
 was on, with early stopping: training ran for 38 epochs at about 9 minutes, and epoch 27 was kept (Kraken's own validation line F1 0.37). Two Kraken 7.1.1
 command-line bugs were worked around: the centre-line switch cannot be passed (it only changes how line polygons are
 drawn, not which lines are learned), and class resizing crashes, which was avoided by naming our classes like the pretrained
@@ -100,7 +100,7 @@ reported both raw and with the same join applied (`kraken_seg.py merge`, using `
 
 ## 3. Head-to-head: Dencker et al.'s line network against the line model (14 Oct 2026)
 
-**Setup.** Their trained weights were unreachable, so `line_cropping/baselines/dencker_linenet.py` re-implements their
+**Setup.** Their trained weights were unreachable, so `line_segmentation/baselines/dencker_linenet.py` re-implements their
 line network in current PyTorch and retrains it with their recipe. The recipe is an AlexNet-style patch classifier (line or not, on
 227-px grayscale patches) run fully convolutionally over a face. It is trained on the hand-drawn lines of the authors'
 Heidelberg train faces (32 faces and 388 lines with photographs, against their 410) for 101 epochs as in their notebook

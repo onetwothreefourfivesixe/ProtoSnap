@@ -28,7 +28,7 @@ image showing the detected faces drawn on the composite photograph. 1,505 tablet
 file and 1,350 have both obverse and reverse. The remainder are missing faces or are single-face
 fragments. A subfolder `incomplete/` holds about 155 composites that could not be split, and
 `Test_ObvRev/` holds 46 hand-checked faces. `tablet_data/fat-cross_processed/inventory.csv` lists all of this per
-tablet and is rebuilt by `line_cropping/ingest/inventory.py` whenever images are added.
+tablet and is rebuilt by `line_segmentation/data/ingest/inventory.py` whenever images are added.
 
 **Transliterations.** All 1,532 tablets are in the CDLI dump under `data/cdli/artifacts_json/`, and 1,312 of
 them have a transliteration in ATF. ATF (ASCII Transliteration Format) is CDLI's plain-text
@@ -174,7 +174,7 @@ rotation, the pitch supplies the expected sign height, and detector boxes where 
 starting positions, so the existing best-buddies initialisation can be seeded instead of started
 from a random guess. Two things must be settled before this pays off. First, the repository has
 fonts for Old Babylonian, Neo-Assyrian and Neo-Babylonian script but none for Old Assyrian, so
-either an Old Assyrian font is added through the `experiments/esagil_skeletons` workflow or the Old
+either an Old Assyrian font is added through the `protosnap_ext/esagil_skeletons` workflow or the Old
 Babylonian font is tested as a stand-in. Second, at 45 pixels per line the signs are far smaller
 than the 512-pixel crops ProtoSnap was developed on, so upscaling and its effect on the diffusion
 features must be checked on a few lines before committing to the whole set. Training a dedicated
@@ -203,7 +203,7 @@ guide where the effort goes.
 
 ## 11. Status after Phase 3 (12 September 2026)
 
-Phases 1 to 3 are implemented in `line_cropping/` (its README carries the numbers). Three findings change
+Phases 1 to 3 are implemented in `line_segmentation/` (its README carries the numbers). Three findings change
 the plan above.
 
 First, the two sets need different line finders. On the eBL photographs, where a line is 120 pixels tall,

@@ -7,7 +7,7 @@ The file `NNNNNN.json` corresponds to `PNNNNNN`. The transliteration is embedded
 Kuyunjik tablets (K, Sm, Rm, DT ...) have `museum_no = "BM —"`. Their number is in `accession_no`
 (e.g. `K 04426`). BM registration numbers appear as `1881-02-04, 0233`, and Rm-II numbers appear as `Rm 2, 0481`.
 
-## Files produced (by `line_cropping/ingest/extract_atf.py` then `line_cropping/ingest/match_museum.py`, run from the repo root)
+## Files produced (by `line_segmentation/data/ingest/extract_atf.py` then `line_segmentation/data/ingest/match_museum.py`, run from the repo root)
 
 | file | content |
 |---|---|

@@ -12,9 +12,9 @@ Validated on the 148 signs that have skeletons in both Santakku and Assurbanipal
 flagging 51 of 148 signs overall. Treat the output as a review shortlist, not ground truth, and
 keep the transfer fit-quality metrics as a second net for the misses.
 
-  python experiments/esagil_skeletons/detectWedges.py triage Esagil
+  python protosnap_ext/esagil_skeletons/detectWedges.py triage Esagil
       Writes data/fonts/fontTargets/Esagil_triage.csv, biggest suspected mismatches first.
-  python experiments/esagil_skeletons/detectWedges.py calibrate
+  python protosnap_ext/esagil_skeletons/detectWedges.py calibrate
       Re-runs the Santakku-vs-Assurbanipal validation above (useful after tuning C_RADIUS).
 
 Run from the repo root.

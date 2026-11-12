@@ -1,6 +1,6 @@
 """Which tablets have every line annotated: eBL sign boxes checked against the transliteration, plus the hand-marked lines.
 
-  python -m line_cropping.truth.full_line_annotations [--out tablet_data/ebl_tablets/ground_truth/full_line_annotations.csv]
+  python -m line_segmentation.data.truth.full_line_annotations [--out tablet_data/ebl_tablets/ground_truth/full_line_annotations.csv]
 
 The `coverage` column of faces.csv only compares two line counts per face. This compares labels instead, per tablet: every
 numbered ATF line (object, side, column, line number) is looked up among the labels of the eBL sign boxes. A line whose signs
@@ -25,8 +25,8 @@ import json
 import os
 import re
 
-from line_cropping.paths import EBL, OA
-from line_cropping.truth.ebl_ground_truth import SIGN_TYPES, parse_label
+from line_segmentation.paths import EBL, OA
+from line_segmentation.data.truth.ebl_ground_truth import SIGN_TYPES, parse_label
 
 ATF_SIDES = {'obverse', 'reverse', 'left', 'right', 'top', 'bottom', 'edge'}
 ATF_OBJECTS = {'tablet', 'envelope', 'case'}

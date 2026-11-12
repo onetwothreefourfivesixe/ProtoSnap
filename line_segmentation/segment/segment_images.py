@@ -1,11 +1,14 @@
 """Run the line model on any set of tablet images and write the lines it finds.
 
-  python -m line_cropping.segment.segment_images --images <folder> --out <folder> [options]
-  python -m line_cropping.segment.segment_images --list sides.csv --id-col side_id --file-col file --out <folder> [options]
+  python -m line_segmentation.segment.segment_images --images <folder> --out <folder> [options]
+  python -m line_segmentation.segment.segment_images --list sides.csv --id-col side_id --file-col file --out <folder> [options]
 
-Steps (documented in line_cropping/segment/README.md):
+Steps (documented in line_segmentation/segment/README.md):
   1. Preprocess each image (segment/preprocess.py): 8-bit BGR, alpha flattened onto --background, optional CLAHE.
-  2. Optionally split a photograph into tablet views (--views auto); by default the whole image is one side.
+  2. Optionally split a photograph into tablet views (--views auto): each view is saved as its own image under views/ and
+     becomes a side, with coordinates in that view image. Each view gets an estimated role (obverse, reverse, edge_top, ...).
+     --edges decides what happens to edges: 'skip' (default) saves them without lines, and 'segment' runs the model on them
+     like faces. By default the whole image is one side.
   3. Run the line model (--weights, default paths.LINE_WEIGHTS) and its read-out (linemodel/infer.py) with the settings stored
      in the run's config.json.
   4. Turn each predicted line into a region: the line's band between its neighbours, extended by --extend line spacings and
@@ -13,7 +16,8 @@ Steps (documented in line_cropping/segment/README.md):
      within --max-line-dev degrees of the face's, and running --end-margin spacings past the line's ends.
   5. Write lines.json (one entry per side, every side included even with no lines), summary.csv, and optionally line
      crops (--crops) and overlays (--overlays N).
-Coordinates are pixels of the image as provided: no resizing or cropping, origin top left. Lines are ordered top to bottom.
+Coordinates are pixels of the side's image, origin top left: the image as provided, or with --views auto the saved view
+image (view_box gives its place in the original). Lines are ordered top to bottom.
 Output is the model's raw read-out: no manual corrections, and low-scoring lines are kept with their score.
 """
 import argparse
@@ -30,9 +34,9 @@ import cv2
 import numpy as np
 import torch
 
-from line_cropping.linemodel.infer import load_model, predict_face, read_lines, tablet_mask_for
-from line_cropping.paths import DATA_ROOT, LINE_WEIGHTS
-from line_cropping.segment.preprocess import BACKGROUNDS, find_views, load_image
+from line_segmentation.linemodel.infer import load_model, predict_face, read_lines, tablet_mask_for
+from line_segmentation.paths import DATA_ROOT, LINE_WEIGHTS
+from line_segmentation.segment.preprocess import BACKGROUNDS, find_views, load_image
 
 IMAGE_EXT = ('.png', '.jpg', '.jpeg', '.tif', '.tiff', '.bmp', '.webp')
 READOUT_KEYS = dict(kernel_thr=0.5, band_thr=0.4, min_area=12, max_reach=1.5, max_dev=45.0, merge_dy=0.5, end_thr=0.2, max_ext=3.0)
@@ -77,8 +81,8 @@ def line_regions(segs, W, H, extend, shift, end_margin, max_line_dev):
 def git_version():
     try:
         h = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True, check=True).stdout.strip()
-        dirty = subprocess.run(['git', 'status', '--porcelain', '--', 'line_cropping'], capture_output=True, text=True).stdout.strip()
-        return h + (' with uncommitted changes in line_cropping/' if dirty else '')
+        dirty = subprocess.run(['git', 'status', '--porcelain', '--', 'line_segmentation'], capture_output=True, text=True).stdout.strip()
+        return h + (' with uncommitted changes in line_segmentation/' if dirty else '')
     except Exception:
         return 'unknown'
 
@@ -88,7 +92,11 @@ def training_tablets(weights, faces_csv):
     cfg_p = os.path.join(os.path.dirname(weights), 'config.json')
     if not os.path.exists(faces_csv) or not os.path.exists(cfg_p):
         return None
-    col = f"seed{json.load(open(cfg_p))['seed']}"; rows = [r for r in csv.DictReader(open(faces_csv, encoding='utf-8')) if r.get(col)]
+    rows = list(csv.DictReader(open(faces_csv, encoding='utf-8')))
+    col = os.path.basename(os.path.dirname(os.path.abspath(weights)))       # one column per run
+    if rows and col not in rows[0]:
+        return None
+    rows = [r for r in rows if r.get(col)]
     tabs = {}
     for r in rows:
         t = tabs.setdefault(r['tablet'], dict(tablet=r['tablet'], p_number=r['p_number'], source=r['source'], script=r['script'], faces=[]))
@@ -111,7 +119,8 @@ def main():
     src.add_argument('--list', help='CSV listing the images; see --id-col, --file-col and --root')
     ap.add_argument('--id-col', default='side_id'); ap.add_argument('--file-col', default='file'); ap.add_argument('--root', default=None, help='folder that --file-col paths are relative to (default: the CSV\'s folder)')
     ap.add_argument('--out', required=True); ap.add_argument('--weights', default=LINE_WEIGHTS)
-    ap.add_argument('--views', choices=['whole', 'auto'], default='whole', help='auto splits photographs that show several tablet views')
+    ap.add_argument('--views', choices=['whole', 'auto'], default='whole', help='auto splits photographs that show several tablet views and saves each as views/<side>__v<k>.png')
+    ap.add_argument('--edges', choices=['skip', 'segment'], default='skip', help='with --views auto: what to do with views labelled as edges')
     ap.add_argument('--background', choices=sorted(BACKGROUNDS), default='black'); ap.add_argument('--clahe', action='store_true'); ap.add_argument('--exif', action='store_true')
     ap.add_argument('--extend', type=float, default=0.2); ap.add_argument('--shift', type=float, default=0.06); ap.add_argument('--end-margin', type=float, default=0.5)
     ap.add_argument('--max-line-dev', type=float, default=20.0)
@@ -126,36 +135,48 @@ def main():
     items = inputs(a); sides, summary = [], []
     if a.crops: os.makedirs(os.path.join(a.out, 'crops'), exist_ok=True)
     if a.overlays: os.makedirs(os.path.join(a.out, 'overlays'), exist_ok=True)
+    if a.views == 'auto': os.makedirs(os.path.join(a.out, 'views'), exist_ok=True)
     t_all = time.time()
     for k, (sid, path) in enumerate(items, 1):
         if not os.path.exists(path):
             sides.append(dict(side_id=sid, error='file not found', lines=[])); summary.append(dict(side_id=sid, view='', n_lines=0, mean_score='', seconds=0, notes='file not found')); continue
         t0 = time.time(); img, notes = load_image(path, a.background, a.exif, a.clahe); H, W = img.shape[:2]
-        for v in find_views(img, a.views):
-            x0, y0, x1, y1 = v['box']; face = img[y0:y1, x0:x1]; vid = sid if v['id'] == 'whole' else f"{sid}__{v['id']}"
-            maps, s = predict_face(model, face, dev)
-            tab = tablet_mask_for(face, maps.shape, s)
-            segs = read_lines(maps, s, readout['kernel_thr'], readout['band_thr'], int(readout['min_area']), readout['max_reach'], readout['max_dev'],
-                              readout['merge_dy'], readout['end_thr'], readout['max_ext'], tab)
+        views = find_views(img, a.views)
+        for v in views:
+            x0, y0, x1, y1 = v['box']; face = img[y0:y1, x0:x1]; whole = v['id'] == 'whole'; vid = sid if whole else f"{sid}__{v['id']}"
+            if not whole:                                               # each view becomes an image of its own, and coordinates refer to it
+                vfile = f'views/{vid}.png'; cv2.imwrite(os.path.join(a.out, vfile), face); ox, oy, IW, IH = 0, 0, face.shape[1], face.shape[0]
+            else:
+                ox, oy, IW, IH = x0, y0, W, H
+            role = v.get('role', 'whole'); edge = role.startswith('edge'); skipped = edge and a.edges == 'skip'
+            if skipped:
+                segs = []
+            else:
+                maps, s = predict_face(model, face, dev)
+                tab = tablet_mask_for(face, maps.shape, s)
+                segs = read_lines(maps, s, readout['kernel_thr'], readout['band_thr'], int(readout['min_area']), readout['max_reach'], readout['max_dev'],
+                                  readout['merge_dy'], readout['end_thr'], readout['max_ext'], tab)
             regs = line_regions(segs, face.shape[1], face.shape[0], a.extend, a.shift, a.end_margin, a.max_line_dev); lines = []
             for i, r in enumerate(regs, 1):
-                poly = r['poly'] + [x0, y0]; sg = r['seg']
-                bb = [max(0.0, poly[:, 0].min()), max(0.0, poly[:, 1].min()), min(float(W), poly[:, 0].max()), min(float(H), poly[:, 1].max())]
+                poly = r['poly'] + [ox, oy]; sg = r['seg']
+                bb = [max(0.0, poly[:, 0].min()), max(0.0, poly[:, 1].min()), min(float(IW), poly[:, 0].max()), min(float(IH), poly[:, 1].max())]
                 ln = dict(order=i, polygon=[[round(float(px), 1), round(float(py), 1)] for px, py in poly], bbox=[round(float(c), 1) for c in bb],
-                          score=round(float(sg['score']), 4), baseline=[[round(sg['ax0'] + x0, 1), round(sg['ay0'] + y0, 1)], [round(sg['ax1'] + x0, 1), round(sg['ay1'] + y0, 1)]],
+                          score=round(float(sg['score']), 4), baseline=[[round(sg['ax0'] + ox, 1), round(sg['ay0'] + oy, 1)], [round(sg['ax1'] + ox, 1), round(sg['ay1'] + oy, 1)]],
                           angle_deg=round(float(r['angle']), 2))
                 if a.crops:
                     M, cx0, cy0, cx1, cy1 = r['frame']; rot = cv2.warpAffine(face, M, (face.shape[1], face.shape[0]), flags=cv2.INTER_LINEAR, borderValue=(0, 0, 0))
                     c = rot[int(max(0, cy0)):int(min(face.shape[0], cy1)), int(max(0, cx0)):int(min(face.shape[1], cx1))]
                     if c.size: fn = f'{vid}__L{i:02d}.jpg'; cv2.imwrite(os.path.join(a.out, 'crops', fn), c, [cv2.IMWRITE_JPEG_QUALITY, 92]); ln['crop'] = f'crops/{fn}'
                 lines.append(ln)
-            entry = dict(side_id=vid, width=W, height=H, lines=lines)
-            if v['id'] != 'whole': entry.update(source_image=sid, view_box=[x0, y0, x1, y1])
+            entry = dict(side_id=vid, width=IW, height=IH, lines=lines)
+            if not whole:
+                entry.update(image=vfile, role=role, source_image=sid, source_file=path, view_box=[x0, y0, x1, y1])
+                if skipped: entry['skipped'] = 'edge (see --edges)'
             sides.append(entry)
-            summary.append(dict(side_id=vid, view=v['id'], n_lines=len(lines), mean_score=round(float(np.mean([l['score'] for l in lines])), 3) if lines else '',
+            summary.append(dict(side_id=vid, view=v['id'], role=role, skipped=bool(skipped), n_lines=len(lines), mean_score=round(float(np.mean([l['score'] for l in lines])), 3) if lines else '',
                                 seconds=round(time.time() - t0, 2), notes='; '.join(notes)))
             if a.overlays and k <= a.overlays:
-                vis = img.copy(); lw = max(2, int(max(W, H) / 600))
+                vis = (img if whole else face).copy(); lw = max(2, int(max(IW, IH) / 600))
                 for ln in lines:
                     cv2.polylines(vis, [np.round(np.array(ln['polygon'])).astype(np.int32)], True, (0, 200, 255), lw)
                     (bx0, by0), (bx1, by1) = ln['baseline']; cv2.line(vis, (int(bx0), int(by0)), (int(bx1), int(by1)), (0, 0, 255), lw)
@@ -169,8 +190,8 @@ def main():
                                  trained_on_detail=trained, training_split_seed=cfg.get('seed'),
                                  tuning=('Training used the faces in trained_on (train and val roles; val picked the checkpoint). The read-out thresholds were '
                                          'set by hand, and the region rule (--extend, --shift) was calibrated on eBL faces of the line model\'s tune and test '
-                                         'splits (docs/line_model/line_model.md, Appendix A.8 and A.9). No other data was used.')),
-                  settings=dict(views=a.views, background=a.background, clahe=a.clahe, exif=a.exif, long_side=1024, readout=readout, extend=a.extend, shift=a.shift,
+                                         'splits (docs/line_segmentation/line_model.md, Appendix A.8 and A.9). No other data was used.')),
+                  settings=dict(views=a.views, edges=a.edges if a.views == 'auto' else None, background=a.background, clahe=a.clahe, exif=a.exif, long_side=1024, readout=readout, extend=a.extend, shift=a.shift,
                                 end_margin=a.end_margin, max_line_dev=a.max_line_dev),
                   created=datetime.datetime.now().isoformat(timespec='seconds'), sides=sides)
     json.dump(result, open(os.path.join(a.out, 'lines.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

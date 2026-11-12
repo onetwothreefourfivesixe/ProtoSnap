@@ -1,6 +1,6 @@
 """Add faces that are not yet in the Phase 5 split (tablet_data/ebl_tablets/split.csv) without moving any existing face.
 
-  python -m line_cropping.eval.extend_split [--seed 7] [--dry-run]
+  python -m line_segmentation.eval.extend_split [--seed 7] [--dry-run]
 
 phase5_eval.make_split rewrites the whole split, which would reshuffle faces between tune and test and leak test faces
 into the line model's training set. This script only appends. New faces must be single-column (n_columns == 1), as in
@@ -8,21 +8,28 @@ the original split. They are split by tablet, not by face, so the obverse and re
 same scribe) land on the same side: tablets are grouped by script and pixels-per-line bucket of their first face,
 shuffled with the seed, and alternated tune/test within each group. Faces of a tablet that already has faces in the
 split follow that tablet's existing side (its majority, ties to test).
+
+--hold-out names a CSV with a `tablet` column (for example the Ur III request's sides.csv). New faces of those tablets go to
+test whatever the shuffle says, so they are never trained or tuned on. Tablets are matched by collection prefix and number,
+ignoring separators, leading zeros and letter suffixes (HS_1011a holds out HS.1011, HS.1011.a and HS.1011.b), which errs
+on the side of holding out too much.
 """
 import argparse
 import collections
 import csv
 import os
 import random
+import re
 
-from line_cropping.eval.phase5_eval import bucket
-from line_cropping.paths import EBL
+from line_segmentation.eval.phase5_eval import bucket
+from line_segmentation.paths import EBL
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--seed', type=int, default=7)
     ap.add_argument('--dry-run', action='store_true')
+    ap.add_argument('--hold-out', default=None, help='CSV with a tablet column: their new faces always go to test')
     a = ap.parse_args()
     path = os.path.join(EBL, 'split.csv')
     old = list(csv.DictReader(open(path))) if os.path.exists(path) else []
@@ -49,6 +56,16 @@ def main():
         random.shuffle(ts)
         for i, t in enumerate(ts):
             side[t] = 'tune' if i % 2 == 0 else 'test'
+    held = set()
+    if a.hold_out:
+        key = lambda t: (lambda m: (m.group(1).upper(), int(m.group(2))) if m else None)(re.match(r'([A-Za-z]+)[ ._-]*0*(\d+)', t))
+        hk = {key(r['tablet']) for r in csv.DictReader(open(a.hold_out, encoding='utf-8'))} - {None}
+        for t in side:
+            if key(t) in hk:
+                if side[t] != 'test' and prior[t]:
+                    raise SystemExit(f'{t} is held out but already has faces in the tune split; resolve this by hand')
+                side[t] = 'test'; held.add(t)
+        print(f'held out (forced to test): {len(held)} tablets matching {len(hk)} in {a.hold_out}')
     rows = [dict(face=f['face'], split=side[f['tablet']], bucket=bucket(f)) for f in new]
     c = collections.Counter((r['bucket'].split('/')[0], r['split']) for r in rows)
     print(f'{len(old)} faces already in the split (unchanged); {len(rows)} new faces from {len(by_tab)} tablets')

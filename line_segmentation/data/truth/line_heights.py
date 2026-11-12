@@ -1,7 +1,7 @@
 """How far each truth line's signs reach above and below it, from the eBL sign boxes: the target of the line model's
 height channels (run 4).
 
-  python -m line_cropping.truth.line_heights [--pct 90] [--sweep]
+  python -m line_segmentation.data.truth.line_heights [--pct 90] [--sweep]
 
 For every line of every eBL face, each sign box gives two signed distances, measured straight up and down from the
 truth line at the box's centre: to the box's top edge and to its bottom edge. `up` and `down` are the --pct percentile
@@ -21,9 +21,9 @@ import os
 
 import numpy as np
 
-from line_cropping.eval.box_containment import face_boxes
-from line_cropping.eval.height_calibration import score, seg_line
-from line_cropping.paths import EBL
+from line_segmentation.eval.box_containment import face_boxes
+from line_segmentation.eval.height_calibration import score, seg_line
+from line_segmentation.paths import EBL
 
 MIN_BOXES = 3
 CAP = 1.2

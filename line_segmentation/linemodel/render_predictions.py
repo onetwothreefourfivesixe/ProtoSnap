@@ -1,12 +1,12 @@
 """Draw line-model predictions (and the truth where it exists) on the face image and on the original tablet photo.
 
-  python -m line_cropping.linemodel.render_predictions --pred tablet_data/ebl_tablets/predictions --method unet --n 10 [--seed 3]
+  python -m line_segmentation.linemodel.render_predictions --pred tablet_data/ebl_tablets/predictions --method unet --n 10 [--seed 3]
       [--faces <ids...>] [--out tablet_data/ebl_tablets/linemodel/prediction_overlays]
 Red = predicted segments (from <pred>/<method>_segments/<face>.csv); green = eBL truth segments. Writes
 <out>/faces/<face>.jpg, <out>/photos/<tablet>__<side>.jpg (segments placed in the composite via the face's crop offset)
 and <out>/contact_sheet.jpg.
 """
-from line_cropping.paths import EBL
+from line_segmentation.paths import EBL
 import argparse, csv, os, random
 import numpy as np, cv2
 from PIL import Image

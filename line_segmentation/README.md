@@ -1,37 +1,43 @@
-# line_cropping — implementation of docs/line_cropping/line_cropping_plan.md, phase by phase
+# line_segmentation — the custom line segmentation pipeline
 
-Run everything from the repo root with `python -m line_cropping.<stage>.<module>`.
+This package splits tablet photographs into text lines. Run everything from the repository root with
+`python -m line_segmentation.<folder>.<module>`.
 
-New to the project? Read `docs/line_cropping/pipeline_overview.md` first: it explains the whole pipeline in plain language.
+To run the current model on your own images, read [segment/README.md](segment/README.md). For the method and results,
+read `docs/line_segmentation/line_model.md`.
 
-**Two parts of the project share this package.**
+**The package holds two generations of the line finder.**
 
-- **First iteration (phases 1–6):** This part uses `ingest/`, `truth/`, `faces/`, `lines/`, `crops/`, `eval/`, `signs/`, `protosnap/`, `report/`, `experiments/`. Lines come from the eBL sign detector plus the transliteration's line count. The docs are in `docs/line_cropping/`.
-- **Custom line model (phase 7):** This part uses `linemodel/` (a U-Net that predicts text-line bands directly) and `app/` (the Line Splitter web app). The docs are in `docs/line_model/line_model.md`.
+- **Line model (current, phase 7):** `linemodel/` is a U-Net that predicts text-line bands directly, without a
+  transliteration. `segment/` runs it on any folder of images, and `app/` is the Line Splitter web app.
+- **First iteration (phases 1–5):** `heuristic_v1/` finds lines from the eBL sign detector plus the transliteration's
+  line count. The docs are in `docs/line_segmentation/v1/`. It is kept because the line model is compared against it.
 
-Both use the same data root (`paths.py`), the same crop maker (`crops/make_crops.py`) and the same evaluators (`eval/`), so they stay in one package.
+Both share the data preparation (`data/`), the crop maker (`crops/`), the evaluators (`eval/`) and the data root
+(`paths.py`). The steps that run ProtoSnap on the resulting line crops (phase 6) and the sign classifier live in
+`protosnap_ext/`, with the other ProtoSnap additions.
 
 **Data location.** All data lives under `tablet_data/` (`tablet_data/ebl_tablets/`, `tablet_data/fat-cross_processed/`,
-`tablet_data/app_sessions/`), which is defined once in `line_cropping/paths.py`. Set `LINECROP_DATA_ROOT` to use another folder. After
-moving the data, `python -m line_cropping.paths --rewrite <old-prefix>/` re-roots the image paths stored in the tables.
+`tablet_data/app_sessions/`), which is defined once in `line_segmentation/paths.py`. Set `LINECROP_DATA_ROOT` to use another folder. After
+moving the data, `python -m line_segmentation.paths --rewrite <old-prefix>/` re-roots the image paths stored in the tables.
 
 ## Layout
 
 | folder | stage | modules |
 |---|---|---|
-| `ingest/` | get data in | `extract_atf.py`, `match_museum.py` (CDLI dump -> transliterations, museum-number join), `download_ebl.py` (eBL photos + annotations + ATF; `--scripts` picks scripts, `--annotations-dump` reads boxes from the eBL annotation export), `inventory.py`, `face_qc.py` (Old Assyrian fat-cross set) |
-| `truth/` | ground truth | `ebl_ground_truth.py` (lines from eBL sign boxes), `oa_sample.py`, `labels_from_db.py`, `labeler/` (source of the Old Assyrian Line Marker page) |
-| `faces/` | Phase 2 | `prepare_faces.py` (cut sides from composite photos; Old Assyrian face list and edge rotation) |
-| `lines/` | Phase 3 | `profile_lines.py`, `find_lines.py` (profile methods), `detect_signs.py` (eBL detector, mmdet env), `lines_from_boxes.py` (boxes -> lines) |
-| `signs/` | sign classifier | `build_dataset.py` (per-script datasets from `data/ebl/signs_snippets_metadata.json`, face-level hold-out), `train_classifier.py` (ResNet-34), `classify.py` (inference) |
-| `crops/` | Phase 4 | `make_crops.py` (gap-bounded single-line crops) |
-| `eval/` | Phase 5 | `evaluate_lines.py`, `evaluate_crops.py`, `crop_width.py`, `evaluate_oa.py`, `phase5_eval.py`, `evaluate_heidelberg.py` (line model vs hand-drawn Neo-Assyrian lines, Dencker et al. 2020), `extend_split.py` (adds new faces to split.csv without moving existing ones; do not rerun `phase5_eval` for that, it reshuffles the split), `render_lines.py` |
-| `linemodel/` | Phase 7 | `targets.py`, `dataset.py`, `model.py` (U-Net, ResNet-34 encoder), `train.py`, `visualize.py`, `infer.py`, `render_predictions.py` |
-| `app/` | Phase 7, local web app | `server.py`, `pipeline.py`, `static/index.html`: upload a photograph, split it into line crops, compare with the original |
-| `protosnap/` | Phase 6 | `protosnap_prep.py`, `phase6_summary.py` |
-| `report/` | reporting | `aggregate_metrics.py` (every metric table of both sets -> `docs/line_cropping/metrics_comparison.md`, per-set `metrics/`), `compile_sample.py` (tracked `output/line_cropping/samples/`: metrics tables + 20 tablets per set with all outputs) |
-| `baselines/` | comparisons | `dencker_linenet.py` (Dencker et al. 2020 line network, re-implemented and retrained), `kraken_seg.py` (Kraken's segmenter: PageXML export, prediction in its own venv, fragment join); see docs/line_model/related_work.md |
-| `experiments/` | early trials | `profile_lines_oa.py`, `comb_fit_oa.py` (the first Old Assyrian profile experiments) |
+| `linemodel/` | line model (phase 7) | `targets.py`, `dataset.py`, `model.py` (U-Net, ResNet-34 encoder), `train.py`, `visualize.py`, `infer.py`, `render_predictions.py` |
+| `segment/` | run the model on any images | `segment_images.py` (lines, polygons and crops for a folder or list of images, with `lines.json`), `preprocess.py` (image loading, view detection and roles); see `segment/README.md` |
+| `app/` | Line Splitter web app | `server.py`, `pipeline.py`, `static/index.html`: upload a photograph, split it into line crops, compare with the original |
+| `data/ingest/` | get data in | `extract_atf.py`, `match_museum.py` (CDLI dump -> transliterations, museum-number join), `download_ebl.py` (eBL photos + annotations + ATF; `--scripts` picks scripts, `--annotations-dump` reads boxes from the eBL annotation export), `inventory.py`, `face_qc.py` (Old Assyrian fat-cross set) |
+| `data/truth/` | ground truth | `ebl_ground_truth.py` (lines from eBL sign boxes), `oa_sample.py`, `labels_from_db.py`, `labeler/` (source of the Old Assyrian Line Marker page) |
+| `data/faces/` | Phase 2 | `prepare_faces.py` (cut sides from composite photos; Old Assyrian face list and edge rotation) |
+| `crops/` | line crops | `make_crops.py` (gap-bounded single-line crops) |
+| `eval/` | evaluation | `evaluate_lines.py`, `evaluate_crops.py`, `crop_width.py`, `evaluate_oa.py`, `phase5_eval.py`, `evaluate_heidelberg.py` (line model vs hand-drawn Neo-Assyrian lines, Dencker et al. 2020), `extend_split.py` (adds new faces to split.csv without moving existing ones; do not rerun `phase5_eval` for that, it reshuffles the split), `render_lines.py` |
+| `report/` | reporting | `aggregate_metrics.py` (every metric table of both sets -> `docs/line_segmentation/v1/metrics_comparison.md`, per-set `metrics/`), `compile_sample.py` (tracked `output/line_segmentation/samples/`: metrics tables + 20 tablets per set with all outputs) |
+| `baselines/` | comparisons | `dencker_linenet.py` (Dencker et al. 2020 line network, re-implemented and retrained), `kraken_seg.py` (Kraken's segmenter: PageXML export, prediction in its own venv, fragment join); see docs/line_segmentation/related_work.md |
+| `heuristic_v1/` | first iteration (phase 3) | `profile_lines.py`, `find_lines.py` (profile methods), `detect_signs.py` (eBL detector, mmdet env), `lines_from_boxes.py` (boxes -> lines); `profile_lines_oa.py`, `comb_fit_oa.py` (the first Old Assyrian profile experiments) |
+
+Two related folders are in `protosnap_ext/`: `line_inputs/` (phase 6: `protosnap_prep.py`, `phase6_summary.py`, which turn line crops into ProtoSnap inputs and summarise the runs) and `sign_classifier/` (`build_dataset.py` (per-script datasets from `data/ebl/signs_snippets_metadata.json`, face-level hold-out), `train_classifier.py` (ResNet-34), `classify.py` (inference)).
 
 Data lives outside the package and is gitignored: `data/cdli/artifacts_json/` (CDLI dump and derived tables), `tablet_data/ebl_tablets/`
 (eBL downloads, ground truth, faces, detections, predictions, line crops, `logs/`), `tablet_data/fat-cross_processed/`
@@ -41,7 +47,7 @@ are in `docs/`. Runs of ProtoSnap itself land in `output/` as before.
 
 ## Phase 1 — ground truth (status: done, awaiting review)
 
-**1a. eBL tablets (Neo-Assyrian, Old Babylonian)** — `truth/ebl_ground_truth.py`
+**1a. eBL tablets (Neo-Assyrian, Old Babylonian)** — `data/truth/ebl_ground_truth.py`
 
 This script turns the eBL sign boxes in `tablet_data/ebl_tablets/<NA|OB>/<tablet>/annotations.json` into line-level truth.
 Signs are grouped by side, object (tablet/envelope), column and eBL text-line index. Side comes from the
@@ -67,7 +73,7 @@ assigned to the column whose text-line index range contains them, or else to the
 most (`column_inferred`). Line boxes are the union of the line's annotated sign boxes. `block_x0/x1` is the
 extent of the whole block and is only an auxiliary.
 
-Re-run it as more tablets download with `python -m line_cropping.truth.ebl_ground_truth --preview 10`. It re-reads
+Re-run it as more tablets download with `python -m line_segmentation.data.truth.ebl_ground_truth --preview 10`. It re-reads
 `tablet_data/ebl_tablets/manifest.csv`. Use the oriented segment, not the axis-aligned box, as the line truth: 56% of lines tilt more than 3 degrees,
 and axis-aligned boxes of neighbouring lines overlapped in 69% of cases versus 24% for the oriented bands.
 Coverage is partial: eBL annotators did not box every line, so compare `n_lines` with `atf_lines` per tablet
@@ -75,7 +81,7 @@ Coverage is partial: eBL annotators did not box every line, so compare `n_lines`
 `unknown`. Line boxes only cover annotated signs, so an unannotated line is simply absent from the truth
 (check `n_lines` against `atf_lines` in `tablets.csv` to find sparsely annotated tablets).
 
-**1b. Old Assyrian faces** — `truth/oa_sample.py` (uses `lines/profile_lines.py`)
+**1b. Old Assyrian faces** — `data/truth/oa_sample.py` (uses `heuristic_v1/profile_lines.py`)
 
 This script picks 100 faces from `tablet_data/fat-cross_processed/experiments/face_qc.csv` (unflagged, with ATF), stratified by
 resolution (px per line: low <25, mid <40, high), ATF line-count bucket and face, and splits them alternately into
@@ -89,11 +95,11 @@ The outputs are in `tablet_data/fat-cross_processed/ground_truth/`:
 | `prelabels.csv` | per face and line: `skew_deg`, `pitch_px`, `y_deskewed` (line centre in the deskewed face), body x-extent, `source=comb_fit` |
 | `previews/<face>.png` | deskewed face with the pre-labelled lines numbered, to correct against |
 
-Labelling is done in the published page **Old Assyrian Line Marker**. Its source is in `truth/labeler/`, and its images are the 100
+Labelling is done in the published page **Old Assyrian Line Marker**. Its source is in `data/truth/labeler/`, and its images are the 100
 faces, deskewed and downscaled to 900 px wide. A click adds a line, dragging moves it, Delete removes it, and D marks a face
 done. The ATF count is shown next to the marked count. Marks save to the page's database as `labels/<face>` documents.
 To use them, pull the `labels` collection with the Artifact tool's `read_db` into
-`tablet_data/fat-cross_processed/ground_truth/db/`, then run `python -m line_cropping.truth.labels_from_db` to write
+`tablet_data/fat-cross_processed/ground_truth/db/`, then run `python -m line_segmentation.data.truth.labels_from_db` to write
 `tablet_data/fat-cross_processed/ground_truth/labels.csv` in face coordinates.
 
 The older path, hand-editing `prelabels.csv`, still works. Correct `y_deskewed` per line (and delete or add rows) so that each row is a
@@ -179,8 +185,8 @@ The decision is as follows. On eBL-style photographs, `det_n` is the line finder
 does not. On the Old Assyrian faces, `dp` is the line finder, with the ATF count treated as an upper bound rather
 than the exact number of lines.
 
-The files are `lines/find_lines.py` (profile methods), `lines/detect_signs.py` (run in `~/venvs/mmdet`, with weights in
-`weights/ebl_detr/` and the config from `external/cuneiform-ocr/configs/detr.py`), `lines/lines_from_boxes.py` (boxes to
+The files are `heuristic_v1/find_lines.py` (profile methods), `heuristic_v1/detect_signs.py` (run in `~/venvs/mmdet`, with weights in
+`weights/ebl_detr/` and the config from `external/cuneiform-ocr/configs/detr.py`), `heuristic_v1/lines_from_boxes.py` (boxes to
 lines) and `eval/evaluate_lines.py`. Predictions go to `tablet_data/ebl_tablets/predictions/<method>/<face>.csv`, and detections go to
 `tablet_data/ebl_tablets/detections/<face>.csv`. The detector processes about 6 faces/s on the RTX 4060.
 
@@ -213,7 +219,7 @@ The older "truth band fully inside one crop" metric (83% for the band crops, 5% 
 yardstick here: eBL sign boxes are about as tall as the line pitch and overhang into the neighbouring rows, so a crop
 that contains a whole eBL band must contain parts of the neighbours by construction. The gap crops keep wedge tops
 and bottoms up to the detected box extents, which is what a single-line crop can do without admitting the next line.
-Evaluate with `python -m line_cropping.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops/crops.csv [--split test]`. Besides the vertical metrics, it reports horizontal fit (crop width, meaning lines kept whole on clay, cut ends and overhang past the tablet) from `eval/crop_width.py`. That module also writes per-line detail and renders of the worst lines. See docs/line_model/line_model.md section 10.
+Evaluate with `python -m line_segmentation.eval.evaluate_crops --faces tablet_data/ebl_tablets/faces/faces.csv --crops tablet_data/ebl_tablets/line_crops/crops.csv [--split test]`. Besides the vertical metrics, it reports horizontal fit (crop width, meaning lines kept whole on clay, cut ends and overhang past the tablet) from `eval/crop_width.py`. That module also writes per-line detail and renders of the worst lines. See docs/line_segmentation/line_model.md section 10.
 The band set can be deleted once nothing needs it (2.3 GB).
 
 ## Phase 5 — evaluation (status: done on the eBL set)
@@ -221,7 +227,7 @@ The band set can be deleted once nothing needs it (2.3 GB).
 `eval/phase5_eval.py` splits the 1,334 single-column eBL faces with detections into tune and test halves, stratified
 by script and pixels-per-line bucket (`tablet_data/ebl_tablets/split.csv`, seed 7). It grid-searches the clustering thresholds
 on the tune half only and reports the test half. The chosen thresholds are `gap_frac 0.5`, `merge_frac 0.35` and `score_thr 0.3`. They are saved to
-`tablet_data/ebl_tablets/det_params.json`, which `lines/lines_from_boxes.py` now reads by default.
+`tablet_data/ebl_tablets/det_params.json`, which `heuristic_v1/lines_from_boxes.py` now reads by default.
 Faces with fewer than two truth lines are not scored (487 of 666 test faces are).
 
 The results on the test half for `det_n` (detector boxes plus the ATF count) are:
@@ -252,7 +258,7 @@ Note: the project's intent for this phase is clean single-line crops for ProtoSn
 crops now provide. The sign-level snapping trial below was a detour beyond that intent. It is kept because its
 alignment step (ATF signs to detector boxes) is what a per-line ProtoSnap run will need, but it is not the deliverable.
 
-`protosnap/protosnap_prep.py` turns aligned line crops into ProtoSnap inputs. For each crop with an ATF line label, it
+`protosnap_ext/line_inputs/protosnap_prep.py` turns aligned line crops into ProtoSnap inputs. For each crop with an ATF line label, it
 tokenises the eBL ATF line into sign names. Transliteration values are mapped to signs with a frequency table
 built from `data/ebl/signs_snippets_metadata.json`, and there are 962 distinct OB values, 48 of them ambiguous. It then collects the detector
 boxes whose centres fall in the crop, sorts them left to right, and aligns the two sequences with Needleman-Wunsch
@@ -276,7 +282,7 @@ right sign on the right box seven times in ten. The safe subset for ProtoSnap is
 detector's own class agrees with the ATF, listed in `samples_agree.csv`. A 40-target sample (`samples_run40.csv`)
 was run with `run_test.py --font_dir prototypes/Santakku --con_dir skeletons/Santakku --output_folder phase6_OB`.
 All 40 completed without error in about 40 minutes on the RTX 4060. Initialisation dominates, and the 100 optimisation
-steps take about 7 s. `protosnap/phase6_summary.py` writes `output/line_cropping/phase6_OB/summary.csv` and a `contact_sheet.jpg` of the
+steps take about 7 s. `protosnap/phase6_summary.py` writes `output/line_segmentation/phase6_OB/summary.csv` and a `contact_sheet.jpg` of the
 per-target `itr99_viz.png` renders. The initialisation score (ProtoSnap's own agreement measure) has a median of
 0.60 against 0.75 on the repo's curated single-sign test set: the pipeline runs end to end, and roughly half the
 snaps look right by eye. The box itself is rarely the problem. Of the 40 boxes, 28 coincide with the eBL truth box of
@@ -290,7 +296,7 @@ the next two things to try.
 token of a line is matched to the leftmost detector box in its crop. Over all 6,299 aligned OB lines, that holds for
 2,387 lines (38%). Of these, 1,961 have a Santakku prototype, 1,823 have detector and ATF agreeing on the sign, and 1,675 are confirmed
 by the eBL truth box (`tablet_data/protosnap_inputs/OB_first/`). A 60-target run, one per face (`samples_run.csv`, with results in
-`output/line_cropping/phase6_OB_first/`), finished with a median initialisation score of 0.54, against 0.60 for the 40-sign trial and 0.75 for the curated test
+`output/line_segmentation/phase6_OB_first/`), finished with a median initialisation score of 0.54, against 0.60 for the 40-sign trial and 0.75 for the curated test
 set. Of the 60 boxes, 59 coincide with the eBL truth box. First signs are harder than average for two reasons
 visible in the overlays. First, they sit at the tablet's left edge, so the padded box often includes background or a broken
 margin. Second, the commonest first signs (DIŠ 16, IGI 12 of 60) are a single vertical wedge or a dense cluster, and both are
@@ -299,18 +305,18 @@ aborted the first attempt after 21 targets.
 
 `overlay_results.py` projects each fitted skeleton back onto the unrotated face and onto the gap-bounded line crop of
 its line (undoing ProtoSnap's 512-px stretch and y flip, then applying the face deskew). It writes
-`output/line_cropping/phase6_OB/overlays/{faces,lines}/` plus `line_contact_sheet.jpg` and `index.csv`.
+`output/line_segmentation/phase6_OB/overlays/{faces,lines}/` plus `line_contact_sheet.jpg` and `index.csv`.
 
 ## Sign classifier from the snippet metadata (20 Sep 2026; negative result for alignment)
 
 `data/ebl/signs_snippets_metadata.json` is a classification set. It holds one cropped sign per entry with its name and script, and no
 position on the tablet. It cannot train or fine-tune the detector, but it can train a sign classifier, which was tried
-as a way to improve the sign-to-box alignment in `protosnap/protosnap_prep.py`.
+as a way to improve the sign-to-box alignment in `protosnap_ext/line_inputs/protosnap_prep.py`.
 
-- `signs/build_dataset.py` builds NA and OB datasets with hold-out at FACE level: a snippet's eBL line index is mapped
+- `protosnap_ext/sign_classifier/build_dataset.py` builds NA and OB datasets with hold-out at FACE level: a snippet's eBL line index is mapped
   to its face through the Phase 1 line table, and snippets on Phase 5 test faces never enter training. Tablet-level
   hold-out left OB with 3,767 training snippets, and face-level hold-out gives 8,472. Classes are signs with >= 20 training samples.
-- `signs/train_classifier.py` trains a ResNet-34 from cached ImageNet weights on 112 px letterboxed inputs held in RAM,
+- `protosnap_ext/sign_classifier/train_classifier.py` trains a ResNet-34 from cached ImageNet weights on 112 px letterboxed inputs held in RAM,
   with class-balanced sampling, for 15 epochs. Training takes under 3 minutes per script on the RTX 4060. The weights are in `weights/sign_classifier/`.
 
 | script | classes | train / val / test snippets | held-out test top-1 | top-5 |
@@ -337,20 +343,20 @@ about 55% of the signs a transliteration lists, so the sequence alignment has ga
 detection recall, not classification. `--classifier` therefore stays off by default. Where a snippet-trained
 classifier could still matter is a script the detector handles badly, such as Old Assyrian (9,175 OA snippets exist).
 
-## Phase 7 — learned line model (status: run 6 trained, `run6_heights_s1` is the default; see `docs/line_model/line_model.md` for the full write-up)
+## Phase 7 — learned line model (status: run 6 trained, `run6_heights_s1` is the default; see `docs/line_segmentation/line_model.md` for the full write-up)
 
 `linemodel/` implements section 14 of the plan. Run from the repo root with the ProtoSnap venv.
 
 | step | command | what to inspect |
 |---|---|---|
-| 1. targets | `python -m line_cropping.linemodel.targets --preview 12` | `tablet_data/ebl_tablets/linemodel/target_previews/`: green = band (<= 0.7 pitch wide), yellow = kernel, red hatch = ignore (gaps > 1.5 pitch, one pitch beyond first/last line). Bands must sit on lines and never merge. |
-| 2. index | `python -c "from line_cropping.linemodel.dataset import build_index as b; i=b(); print(len(i['train']), len(i['val']))"` | training faces = tune-split eBL faces with coverage >= 0.9 + labelled Old Assyrian faces (302 train / 38 val at the time of writing; only 16 NA faces pass 0.9, use `--min-cov 0.8` in train.py to admit more) |
-| 3. dry run | `MPLBACKEND=Agg .venv/bin/python -m line_cropping.linemodel.train --dry-run --out weights/linemodel/dryrun` | three steps and a 3-face validation; proves the loop, ~10 s |
-| 4. train | `MPLBACKEND=Agg .venv/bin/python -m line_cropping.linemodel.train --epochs 40 --out weights/linemodel/run1` | `history.csv` (loss parts, val line recall/precision per epoch) and `plots/` (loss, loss components, validation recall/precision, checkpoint-selection score, `dashboard.png`), drawn over the whole run when training ends, or every N epochs with `--plot-every N`; `model.pt` = best val recall+precision. About 30 min for 40 epochs on the RTX 4060. `--no-oa` trains on eBL only for the transfer test; `--resume` continues a run. Read-out options `--kernel-thr`, `--band-thr`, `--min-area` change only validation scoring and checkpoint choice (saved in `config.json`, reused by `infer.py` unless overridden); target options `--kernel-shrink`, `--band-frac`, `--ignore-gap` change what the network learns. `python -m line_cropping.linemodel.visualize --run <dir>` regenerates the plots. |
-| 5. infer | `.venv/bin/python -m line_cropping.linemodel.infer --weights weights/linemodel/run1/model.pt --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions --method unet --split test` | writes `predictions/unet/` in the detector route's format and `predictions/unet_segments/` (raw segments) |
+| 1. targets | `python -m line_segmentation.linemodel.targets --preview 12` | `tablet_data/ebl_tablets/linemodel/target_previews/`: green = band (<= 0.7 pitch wide), yellow = kernel, red hatch = ignore (gaps > 1.5 pitch, one pitch beyond first/last line). Bands must sit on lines and never merge. |
+| 2. index | `python -c "from line_segmentation.linemodel.dataset import build_index as b; i=b(); print(len(i['train']), len(i['val']))"` | training faces = tune-split eBL faces with coverage >= 0.9 + labelled Old Assyrian faces (302 train / 38 val at the time of writing; only 16 NA faces pass 0.9, use `--min-cov 0.8` in train.py to admit more) |
+| 3. dry run | `MPLBACKEND=Agg .venv/bin/python -m line_segmentation.linemodel.train --dry-run --out weights/linemodel/dryrun` | three steps and a 3-face validation; proves the loop, ~10 s |
+| 4. train | `MPLBACKEND=Agg .venv/bin/python -m line_segmentation.linemodel.train --epochs 40 --out weights/linemodel/run1` | `history.csv` (loss parts, val line recall/precision per epoch) and `plots/` (loss, loss components, validation recall/precision, checkpoint-selection score, `dashboard.png`), drawn over the whole run when training ends, or every N epochs with `--plot-every N`; `model.pt` = best val recall+precision. About 30 min for 40 epochs on the RTX 4060. `--no-oa` trains on eBL only for the transfer test; `--resume` continues a run. Read-out options `--kernel-thr`, `--band-thr`, `--min-area` change only validation scoring and checkpoint choice (saved in `config.json`, reused by `infer.py` unless overridden); target options `--kernel-shrink`, `--band-frac`, `--ignore-gap` change what the network learns. `python -m line_segmentation.linemodel.visualize --run <dir>` regenerates the plots. |
+| 5. infer | `.venv/bin/python -m line_segmentation.linemodel.infer --weights weights/linemodel/run1/model.pt --faces tablet_data/ebl_tablets/faces/faces.csv --out tablet_data/ebl_tablets/predictions --method unet --split test` | writes `predictions/unet/` in the detector route's format and `predictions/unet_segments/` (raw segments) |
 | 5b. look | add `--viz 8` to the infer command | `<out>/unet_viz/`: green = predicted band, lime = predicted kernel, red = read-out segments (the target previews of step 1 use the same colours for the truth) |
-| 5c. on the tablet | `python -m line_cropping.linemodel.render_predictions --n 10` | `tablet_data/ebl_tablets/linemodel/prediction_overlays/`: predicted segments (red) and eBL truth (green) on each face and on the original composite photograph (`photos/`, face outlined in orange), plus a contact sheet |
-| 6. score | `python -m line_cropping.eval.evaluate_lines --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions` | `unet` appears beside `det`/`det_n`; compare on the same test faces. For Old Assyrian: `infer` on `tablet_data/fat-cross_processed/prepared/faces_accepted.csv` with `--out tablet_data/fat-cross_processed/predictions_unet --n-col atf_lines`, then `evaluate_oa.py` (add the method there). |
+| 5c. on the tablet | `python -m line_segmentation.linemodel.render_predictions --n 10` | `tablet_data/ebl_tablets/linemodel/prediction_overlays/`: predicted segments (red) and eBL truth (green) on each face and on the original composite photograph (`photos/`, face outlined in orange), plus a contact sheet |
+| 6. score | `python -m line_segmentation.eval.evaluate_lines --faces tablet_data/ebl_tablets/faces/faces.csv --pred tablet_data/ebl_tablets/predictions` | `unet` appears beside `det`/`det_n`; compare on the same test faces. For Old Assyrian: `infer` on `tablet_data/fat-cross_processed/prepared/faces_accepted.csv` with `--out tablet_data/fat-cross_processed/predictions_unet --n-col atf_lines`, then `evaluate_oa.py` (add the method there). |
 
 **First run through the whole pipeline (run1, 40 epochs, test split, 27 Sep 2026).** `infer.py --use-n` adds the
 plan's optional refinement: where a transliteration exists, its line count is reconciled with the model's lines
@@ -385,7 +391,7 @@ formats such as transparent 3D renderings, and writes each side's lines as polyg
 The app is a local web page for trying the line model on any photograph:
 
 ```
-MPLBACKEND=Agg .venv/bin/python -m line_cropping.app.server [--weights weights/linemodel/run6_heights_s1/model.pt] [--port 8770]
+MPLBACKEND=Agg .venv/bin/python -m line_segmentation.app.server [--weights weights/linemodel/run6_heights_s1/model.pt] [--port 8770]
 ```
 
 Then open http://localhost:8770. Upload a tablet photograph (by drag and drop or file picker). The app finds the tablet's
@@ -419,7 +425,7 @@ The ranking is a review queue, not a metric: look at the bottom of it first.
 
 ## Later phases
 Phase 7, a learned line model that removes the dependence on the transliteration count and on sign-detector
-recall, was planned in section 14 of `docs/line_cropping/line_cropping_plan.md` (a U-Net with a ResNet-34 encoder trained on the
+recall, was planned in section 14 of `docs/line_segmentation/v1/line_cropping_plan.md` (a U-Net with a ResNet-34 encoder trained on the
 Phase 1 line segments, with kernel, band and orientation maps and the same evaluation harness). It has since been built and trained: the
-Phase 7 section above describes the code, and `docs/line_model/line_model.md` describes the runs. The current default model is
+Phase 7 section above describes the code, and `docs/line_segmentation/line_model.md` describes the runs. The current default model is
 `run6_heights_s1`.

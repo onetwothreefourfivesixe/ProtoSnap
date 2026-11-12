@@ -1,6 +1,6 @@
 """How well crops hold their own line's signs and keep out other lines' signs, measured with the eBL sign boxes.
 
-  python -m line_cropping.eval.box_containment --sets rect=tablet_data/ebl_tablets/line_crops_unet/crops.csv \\
+  python -m line_segmentation.eval.box_containment --sets rect=tablet_data/ebl_tablets/line_crops_unet/crops.csv \\
       seam=tablet_data/ebl_tablets/line_crops_seam/crops.csv [--split test] [--min-cov 0.9] [--out <dir>]
 
 For every face of --split with sign-annotation coverage >= --min-cov that every crop set covers, the eBL sign boxes are
@@ -23,7 +23,7 @@ import os
 import cv2
 import numpy as np
 
-from line_cropping.paths import EBL
+from line_segmentation.paths import EBL
 
 STEP = 2
 SIGN_TYPES = ('HasSign', 'Number', 'Damaged', 'PartiallyBroken', 'UnclearSign')

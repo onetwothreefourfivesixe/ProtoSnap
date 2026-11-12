@@ -11,12 +11,12 @@ For every accepted face with predictions from both methods:
   spacing_cv  coefficient of variation of the gaps between predicted lines (regular spacing expected)
 A combined score (mean of agreement, proximity, and 1 - min(1, spacing_cv)) ranks faces from
 least to most confident. Writes tablet_data/fat-cross_processed/confidence.csv.
-  python -m line_cropping.eval.confidence_oa [--crops tablet_data/fat-cross_processed/line_crops/crops.csv]
+  python -m line_segmentation.eval.confidence_oa [--crops tablet_data/fat-cross_processed/line_crops/crops.csv]
 """
-from line_cropping.paths import OA
+from line_segmentation.paths import OA
 import argparse, csv, os, collections
 import numpy as np, cv2
-from line_cropping.eval.evaluate_oa import to_frame
+from line_segmentation.eval.evaluate_oa import to_frame
 
 
 def main():

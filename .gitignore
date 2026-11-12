@@ -5,7 +5,7 @@ __pycache__/
 weights
 
 # data sets and everything derived from them stay out of git; tracked extracts are produced by
-# line_cropping/report (docs/line_cropping/metrics_comparison.md and output/line_cropping/samples/)
+# line_segmentation/report (docs/line_segmentation/v1/metrics_comparison.md and output/line_segmentation/samples/)
 artifacts_json/
 ebl_tablets/
 fat-cross_processed/
@@ -15,7 +15,8 @@ tablet_data/kraken/
 external/
 protosnap_inputs/
 tablet_data/app_sessions/
-output/line_cropping
+output/line_segmentation/*
+!output/line_segmentation/samples/
 
 # raw downloads under data/ (signs_snippets_metadata.json is small and stays tracked)
 data/cdli/
@@ -29,6 +30,7 @@ tablet_data/logs/download_*.log
 tablet_data/nathan_urIII_data
 tablet_data/cdli_urIII
 tablet_data/cdli_urIII_fg
+tablet_data/
 
 # export archives are shared directly, not through git (GitHub limit 100 MB per file)
 tablet_data/exports/

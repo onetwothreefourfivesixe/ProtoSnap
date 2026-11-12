@@ -1,6 +1,6 @@
 """Phase 7, step 3: train the line U-Net.
 
-  .venv/bin/python -m line_cropping.linemodel.train [--epochs 40] [--bs 6] [--lr 3e-4] [--win 768] [--dry-run]
+  .venv/bin/python -m line_segmentation.linemodel.train [--epochs 40] [--bs 6] [--lr 3e-4] [--win 768] [--dry-run]
       [--no-oa] [--heidelberg] [--heights] [--out weights/linemodel/run1]
 
 Trains on the index from dataset.build_index (tune-split eBL faces with coverage >= 0.9 plus labelled Old Assyrian
@@ -8,17 +8,18 @@ faces, minus a by-tablet validation slice). AdamW, cosine schedule with warm-up,
 the model is run on the validation faces with the same read-out as inference (infer.read_lines) and line recall /
 precision at 0.35 pitch are computed against the validation truth; the checkpoint with the best recall+precision is
 kept as model.pt. --dry-run: 3 optimisation steps and a 3-face validation, to prove the loop runs.
-Writes <out>/{model.pt, last.pt, history.csv, config.json} and, when training ends (or every --plot-every epochs),
+Writes <out>/{model.pt, last.pt, history.csv, config.json, training_faces.csv (every train/val face with its role,
+fixed at training time so later data changes cannot alter it)} and, when training ends (or every --plot-every epochs),
 the graphs of the whole run in <out>/plots/ (loss, loss components, validation recall/precision, checkpoint-selection
 score, dashboard.png; see visualize.py).
 """
 import argparse, csv, json, os, time
 import matplotlib as pb
 import numpy as np, torch
-from line_cropping.linemodel.dataset import build_index, LineWindows
-from line_cropping.linemodel.model import LineUNet, line_loss
-from line_cropping.linemodel.infer import predict_face, read_lines, score_against_truth
-from line_cropping.linemodel.visualize import plot_history
+from line_segmentation.linemodel.dataset import build_index, LineWindows
+from line_segmentation.linemodel.model import LineUNet, line_loss
+from line_segmentation.linemodel.infer import predict_face, read_lines, score_against_truth
+from line_segmentation.linemodel.visualize import plot_history
 
 
 def validate(model, items, dev, long_side, max_faces=None, kernel_thr=0.5, band_thr=0.4, min_area=12, max_reach=1.5, max_dev=45.0, merge_dy=0.5):
@@ -27,6 +28,13 @@ def validate(model, items, dev, long_side, max_faces=None, kernel_thr=0.5, band_
         maps, scale = predict_face(model, it['file'], dev, long_side); segs = read_lines(maps, scale, kernel_thr=kernel_thr, band_thr=band_thr, min_area=min_area, max_reach=max_reach, max_dev=max_dev, merge_dy=merge_dy)
         r, p = score_against_truth(segs, it['segments'], it['file']); rec.append(r); prec.append(p)
     return float(np.nanmean(rec)) if rec else float('nan'), float(np.nanmean(prec)) if prec else float('nan')
+
+
+def write_faces(path, tr, va):
+    with open(path, 'w', newline='', encoding='utf-8') as fh:
+        w = csv.writer(fh); w.writerow(['face', 'tablet', 'source', 'role'])
+        for role, items in (('train', tr), ('val', va)):
+            for it in items: w.writerow([it['face'], it['tablet'], it['source'], role])
 
 
 def main():
@@ -50,6 +58,7 @@ def main():
     a = ap.parse_args(); torch.manual_seed(a.seed); np.random.seed(a.seed); dev = 'cuda' if torch.cuda.is_available() else 'cpu'; os.makedirs(a.out, exist_ok=True)
     idx = build_index(min_cov=a.min_cov, include_oa=not a.no_oa, seed=a.seed, include_heidelberg=a.heidelberg, include_heights=a.heights); tr, va = idx['train'], idx['val']
     if a.dry_run: tr, va = tr[:12], va[:3]
+    write_faces(os.path.join(a.out, 'training_faces.csv'), tr, va)
     src = {}
     for it in tr: src[it['source']] = src.get(it['source'], 0) + 1
     print(f'read-out: kernel_thr {a.kernel_thr} band_thr {a.band_thr} min_area {a.min_area} max_reach {a.max_reach} max_dev {a.max_dev} merge_dy {a.merge_dy} | targets: kernel_shrink {a.kernel_shrink} band_frac {a.band_frac} ignore_gap {a.ignore_gap}', flush=True)

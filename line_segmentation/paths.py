@@ -3,7 +3,7 @@
 DATA_ROOT defaults to tablet_data/ (relative to the repository root, where all commands are run) and can be moved by
 setting the environment variable LINECROP_DATA_ROOT, e.g. `LINECROP_DATA_ROOT=/mnt/e/tablets python -m ...`.
 Tables written by the pipeline (faces.csv, crops.csv, ...) store image paths that start with DATA_ROOT; after moving
-the data, rewrite those with `python -m line_cropping.paths --rewrite OLD_ROOT`.
+the data, rewrite those with `python -m line_segmentation.paths --rewrite OLD_ROOT`.
 """
 import os
 
